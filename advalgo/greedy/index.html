@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greedy Algorithms - Interval Scheduling</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- RevealJS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+    <style>
+        :root {
+            /* Light theme with distinguishable colors */
+            --bg-main: #fafafa;
+            --bg-slide: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+
+            /* Accent colors - distinguishable on projector */
+            --color-blue: #2563eb;
+            --color-teal: #0d9488;
+            --color-orange: #ea580c;
+            --color-purple: #7c3aed;
+            --color-rose: #e11d48;
+            --color-emerald: #059669;
+            --color-amber: #d97706;
+            --color-indigo: #4f46e5;
+
+            /* UI colors */
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #d97706;
+            --info: #2563eb;
+
+            --border-light: #e2e8f0;
+            --border-medium: #cbd5e1;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        .reveal-viewport {
+            background: var(--bg-main);
+        }
+
+        .reveal,
+        .reveal .slides,
+        .reveal .slides section,
+        .reveal .slides section * {
+            color: #1a1a1a;
+        }
+
+        .reveal {
+            font-family: 'Nunito', sans-serif;
+            font-size: 22px;
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        .reveal .slides section {
+            padding: 20px 35px;
+            box-sizing: border-box;
+        }
+
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 700;
+            text-transform: none;
+            letter-spacing: -0.02em;
+        }
+
+        .reveal h1 {
+            color: var(--color-blue) !important;
+            font-size: 2em;
+            margin-bottom: 0.3em;
+        }
+
+        .reveal h2 {
+            color: var(--color-indigo) !important;
+            font-size: 1.5em;
+            margin-bottom: 0.4em;
+            border-bottom: 3px solid var(--color-blue);
+            padding-bottom: 0.2em;
+            display: inline-block;
+        }
+
+        .reveal h3 {
+            color: var(--color-teal) !important;
+            font-size: 1.1em;
+            margin-bottom: 0.3em;
+        }
+
+        .reveal p {
+            line-height: 1.5;
+            margin-bottom: 0.6em;
+            color: var(--text-primary);
+        }
+
+        .reveal ul, .reveal ol {
+            margin-left: 0.8em;
+            color: var(--text-primary);
+        }
+
+        .reveal li {
+            margin-bottom: 0.4em;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+
+        .reveal strong {
+            color: var(--color-blue) !important;
+            font-weight: 700;
+        }
+
+        .reveal em {
+            color: #475569 !important;
+        }
+
+        .reveal .highlight {
+            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Box styles */
+        .definition-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-left: 4px solid var(--color-blue);
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .definition-box p {
+            margin-bottom: 0.3em;
+            color: var(--text-primary);
+        }
+
+        .theorem-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid var(--color-emerald);
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 6px var(--shadow);
+        }
+
+        .theorem-box p, .theorem-box strong, .theorem-box em {
+            color: var(--text-primary);
+        }
+
+        .algorithm-box {
+            background: #f8fafc;
+            border: 2px solid var(--border-medium);
+            padding: 14px 18px;
+            margin: 12px 0;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.7;
+            color: var(--text-primary);
+        }
+
+        .algorithm-box .keyword {
+            color: var(--color-purple);
+            font-weight: 600;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
+            border-left: 4px solid var(--color-emerald);
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success-box strong, .success-box em, .success-box p {
+            color: var(--text-primary);
+        }
+
+        /* Interactive demo styles */
+        .demo-container {
+            background: #f8fafc;
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 14px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .demo-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+            gap: 8px;
+        }
+
+        .demo-title {
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            color: var(--color-indigo);
+            font-size: 0.9em;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .demo-controls label {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .demo-controls input {
+            background: white;
+            border: 1px solid var(--border-medium);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            width: 50px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .demo-controls input:focus {
+            outline: none;
+            border-color: var(--color-blue);
+        }
+
+        .btn {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 600;
+            font-family: 'Nunito', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-blue);
+            color: white !important;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-success {
+            background: var(--color-emerald);
+            color: white !important;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-warning {
+            background: var(--color-orange);
+            color: white !important;
+        }
+
+        .btn-warning:hover {
+            background: #c2410c;
+        }
+
+        .btn-secondary {
+            background: var(--border-medium);
+            color: #1a1a1a !important;
+        }
+
+        .btn-secondary:hover {
+            background: #94a3b8;
+        }
+
+        /* White text for navigation buttons */
+        .nav-btn {
+            color: white !important;
+        }
+
+        /* White text inside table header */
+        .reveal table tr th {
+            color: white !important;
+        }
+
+        .demo-canvas {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin: 8px 0;
+            min-height: 120px;
+            overflow: hidden;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: var(--text-primary);
+        }
+
+        .demo-output p {
+            margin: 0.3em 0;
+            color: var(--text-primary);
+        }
+
+        /* Approach cards */
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 12px 0;
+        }
+
+        .approach-card {
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .approach-card:hover {
+            border-color: var(--color-blue);
+            box-shadow: 0 4px 12px var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .approach-card h3 {
+            margin-bottom: 4px;
+            font-size: 0.95em;
+        }
+
+        .approach-card p {
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .approach-card.correct {
+            border-color: var(--color-emerald);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+
+        /* Navigation buttons */
+        .nav-btn {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--color-blue);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.75em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .nav-btn.back {
+            background: var(--text-secondary);
+        }
+
+        /* Title slide */
+        .title-slide {
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 2.5em;
+            margin-bottom: 0.2em;
+        }
+
+        .subtitle {
+            color: #475569 !important;
+            font-size: 1.2em;
+            margin-bottom: 2em;
+        }
+
+        /* Small text */
+        .small { font-size: 0.85em; }
+        .tiny { font-size: 0.75em; }
+
+        /* Slide number styling */
+        .reveal .slide-number {
+            background: var(--color-blue);
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .reveal .progress {
+            height: 3px;
+            background: var(--border-light);
+        }
+
+        .reveal .progress span {
+            background: var(--color-blue);
+        }
+
+        /* KaTeX overrides */
+        .reveal .katex,
+        .reveal .katex * {
+            font-size: 1em;
+            color: #1a1a1a !important;
+        }
+
+        /* Ensure theorem box text is dark */
+        .theorem-box {
+            color: #1a1a1a !important;
+        }
+        .theorem-box em {
+            color: #475569 !important;
+        }
+        .theorem-box strong {
+            color: var(--color-blue) !important;
+        }
+
+        /* Ensure definition box text is dark */
+        .definition-box {
+            color: #1a1a1a !important;
+        }
+        .definition-box em {
+            color: #475569 !important;
+        }
+        .definition-box strong {
+            color: var(--color-blue) !important;
+        }
+
+        /* Ensure proof list text is dark */
+        .proof-list li {
+            color: #1a1a1a !important;
+        }
+        .proof-list li strong {
+            color: var(--color-blue) !important;
+        }
+
+        /* Fragment text should be dark */
+        .reveal .fragment {
+            color: #1a1a1a !important;
+        }
+        .reveal .fragment strong {
+            color: var(--color-blue) !important;
+        }
+        .reveal .fragment em {
+            color: #475569 !important;
+        }
+
+        /* Override for colored spans */
+        .reveal span[style*="color: var(--color-rose)"] {
+            color: var(--color-rose) !important;
+        }
+
+        /* Algorithm box text */
+        .algorithm-box {
+            color: #1a1a1a !important;
+        }
+        .algorithm-box strong {
+            color: var(--color-blue) !important;
+        }
+
+        /* Force dark text on proof slides - very specific selectors */
+        .reveal .slides section .theorem-box,
+        .reveal .slides section .theorem-box *,
+        .reveal .slides section .proof-list,
+        .reveal .slides section .proof-list *,
+        .reveal .slides section ul li,
+        .reveal .slides section ol li,
+        .reveal .slides section p {
+            color: #1a1a1a !important;
+        }
+
+        .reveal .slides section .theorem-box strong,
+        .reveal .slides section .proof-list strong,
+        .reveal .slides section ul li strong,
+        .reveal .slides section p strong {
+            color: var(--color-blue) !important;
+        }
+
+        .reveal .slides section .theorem-box em,
+        .reveal .slides section .proof-list em {
+            color: #475569 !important;
+        }
+
+        /* Visible and current fragments */
+        .reveal .slides section .fragment.visible,
+        .reveal .slides section .fragment.current-fragment,
+        .reveal .slides section li.fragment.visible,
+        .reveal .slides section li.fragment.current-fragment,
+        .reveal .slides section p.fragment.visible,
+        .reveal .slides section p.fragment.current-fragment {
+            color: #1a1a1a !important;
+        }
+
+        .reveal .slides section .fragment.visible strong,
+        .reveal .slides section .fragment.current-fragment strong {
+            color: var(--color-blue) !important;
+        }
+
+        /* Feedback messages */
+        .feedback {
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .feedback-success {
+            background: #dcfce7;
+            color: #166534 !important;
+            border: 1px solid #86efac;
+        }
+
+        .feedback-error {
+            background: #fef2f2;
+            color: #991b1b !important;
+            border: 1px solid #fecaca;
+        }
+
+        .feedback-info {
+            background: #dbeafe;
+            color: #1e40af !important;
+            border: 1px solid #93c5fd;
+        }
+
+        /* Table styling */
+        .reveal table {
+            color: var(--text-primary);
+        }
+
+        .reveal table td, .reveal table th {
+            color: var(--text-primary);
+        }
+
+        /* Proof list styling */
+        .reveal .proof-list li {
+            color: var(--text-primary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Suggestion chips - override dark text rules */
+        .suggestion-chip,
+        .suggestion-chip * {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE ===== -->
+            <section class="title-slide">
+                <h1>Greedy Algorithms</h1>
+                <p class="subtitle">Interval Scheduling</p>
+            </section>
+
+            <!-- ===== PROBLEM & WARM-UP COLUMN ===== -->
+            <section>
+                <!-- Problem Introduction -->
+                <section>
+                    <h2>The Scheduling Problem</h2>
+                    <div class="definition-box">
+                        <p><strong>Scenario:</strong> You manage a single resource (a room, a machine, a projector...)</p>
+                        <p class="fragment">You receive <strong>requests</strong> to use it during specific time intervals.</p>
+                        <p class="fragment">Two requests are <strong>compatible</strong> if they don't overlap.</p>
+                    </div>
+                    <p class="fragment" style="font-size: 1.1em; color: var(--color-blue); text-align: center; margin-top: 20px;">
+                        <strong>Goal:</strong> Accept as many requests as possible!
+                    </p>
+                </section>
+
+                <!-- Formal Definition -->
+                <section>
+                    <h2>Formal Definition</h2>
+                    <div class="definition-box">
+                        <p><strong>Input:</strong> Set of requests \(\{1, 2, \ldots, n\}\)</p>
+                        <p>Request \(i\) has start time \(s(i)\) and finish time \(f(i)\)</p>
+                    </div>
+                    <p class="fragment"><strong>Compatible:</strong> Requests \(i, j\) are compatible if \(f(i) \leq s(j)\) or \(f(j) \leq s(i)\)</p>
+                    <div class="fragment" style="margin-top: 15px;">
+                        <svg width="100%" height="120" viewBox="0 0 900 120">
+                            <!-- Compatible example -->
+                            <text x="10" y="20" fill="#059669" font-size="14" font-weight="600" font-family="Open Sans">Compatible:</text>
+                            <rect x="10" y="35" width="150" height="28" fill="#2563eb" rx="4"/>
+                            <text x="85" y="54" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">i</text>
+                            <rect x="180" y="35" width="150" height="28" fill="#059669" rx="4"/>
+                            <text x="255" y="54" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">j</text>
+                            <!-- Arrow showing f(i) <= s(j) -->
+                            <line x1="160" y1="70" x2="180" y2="70" stroke="#475569" stroke-width="2"/>
+                            <text x="170" y="90" fill="#475569" text-anchor="middle" font-size="11" font-family="Nunito">f(i) ≤ s(j)</text>
+                            <text x="200" y="110" fill="#059669" text-anchor="start" font-size="12" font-family="Nunito">✓ No overlap</text>
+
+                            <!-- Not compatible example -->
+                            <text x="480" y="20" fill="#dc2626" font-size="14" font-weight="600" font-family="Open Sans">Not Compatible:</text>
+                            <rect x="480" y="30" width="180" height="24" fill="#2563eb" rx="4"/>
+                            <text x="570" y="46" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">i</text>
+                            <rect x="580" y="60" width="180" height="24" fill="#dc2626" rx="4"/>
+                            <text x="670" y="76" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">j</text>
+                            <!-- Overlap indicator - dashed lines showing time overlap -->
+                            <line x1="580" y1="30" x2="580" y2="84" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2"/>
+                            <line x1="660" y1="30" x2="660" y2="84" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2"/>
+                            <rect x="580" y="90" width="80" height="6" fill="#fbbf24" rx="2"/>
+                            <text x="620" y="108" fill="#475569" text-anchor="middle" font-size="11" font-family="Nunito">time overlap</text>
+                            <text x="720" y="108" fill="#dc2626" text-anchor="start" font-size="12" font-family="Nunito">✗</text>
+                        </svg>
+                    </div>
+                    <p class="fragment"><strong>Goal:</strong> Find a maximum-size subset of mutually compatible requests</p>
+                </section>
+
+                <!-- Warm-up Interactive -->
+                <section>
+                    <h2>Let's Try It!</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Select compatible intervals</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-primary" onclick="generateWarmup()">New Problem</button>
+                                <button class="btn btn-secondary" onclick="resetWarmupSelection()">Clear</button>
+                                <button class="btn btn-success" onclick="checkWarmupSolution()">Check</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="warmup-canvas">
+                            <p style="padding: 30px; color: var(--text-secondary); text-align: center;">Click "New Problem" to generate intervals</p>
+                        </div>
+                        <div class="demo-output" id="warmup-output">
+                            Click on intervals to select them. Pick as many non-overlapping intervals as possible!
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Audience Brainstorm -->
+                <section>
+                    <h2>What Strategy Would You Try?</h2>
+                    <p>Let's brainstorm: what greedy rule could we use to select intervals?</p>
+                    <div class="demo-container" style="max-width: 700px;">
+                        <div class="demo-header">
+                            <span class="demo-title">Audience Suggestions</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-secondary" onclick="clearSuggestions()">Clear All</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                            <input type="text" id="suggestion-input" placeholder="Type a greedy strategy..."
+                                   style="flex: 1; padding: 10px 14px; border: 2px solid var(--border-medium); border-radius: 6px;
+                                          font-size: 1em; font-family: 'Nunito', sans-serif; color: #1a1a1a !important; background: white;"
+                                   onkeypress="if(event.key === 'Enter') addSuggestion()">
+                            <button class="btn btn-primary" onclick="addSuggestion()" style="padding: 10px 20px; font-size: 1em;">Add</button>
+                        </div>
+                        <div id="suggestions-list" style="min-height: 150px; display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start;">
+                            <p style="color: var(--text-secondary); font-style: italic; width: 100%; text-align: center; margin-top: 40px;" id="suggestions-placeholder">
+                                Suggestions will appear here...
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Approaches Overview -->
+                <section>
+                    <h2>How Should We Choose?</h2>
+                    <p>What greedy strategy should we use?</p>
+                    <div class="approach-grid">
+                        <a href="#/2/0" class="approach-card">
+                            <h3 style="color: var(--color-orange);">Earliest Start Time</h3>
+                            <p>Pick the interval that starts first</p>
+                        </a>
+                        <a href="#/2/1" class="approach-card">
+                            <h3 style="color: var(--color-purple);">Shortest Interval</h3>
+                            <p>Pick the shortest interval</p>
+                        </a>
+                        <a href="#/2/2" class="approach-card">
+                            <h3 style="color: var(--color-rose);">Fewest Conflicts</h3>
+                            <p>Pick the interval with fewest overlaps</p>
+                        </a>
+                        <a href="#/3/0" class="approach-card">
+                            <h3 style="color: var(--color-blue);">Earliest Finish Time</h3>
+                            <p>Pick the interval that ends first</p>
+                        </a>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== WRONG APPROACHES COLUMN ===== -->
+            <section>
+                <!-- Approach 1: Earliest Start -->
+                <section>
+                    <h2>Approach: Earliest Start Time</h2>
+                    <div class="definition-box">
+                        <strong>Strategy:</strong> Always select the request with smallest \(s(i)\).
+                        <br><em>Intuition: Start using the resource as quickly as possible.</em>
+                    </div>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Counterexample Builder</span>
+                            <div class="demo-controls">
+                                <label>Start:</label>
+                                <input type="number" id="es-start" value="0" min="0" max="20">
+                                <label>End:</label>
+                                <input type="number" id="es-end" value="5" min="1" max="20">
+                                <button class="btn btn-primary" onclick="addESInterval()">Add</button>
+                                <button class="btn btn-warning" onclick="runEarliestStart()">Run</button>
+                                <button class="btn btn-secondary" onclick="resetES()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="es-canvas"></div>
+                        <div class="demo-output" id="es-output">
+                            Build an instance where "Earliest Start" fails to find optimal.
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 8px;"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></p>
+                </section>
+
+                <!-- Approach 2: Shortest Interval -->
+                <section>
+                    <h2>Approach: Shortest Interval</h2>
+                    <div class="definition-box">
+                        <strong>Strategy:</strong> Always select the request with smallest \(f(i) - s(i)\).
+                        <br><em>Intuition: Get short jobs out of the way quickly.</em>
+                    </div>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Counterexample Builder</span>
+                            <div class="demo-controls">
+                                <label>Start:</label>
+                                <input type="number" id="si-start" value="0" min="0" max="20">
+                                <label>End:</label>
+                                <input type="number" id="si-end" value="5" min="1" max="20">
+                                <button class="btn btn-primary" onclick="addSIInterval()">Add</button>
+                                <button class="btn btn-warning" onclick="runShortestInterval()">Run</button>
+                                <button class="btn btn-secondary" onclick="resetSI()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="si-canvas"></div>
+                        <div class="demo-output" id="si-output">
+                            Build an instance where "Shortest Interval" fails to find optimal.
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 8px;"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></p>
+                </section>
+
+                <!-- Approach 3: Fewest Conflicts -->
+                <section>
+                    <h2>Approach: Fewest Conflicts</h2>
+                    <div class="definition-box">
+                        <strong>Strategy:</strong> Select the interval overlapping with fewest others.
+                        <br><em>Intuition: Minimize the "damage" of each choice.</em>
+                    </div>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Counterexample Builder</span>
+                            <div class="demo-controls">
+                                <label>Start:</label>
+                                <input type="number" id="fc-start" value="0" min="0" max="20">
+                                <label>End:</label>
+                                <input type="number" id="fc-end" value="5" min="1" max="20">
+                                <button class="btn btn-primary" onclick="addFCInterval()">Add</button>
+                                <button class="btn btn-warning" onclick="runFewestConflicts()">Run</button>
+                                <button class="btn btn-secondary" onclick="resetFC()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="fc-canvas"></div>
+                        <div class="demo-output" id="fc-output">
+                            Build an instance where "Fewest Conflicts" fails. (This one is trickier!)
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 8px;"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></p>
+                </section>
+            </section>
+
+            <!-- ===== CORRECT APPROACH COLUMN ===== -->
+            <section>
+                <!-- Correct Approach: Earliest Finish Time -->
+                <section>
+                    <h2>Approach: Earliest Finish Time</h2>
+                    <div class="definition-box">
+                        <strong>Strategy:</strong> Always select the request with smallest \(f(i)\).
+                        <br><em>Intuition: Free up the resource as soon as possible!</em>
+                    </div>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Counterexample Builder</span>
+                            <div class="demo-controls">
+                                <label>Start:</label>
+                                <input type="number" id="ef-start" value="0" min="0" max="20">
+                                <label>End:</label>
+                                <input type="number" id="ef-end" value="5" min="1" max="20">
+                                <button class="btn btn-primary" onclick="addEFInterval()">Add</button>
+                                <button class="btn btn-warning" onclick="runEarliestFinish()">Run</button>
+                                <button class="btn btn-secondary" onclick="resetEF()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="ef-canvas"></div>
+                        <div class="demo-output" id="ef-output">
+                            Build an instance where "Earliest Finish" fails to find optimal.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Algorithm Pseudocode -->
+                <section>
+                    <h2>The Algorithm</h2>
+                    <div class="algorithm-box">
+                        <span class="keyword">Let</span> R = set of all requests, A = ∅<br><br>
+                        <span class="keyword">While</span> R is not empty:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Choose request \(i \in R\) with <strong>smallest \(f(i)\)</strong><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Add \(i\) to A<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Remove all requests incompatible with \(i\) from R<br><br>
+                        <span class="keyword">Return</span> A
+                    </div>
+                    <p class="fragment"><strong>Running time:</strong> \(O(n \log n)\) — just sort by finish time!</p>
+                </section>
+
+                <!-- Why does it work? -->
+                <section>
+                    <h2>Why Does It Work?</h2>
+                    <p>We prove greedy <strong>"stays ahead"</strong> of any other solution.</p>
+                    <div class="definition-box fragment">
+                        <p><strong>Setup:</strong></p>
+                        <p>Let \(i_1, i_2, \ldots, i_k\) be greedy's choices (in order)</p>
+                        <p>Let \(j_1, j_2, \ldots, j_m\) be any optimal solution (sorted)</p>
+                    </div>
+                    <p class="fragment" style="text-align: center; color: var(--color-blue); margin-top: 15px;">
+                        <strong>Goal:</strong> Show that \(k = m\)
+                    </p>
+                </section>
+
+                <!-- Stays Ahead Lemma - Statement & Base Case -->
+                <section>
+                    <h2>Greedy Stays Ahead</h2>
+                    <div class="theorem-box">
+                        <strong>Lemma:</strong> For all \(r \leq k\): \(f(i_r) \leq f(j_r)\)
+                        <br><em>Greedy's r-th interval finishes no later than optimal's r-th.</em>
+                    </div>
+                    <p class="fragment"><strong>Proof by induction:</strong></p>
+                    <div class="fragment">
+                        <p style="margin-bottom: 8px;"><strong style="color: var(--color-blue);">Base case (\(r=1\)):</strong> Greedy picks the interval with earliest finish time.</p>
+                        <p style="margin-left: 20px;">So \(f(i_1) \leq f(j_1)\) for any other interval \(j_1\). ✓</p>
+                        <!-- Visual for base case -->
+                        <div style="margin: 20px 0 0 20px;">
+                            <svg width="600" height="70" viewBox="0 0 600 70">
+                                <text x="0" y="15" fill="#475569" font-size="11" font-family="Nunito">All intervals sorted by finish time:</text>
+                                <!-- Timeline -->
+                                <line x1="0" y1="60" x2="580" y2="60" stroke="#cbd5e1" stroke-width="2"/>
+                                <!-- Greedy's first pick (earliest finish) -->
+                                <rect x="20" y="28" width="80" height="22" fill="#2563eb" rx="4"/>
+                                <text x="60" y="43" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i₁ (greedy)</text>
+                                <!-- Optimal's first (could be same or later) -->
+                                <rect x="40" y="28" width="120" height="22" fill="none" stroke="#059669" stroke-width="2" stroke-dasharray="4,2" rx="4"/>
+                                <text x="100" y="43" fill="#059669" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j₁ (any)</text>
+                                <!-- Finish markers -->
+                                <line x1="100" y1="50" x2="100" y2="65" stroke="#2563eb" stroke-width="2"/>
+                                <text x="100" y="55" fill="#2563eb" font-size="8" font-family="Nunito" text-anchor="middle">↓</text>
+                                <line x1="160" y1="50" x2="160" y2="65" stroke="#059669" stroke-width="2"/>
+                                <!-- Result -->
+                                <text x="280" y="43" fill="#059669" font-size="11" font-weight="600" font-family="Nunito">f(i₁) ≤ f(j₁) ✓</text>
+                                <!-- Legend -->
+                                <rect x="420" y="32" width="14" height="12" fill="#2563eb" rx="2"/>
+                                <text x="440" y="42" fill="#1a1a1a" font-size="10" font-family="Nunito">Greedy</text>
+                                <rect x="500" y="32" width="14" height="12" fill="none" stroke="#059669" stroke-width="2" rx="2"/>
+                                <text x="520" y="42" fill="#1a1a1a" font-size="10" font-family="Nunito">Optimal</text>
+                            </svg>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stays Ahead - Induction Step -->
+                <section>
+                    <h2>Greedy Stays Ahead <span style="font-size: 0.6em; color: var(--text-secondary);">(Induction Step)</span></h2>
+                    <p><strong style="color: var(--color-blue);">Assume:</strong> \(f(i_{r-1}) \leq f(j_{r-1})\) <span style="color: var(--text-secondary); font-size: 0.9em;">(induction hypothesis)</span></p>
+                    <!-- Visual: Induction hypothesis -->
+                    <div style="margin: 8px 0 12px 0;">
+                        <svg width="650" height="55" viewBox="0 0 650 55">
+                            <!-- Greedy i_{r-1} -->
+                            <rect x="0" y="8" width="120" height="20" fill="#2563eb" rx="4"/>
+                            <text x="60" y="22" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i(r-1)</text>
+                            <!-- Optimal j_{r-1} -->
+                            <rect x="0" y="32" width="150" height="20" fill="#059669" rx="4"/>
+                            <text x="75" y="46" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r-1)</text>
+                            <!-- Finish markers -->
+                            <line x1="120" y1="8" x2="120" y2="55" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <line x1="150" y1="32" x2="150" y2="55" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <text x="135" y="6" fill="#475569" font-size="9" font-family="Nunito" text-anchor="middle">f(i) ≤ f(j)</text>
+                            <!-- Legend -->
+                            <rect x="450" y="15" width="14" height="12" fill="#2563eb" rx="2"/>
+                            <text x="470" y="25" fill="#1a1a1a" font-size="10" font-family="Nunito">Greedy</text>
+                            <rect x="530" y="15" width="14" height="12" fill="#059669" rx="2"/>
+                            <text x="550" y="25" fill="#1a1a1a" font-size="10" font-family="Nunito">Optimal</text>
+                        </svg>
+                    </div>
+
+                    <p class="fragment"><strong>1.</strong> Since \(j_r\) is compatible with \(j_{r-1}\): \(f(j_{r-1}) \leq s(j_r)\)</p>
+                    <!-- Visual: compatibility -->
+                    <div class="fragment" style="margin: 8px 0 12px 0;">
+                        <svg width="500" height="32" viewBox="0 0 500 32">
+                            <rect x="0" y="6" width="150" height="20" fill="#059669" rx="4"/>
+                            <text x="75" y="20" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r-1)</text>
+                            <line x1="150" y1="16" x2="190" y2="16" stroke="#d97706" stroke-width="2"/>
+                            <text x="170" y="6" fill="#d97706" font-size="9" font-family="Nunito" text-anchor="middle">gap</text>
+                            <rect x="190" y="6" width="130" height="20" fill="#059669" rx="4"/>
+                            <text x="255" y="20" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r)</text>
+                        </svg>
+                    </div>
+
+                    <p class="fragment"><strong>2.</strong> By transitivity: \(f(i_{r-1}) \leq s(j_r)\) → \(j_r\) is available to greedy!</p>
+                    <!-- Visual: availability -->
+                    <div class="fragment" style="margin: 8px 0 12px 0;">
+                        <svg width="500" height="50" viewBox="0 0 500 50">
+                            <rect x="0" y="6" width="120" height="20" fill="#2563eb" rx="4"/>
+                            <text x="60" y="20" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i(r-1)</text>
+                            <path d="M120 16 L175 16" stroke="#059669" stroke-width="2" marker-end="url(#arrowG2)"/>
+                            <rect x="190" y="6" width="130" height="20" fill="#059669" rx="4" opacity="0.4" stroke="#059669" stroke-width="2" stroke-dasharray="4,2"/>
+                            <text x="255" y="20" fill="#047857" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r)</text>
+                            <rect x="120" y="32" width="220" height="14" fill="#dcfce7" rx="3" stroke="#059669" stroke-width="1"/>
+                            <text x="230" y="43" fill="#047857" text-anchor="middle" font-size="9" font-weight="600" font-family="Nunito">Available zone</text>
+                            <defs><marker id="arrowG2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#059669"/></marker></defs>
+                        </svg>
+                    </div>
+
+                    <p class="fragment"><strong>3.</strong> Greedy picks earliest finish in available zone → \(f(i_r) \leq f(j_r)\) ✓</p>
+                    <!-- Visual: final -->
+                    <div class="fragment" style="margin: 8px 0 0 0;">
+                        <svg width="500" height="55" viewBox="0 0 500 55">
+                            <rect x="0" y="6" width="120" height="18" fill="#2563eb" rx="4" opacity="0.3"/>
+                            <text x="60" y="18" fill="#2563eb" text-anchor="middle" font-size="9" font-weight="600" font-family="Nunito">i(r-1)</text>
+                            <rect x="130" y="6" width="100" height="18" fill="#2563eb" rx="4"/>
+                            <text x="180" y="18" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i(r)</text>
+                            <rect x="190" y="30" width="130" height="18" fill="#059669" rx="4"/>
+                            <text x="255" y="42" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r)</text>
+                            <line x1="230" y1="6" x2="230" y2="52" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <line x1="320" y1="30" x2="320" y2="52" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <text x="275" y="52" fill="#047857" font-size="10" font-weight="600" font-family="Nunito">f(i_r) ≤ f(j_r) ✓</text>
+                        </svg>
+                    </div>
+                </section>
+
+                <!-- Optimality Proof -->
+                <section>
+                    <h2>Greedy is Optimal</h2>
+                    <div class="theorem-box">
+                        <strong>Theorem:</strong> The greedy algorithm returns an optimal set.
+                    </div>
+                    <p class="fragment"><strong>Proof by contradiction:</strong></p>
+                    <ul class="proof-list">
+                        <li class="fragment">Suppose optimal has more: \(m > k\)</li>
+                        <li class="fragment">By "stays ahead": \(f(i_k) \leq f(j_k)\)</li>
+                        <li class="fragment">Since \(m > k\), there exists \(j_{k+1}\) starting after \(j_k\) ends</li>
+                        <li class="fragment">So \(j_{k+1}\) starts after \(i_k\) ends — it was available!</li>
+                        <li class="fragment">But greedy stopped. <span style="color: var(--color-rose);">Contradiction!</span></li>
+                    </ul>
+                </section>
+
+                <!-- Summary -->
+                <section>
+                    <h2>Summary</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+                        <tr style="background: var(--color-blue); color: white;">
+                            <th style="padding: 8px; text-align: left;">Strategy</th>
+                            <th style="padding: 8px; text-align: center;">Works?</th>
+                        </tr>
+                        <tr class="fragment" style="background: #fef2f2;">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Earliest Start Time</td>
+                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border-light); color: var(--error);">✗</td>
+                        </tr>
+                        <tr class="fragment" style="background: #fef2f2;">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Shortest Interval</td>
+                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border-light); color: var(--error);">✗</td>
+                        </tr>
+                        <tr class="fragment" style="background: #fef2f2;">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Fewest Conflicts</td>
+                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border-light); color: var(--error);">✗</td>
+                        </tr>
+                        <tr class="fragment" style="background: #f0fdf4;">
+                            <td style="padding: 8px; font-weight: 600;">Earliest Finish Time</td>
+                            <td style="padding: 8px; text-align: center; color: var(--success); font-weight: 600;">✓ Optimal!</td>
+                        </tr>
+                    </table>
+                    <div class="theorem-box fragment" style="margin-top: 15px;">
+                        <strong>Key insight:</strong> Free up resource ASAP → maximize future opportunities
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== MATROIDS: MOTIVATION COLUMN ===== -->
+            <section>
+                <!-- Transition Slide -->
+                <section>
+                    <h2>Beyond Interval Scheduling</h2>
+                    <p>Can we identify <em>when</em> greedy algorithms work in general?</p>
+                    <div class="definition-box fragment">
+                        <p><strong>Goal:</strong> Find a structural property of optimization problems that guarantees greedy success.</p>
+                    </div>
+                    <p class="fragment" style="text-align: center; margin-top: 30px; font-size: 1.2em; color: var(--color-blue);">
+                        <strong>Enter: Matroids</strong>
+                    </p>
+                </section>
+
+                <!-- Generic Optimization Problem -->
+                <section>
+                    <h2>A Generic Optimization Problem</h2>
+                    <div class="definition-box">
+                        <p><strong>Setup:</strong></p>
+                        <p>• A finite universe \(\mathbf{U} = \{e_1, e_2, \ldots, e_n\}\)</p>
+                        <p>• A weight function \(w: \mathbf{U} \to \mathbb{Q}_{\geq 0}\)</p>
+                        <p>• A family \(\mathcal{F} = \{S_1, \ldots, S_m\}\) of "feasible" subsets</p>
+                    </div>
+                    <p class="fragment">Weight of a set: \(w(S) = \sum_{e \in S} w(e)\)</p>
+                    <p class="fragment" style="color: var(--color-blue); font-weight: 600; margin-top: 15px;">
+                        Goal: Find maximum weight set in \(\mathcal{F}\)
+                    </p>
+                    <div class="fragment" style="background: #fef3c7; padding: 10px 14px; border-radius: 6px; margin-top: 15px;">
+                        <strong>Challenge:</strong> \(m\) can be exponential in \(n\)!
+                        <br><span style="font-size: 0.9em;">Access \(\mathcal{F}\) via oracle: "Is \(S \in \mathcal{F}\)?"</span>
+                    </div>
+                </section>
+
+                <!-- Greedy Approach -->
+                <section>
+                    <h2>A Natural Greedy Approach</h2>
+                    <div class="algorithm-box">
+                        <span class="keyword">Sort</span> elements by weight: \(w(e_1) \geq w(e_2) \geq \cdots \geq w(e_n)\)<br><br>
+                        <span class="keyword">Let</span> X = ∅<br><br>
+                        <span class="keyword">For</span> i = 1 to n:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">If</span> X ∪ {eᵢ} ∈ \(\mathcal{F}\):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;X = X ∪ {eᵢ}<br><br>
+                        <span class="keyword">Return</span> X
+                    </div>
+                    <p class="fragment" style="margin-top: 15px;">
+                        <em>This looks like Kruskal's algorithm for maximum spanning trees!</em>
+                    </p>
+                </section>
+
+                <!-- Counterexample -->
+                <section>
+                    <h2>Greedy Can Fail</h2>
+                    <p><strong>Counterexample:</strong></p>
+                    <div class="definition-box">
+                        <p>\(\mathbf{U} = \{p, q, r\}\)</p>
+                        <p>\(w(p) = 40, \quad w(q) = 30, \quad w(r) = 20\)</p>
+                        <p>\(\mathcal{F} = \{\{p\}, \{q, r\}\}\)</p>
+                    </div>
+                    <div class="fragment" style="margin-top: 15px;">
+                        <p><strong style="color: var(--color-blue);">Greedy:</strong> Picks \(\{p\}\) → weight <strong>40</strong></p>
+                        <p><strong style="color: var(--color-emerald);">Optimal:</strong> \(\{q, r\}\) → weight <strong>50</strong></p>
+                    </div>
+                    <p class="fragment" style="color: var(--color-rose); font-weight: 600; margin-top: 15px;">
+                        Greedy is suboptimal!
+                    </p>
+                </section>
+
+                <!-- Exchange Insight -->
+                <section>
+                    <h2>What Went Wrong?</h2>
+                    <p>When greedy chose \(\{p\}\), there was no way to "exchange" to reach \(\{q,r\}\).</p>
+                    <div class="theorem-box fragment">
+                        <strong>Key Insight:</strong> If \(\mathcal{F}\) had the property that whenever greedy's set \(T\) is smaller than optimal \(S\), there exists \(e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)...
+                        <br><br>
+                        <em>...then greedy would always succeed!</em>
+                    </div>
+                    <p class="fragment" style="text-align: center; margin-top: 20px; color: var(--color-blue); font-size: 1.1em;">
+                        This motivates the definition of <strong>matroids</strong>.
+                    </p>
+                </section>
+            </section>
+
+            <!-- ===== MATROIDS: DEFINITION COLUMN ===== -->
+            <section>
+                <!-- First Attempt -->
+                <section>
+                    <h2>Toward a Definition</h2>
+                    <p>What property of \(\mathcal{F}\) makes greedy work?</p>
+                    <div class="definition-box fragment">
+                        <p><strong>"Fantastic" family</strong> (first attempt):</p>
+                        <p>If \(T \in \mathcal{F}\) and \(|S| > |T|\) for any \(S \subseteq U\),</p>
+                        <p>then \(\exists e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)</p>
+                    </div>
+                    <p class="fragment" style="color: var(--color-rose); margin-top: 15px;">
+                        <strong>Problem:</strong> Too restrictive! Forces \(\mathcal{F}\) to be the entire powerset.
+                    </p>
+                </section>
+
+                <!-- Second Attempt -->
+                <section>
+                    <h2>Second Attempt</h2>
+                    <div class="definition-box">
+                        <p><strong>"Nice" family:</strong></p>
+                        <p>If \(S, T \in \mathcal{F}\) and \(|S| > |T|\),</p>
+                        <p>then \(\exists e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)</p>
+                    </div>
+                    <p class="fragment"><strong>Counterexample:</strong></p>
+                    <div class="fragment" style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.9em;">
+                        <p>\(\mathbf{U} = \{p, q\}\), \(w(p) = 40\), \(w(q) = 30\)</p>
+                        <p>\(\mathcal{F} = \{\{q\}, \{p, q\}\}\)</p>
+                        <p style="margin-top: 8px;">Greedy picks \(\{q\}\) (weight 30), but optimal is \(\{p,q\}\) (weight 70)!</p>
+                    </div>
+                    <p class="fragment" style="color: var(--color-rose); margin-top: 10px;">
+                        <strong>Issue:</strong> Greedy's intermediate sets may not be in \(\mathcal{F}\).
+                    </p>
+                </section>
+
+                <!-- The Fix: Heredity -->
+                <section>
+                    <h2>The Missing Ingredient</h2>
+                    <p>We need greedy's partial solutions to always be in \(\mathcal{F}\).</p>
+                    <div class="theorem-box fragment">
+                        <strong>Hereditary Property:</strong>
+                        <br>If \(S \in \mathcal{F}\) and \(T \subseteq S\), then \(T \in \mathcal{F}\).
+                        <br><br>
+                        <em>"Subsets of feasible sets are feasible."</em>
+                    </div>
+                    <p class="fragment" style="margin-top: 15px;">
+                        Combined with exchange, this gives the right structure!
+                    </p>
+                </section>
+
+                <!-- Official Definition -->
+                <section>
+                    <h2>Matroid: The Definition</h2>
+                    <div class="definition-box">
+                        <p>A <strong>matroid</strong> \(\mathcal{M} = (U, \mathcal{F})\) consists of:</p>
+                        <p>• A finite ground set \(U\)</p>
+                        <p>• A collection \(\mathcal{F}\) of subsets satisfying:</p>
+                    </div>
+                    <ul style="margin-top: 15px;">
+                        <li class="fragment"><strong style="color: var(--color-blue);">Non-emptiness:</strong> \(\emptyset \in \mathcal{F}\)</li>
+                        <li class="fragment"><strong style="color: var(--color-emerald);">Heredity:</strong> If \(S \in \mathcal{F}\) and \(T \subseteq S\), then \(T \in \mathcal{F}\)</li>
+                        <li class="fragment"><strong style="color: var(--color-purple);">Exchange:</strong> If \(S, T \in \mathcal{F}\) with \(|S| > |T|\),<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;then \(\exists e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)</li>
+                    </ul>
+                </section>
+
+                <!-- Terminology -->
+                <section>
+                    <h2>Matroid Terminology</h2>
+                    <table style="width: 100%; font-size: 0.9em;">
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Independent set</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">A set in \(\mathcal{F}\)</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Dependent set</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">A subset of \(U\) not in \(\mathcal{F}\)</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Basis</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Maximal independent set</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Rank</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Size of any basis (all bases have same size!)</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px;"><strong>Circuit</strong></td>
+                            <td style="padding: 8px;">Minimal dependent set</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <!-- Example: Uniform Matroid -->
+                <section>
+                    <h2>Example: Uniform Matroid</h2>
+                    <div class="definition-box">
+                        <p><strong>Uniform matroid \(U_{k,n}\):</strong></p>
+                        <p>Ground set: \(\{1, 2, \ldots, n\}\)</p>
+                        <p>Independent sets: \(X\) is independent iff \(|X| \leq k\)</p>
+                    </div>
+                    <ul class="fragment" style="margin-top: 15px;">
+                        <li><strong>Bases:</strong> All subsets of size exactly \(k\)</li>
+                        <li><strong>Rank:</strong> \(k\)</li>
+                        <li><strong>Circuits:</strong> All subsets of size \(k+1\)</li>
+                    </ul>
+                    <p class="fragment" style="margin-top: 15px; font-style: italic; color: var(--text-secondary);">
+                        Special case: \(U_{n,n}\) = free matroid (all subsets independent)
+                    </p>
+                </section>
+
+                <!-- Example: Graphic Matroid -->
+                <section>
+                    <h2>Example: Graphic Matroid</h2>
+                    <div class="definition-box">
+                        <p><strong>Graphic matroid \(M(G)\)</strong> for graph \(G = (V, E)\):</p>
+                        <p>Ground set: Edge set \(E\)</p>
+                        <p>Independent sets: Acyclic subgraphs (forests)</p>
+                    </div>
+                    <ul class="fragment" style="margin-top: 15px;">
+                        <li><strong>Bases:</strong> Spanning trees</li>
+                        <li><strong>Rank:</strong> \(|V| - 1\) (for connected \(G\))</li>
+                        <li><strong>Circuits:</strong> Cycles</li>
+                    </ul>
+                    <p class="fragment" style="margin-top: 15px; color: var(--color-blue);">
+                        <em>Kruskal's algorithm = greedy on graphic matroid!</em>
+                    </p>
+                </section>
+
+                <!-- More Examples -->
+                <section>
+                    <h2>More Matroid Examples</h2>
+                    <div style="font-size: 0.9em;">
+                        <div class="fragment" style="background: #f0fdf4; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                            <strong style="color: var(--color-emerald);">Cographic Matroid \(M^*(G)\):</strong>
+                            <br>\(I \subseteq E\) independent iff \((V, E \setminus I)\) is connected
+                            <br><span style="font-size: 0.85em;">Bases = complements of spanning trees</span>
+                        </div>
+                        <div class="fragment" style="background: #eff6ff; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                            <strong style="color: var(--color-blue);">Matching Matroid:</strong>
+                            <br>\(I \subseteq V\) independent iff a matching covers all of \(I\)
+                        </div>
+                        <div class="fragment" style="background: #faf5ff; padding: 10px; border-radius: 6px;">
+                            <strong style="color: var(--color-purple);">Disjoint Path Matroid:</strong>
+                            <br>For digraph with source \(s\): \(I \subseteq V\) independent iff
+                            <br>edge-disjoint paths exist from \(s\) to each vertex in \(I\)
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== MATROIDS: GREEDY WORKS COLUMN ===== -->
+            <section>
+                <!-- Main Theorem Statement -->
+                <section>
+                    <h2>The Main Theorem</h2>
+                    <div class="theorem-box">
+                        <strong>Theorem:</strong> For any matroid \(\mathcal{M} = (U, \mathcal{F})\) and any weight function \(w\), the greedy algorithm returns a <strong>maximum-weight basis</strong>.
+                    </div>
+                    <div class="fragment" style="margin-top: 20px;">
+                        <p><strong>Recall the algorithm:</strong></p>
+                        <div class="algorithm-box" style="font-size: 0.85em;">
+                            Sort by weight (descending)<br>
+                            X = ∅<br>
+                            For each element e: if X ∪ {e} ∈ \(\mathcal{F}\), add e to X<br>
+                            Return X
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Proof Setup -->
+                <section>
+                    <h2>Proof Strategy</h2>
+                    <p>Let greedy output \(G = \{g_1, g_2, \ldots, g_k\}\) (in order added)</p>
+                    <p class="fragment">Let \(O = \{o_1, o_2, \ldots, o_m\}\) be an optimal basis (sorted by weight)</p>
+                    <div class="definition-box fragment" style="margin-top: 15px;">
+                        <p><strong>Claim:</strong> For all \(i\): \(w(g_i) \geq w(o_i)\)</p>
+                        <p><em>Greedy's i-th choice is at least as heavy as optimal's i-th.</em></p>
+                    </div>
+                    <p class="fragment" style="margin-top: 15px;">Since all bases have the same size (\(k = m\)), this implies:</p>
+                    <p class="fragment" style="text-align: center; color: var(--color-emerald); font-weight: 600;">
+                        \(w(G) = \sum w(g_i) \geq \sum w(o_i) = w(O)\)
+                    </p>
+                </section>
+
+                <!-- Proof by Contradiction -->
+                <section>
+                    <h2>Proof of Claim</h2>
+                    <p><strong>Suppose not:</strong> Let \(i\) be the first index where \(w(g_i) < w(o_i)\).</p>
+                    <div class="fragment" style="margin-top: 15px;">
+                        <p>Consider:</p>
+                        <p style="margin-left: 20px;">\(T = \{g_1, \ldots, g_{i-1}\}\) — greedy's first \(i-1\) choices</p>
+                        <p style="margin-left: 20px;">\(S = \{o_1, \ldots, o_i\}\) — optimal's first \(i\) elements</p>
+                    </div>
+                    <div class="fragment" style="margin-top: 15px;">
+                        <p>Note: \(|S| = i > i-1 = |T|\), and both \(S, T \in \mathcal{F}\) (heredity)</p>
+                    </div>
+                    <div class="theorem-box fragment" style="margin-top: 15px;">
+                        By <strong>exchange</strong>: \(\exists o_j \in S \setminus T\) with \(T \cup \{o_j\} \in \mathcal{F}\)
+                    </div>
+                </section>
+
+                <!-- Proof Conclusion -->
+                <section>
+                    <h2>Proof (Continued)</h2>
+                    <p>We have \(o_j \in S \setminus T\) with \(T \cup \{o_j\} \in \mathcal{F}\).</p>
+                    <div class="fragment" style="margin-top: 15px;">
+                        <p><strong>Key observation:</strong></p>
+                        <p style="margin-left: 20px;">• \(o_j \in \{o_1, \ldots, o_i\}\), so \(w(o_j) \geq w(o_i)\)</p>
+                        <p style="margin-left: 20px;">• We assumed \(w(o_i) > w(g_i)\)</p>
+                        <p style="margin-left: 20px;">• So \(w(o_j) > w(g_i)\)</p>
+                    </div>
+                    <div class="fragment" style="margin-top: 15px; background: #fef2f2; padding: 12px; border-radius: 6px;">
+                        <strong style="color: var(--color-rose);">Contradiction!</strong>
+                        <br>Greedy considers elements in decreasing weight order.
+                        <br>When greedy chose \(g_i\), it should have chosen \(o_j\) instead (heavier and feasible)!
+                    </div>
+                </section>
+
+                <!-- Corollary -->
+                <section>
+                    <h2>The Converse</h2>
+                    <div class="theorem-box">
+                        <strong>Theorem:</strong> If greedy works for <em>all</em> weight functions on \((U, \mathcal{F})\), then \((U, \mathcal{F})\) must be a matroid.
+                    </div>
+                    <p class="fragment" style="margin-top: 20px;">
+                        <strong>Proof idea:</strong> If the exchange axiom fails, construct an adversarial weight function that makes greedy fail.
+                    </p>
+                    <div class="success-box fragment" style="margin-top: 20px;">
+                        <strong>Bottom line:</strong> Matroids are <em>exactly</em> the structures where greedy works!
+                    </div>
+                </section>
+
+                <!-- Summary -->
+                <section>
+                    <h2>Matroids: Summary</h2>
+                    <table style="width: 100%; font-size: 0.85em; border-collapse: collapse;">
+                        <tr style="background: var(--color-blue);">
+                            <th style="padding: 8px; text-align: left; color: white !important;">Concept</th>
+                            <th style="padding: 8px; text-align: left; color: white !important;">Key Point</th>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Structure</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Heredity + Exchange axioms</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Examples</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Graphic, Uniform, Matching, ...</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Greedy</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Always optimal on matroids</td>
+                        </tr>
+                        <tr class="fragment">
+                            <td style="padding: 8px;"><strong>Characterization</strong></td>
+                            <td style="padding: 8px;">Matroids ⟺ Greedy works for all weights</td>
+                        </tr>
+                    </table>
+                    <p class="fragment" style="text-align: center; margin-top: 20px; color: var(--color-blue); font-weight: 600;">
+                        Matroids unify many greedy algorithms!
+                    </p>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- RevealJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+
+    <!-- KaTeX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+    <script>
+        // Initialize RevealJS
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            progress: true,
+            center: false,
+            transition: 'none',
+            width: 1100,
+            height: 700,
+            margin: 0.04
+        });
+
+        // Render math
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', renderMath);
+        Reveal.on('slidechanged', renderMath);
+        Reveal.on('fragmentshown', renderMath);
+
+        // Colors for intervals - darker shades for better contrast
+        const intervalColors = [
+            '#2563eb', '#059669', '#d97706', '#dc2626',
+            '#7c3aed', '#db2777', '#0891b2', '#65a30d'
+        ];
+
+        // ============ WARM-UP INTERACTIVE ============
+        let warmupIntervals = [];
+        let warmupSelected = new Set();
+
+        function generateWarmup() {
+            warmupIntervals = [];
+            warmupSelected.clear();
+
+            const numIntervals = 6 + Math.floor(Math.random() * 3);
+            const maxTime = 18;
+
+            for (let i = 0; i < numIntervals; i++) {
+                const start = Math.floor(Math.random() * (maxTime - 3));
+                const length = 2 + Math.floor(Math.random() * 5);
+                const end = Math.min(start + length, maxTime);
+                warmupIntervals.push({ id: i, start, end });
+            }
+
+            warmupIntervals.sort((a, b) => a.start - b.start);
+            renderWarmup();
+            document.getElementById('warmup-output').innerHTML =
+                'Click on intervals to select them. Pick as many non-overlapping intervals as possible!';
+        }
+
+        function renderWarmup() {
+            const canvas = document.getElementById('warmup-canvas');
+            const width = 1020;
+            const maxTime = Math.max(...warmupIntervals.map(i => i.end), 18);
+            const scale = (width - 60) / maxTime;
+            const rowHeight = 28;
+            const height = warmupIntervals.length * rowHeight + 45;
+
+            let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block;">`;
+
+            // Time axis
+            svg += `<line x1="30" y1="${height - 22}" x2="${width - 30}" y2="${height - 22}" stroke="#cbd5e1" stroke-width="2"/>`;
+            for (let t = 0; t <= maxTime; t += 2) {
+                const x = 30 + t * scale;
+                svg += `<line x1="${x}" y1="${height - 27}" x2="${x}" y2="${height - 17}" stroke="#cbd5e1" stroke-width="2"/>`;
+                svg += `<text x="${x}" y="${height - 5}" fill="#64748b" text-anchor="middle" font-size="10" font-family="Nunito">${t}</text>`;
+            }
+
+            // Intervals
+            warmupIntervals.forEach((interval, idx) => {
+                const x = 30 + interval.start * scale;
+                const w = (interval.end - interval.start) * scale;
+                const y = idx * rowHeight + 8;
+                const color = intervalColors[idx % intervalColors.length];
+                const isSelected = warmupSelected.has(interval.id);
+                const isRejected = !isSelected && isConflictWithSelected(interval, warmupSelected, warmupIntervals);
+
+                let opacity = isRejected ? 0.25 : 1;
+                let strokeWidth = isSelected ? 3 : 0;
+                let stroke = isSelected ? '#1e3a8a' : 'none';
+
+                svg += `<rect x="${x}" y="${y}" width="${w}" height="22" fill="${color}" rx="4"
+                        opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"
+                        style="cursor: pointer;" onclick="toggleWarmupInterval(${interval.id})"/>`;
+                svg += `<text x="${x + w/2}" y="${y + 15}" fill="white" text-anchor="middle"
+                        font-size="11" font-weight="600" font-family="Nunito"
+                        style="pointer-events: none;">[${interval.start},${interval.end})</text>`;
+            });
+
+            svg += '</svg>';
+            canvas.innerHTML = svg;
+        }
+
+        function isConflictWithSelected(interval, selected, allIntervals) {
+            for (const id of selected) {
+                const other = allIntervals.find(i => i.id === id);
+                if (intervalsOverlap(interval, other)) return true;
+            }
+            return false;
+        }
+
+        function intervalsOverlap(a, b) {
+            return !(a.end <= b.start || b.end <= a.start);
+        }
+
+        function toggleWarmupInterval(id) {
+            const interval = warmupIntervals.find(i => i.id === id);
+
+            if (warmupSelected.has(id)) {
+                warmupSelected.delete(id);
+            } else {
+                let canAdd = true;
+                for (const selectedId of warmupSelected) {
+                    const selected = warmupIntervals.find(i => i.id === selectedId);
+                    if (intervalsOverlap(interval, selected)) {
+                        canAdd = false;
+                        break;
+                    }
+                }
+                if (canAdd) {
+                    warmupSelected.add(id);
+                }
+            }
+            renderWarmup();
+        }
+
+        function resetWarmupSelection() {
+            warmupSelected.clear();
+            renderWarmup();
+            document.getElementById('warmup-output').innerHTML = 'Selection cleared. Try again!';
+        }
+
+        function checkWarmupSolution() {
+            if (warmupIntervals.length === 0) {
+                document.getElementById('warmup-output').innerHTML = 'Generate a problem first!';
+                return;
+            }
+            const optimal = findOptimal(warmupIntervals);
+            const userCount = warmupSelected.size;
+            const optimalCount = optimal.length;
+
+            let html;
+            if (userCount === optimalCount) {
+                html = `<div class="feedback feedback-success">Excellent! You found an optimal solution with ${userCount} intervals!</div>`;
+            } else if (userCount === optimalCount - 1) {
+                html = `<div class="feedback feedback-info">Close! You got ${userCount}, but optimal is ${optimalCount}. Try again!</div>`;
+            } else {
+                html = `<div class="feedback feedback-error">You got ${userCount}, but optimal is ${optimalCount}. Keep trying!</div>`;
+            }
+
+            document.getElementById('warmup-output').innerHTML = html;
+        }
+
+        function findOptimal(intervals) {
+            const sorted = [...intervals].sort((a, b) => a.end - b.end);
+            const result = [];
+            let lastEnd = -Infinity;
+
+            for (const interval of sorted) {
+                if (interval.start >= lastEnd) {
+                    result.push(interval);
+                    lastEnd = interval.end;
+                }
+            }
+            return result;
+        }
+
+        // ============ COUNTEREXAMPLE BUILDERS ============
+
+        // Earliest Start
+        let esIntervals = [];
+
+        function addESInterval() {
+            const start = parseInt(document.getElementById('es-start').value);
+            const end = parseInt(document.getElementById('es-end').value);
+            if (end <= start) { alert('End must be > start'); return; }
+            esIntervals.push({ id: esIntervals.length, start, end });
+            renderCounterexample('es', esIntervals);
+        }
+
+        function resetES() {
+            esIntervals = [];
+            document.getElementById('es-canvas').innerHTML = '';
+            document.getElementById('es-output').innerHTML = 'Build an instance where "Earliest Start" fails to find optimal.';
+        }
+
+        function runEarliestStart() {
+            if (esIntervals.length === 0) {
+                document.getElementById('es-output').innerHTML = '<span style="color:var(--error);">Add some intervals first.</span>';
+                return;
+            }
+            const sorted = [...esIntervals].sort((a, b) => a.start - b.start);
+            const greedy = runGreedy(sorted);
+            const optimal = findOptimal(esIntervals);
+            showCounterexampleResult('es', greedy, optimal, 'Earliest Start');
+        }
+
+        // Shortest Interval
+        let siIntervals = [];
+
+        function addSIInterval() {
+            const start = parseInt(document.getElementById('si-start').value);
+            const end = parseInt(document.getElementById('si-end').value);
+            if (end <= start) { alert('End must be > start'); return; }
+            siIntervals.push({ id: siIntervals.length, start, end });
+            renderCounterexample('si', siIntervals);
+        }
+
+        function resetSI() {
+            siIntervals = [];
+            document.getElementById('si-canvas').innerHTML = '';
+            document.getElementById('si-output').innerHTML = 'Build an instance where "Shortest Interval" fails to find optimal.';
+        }
+
+        function runShortestInterval() {
+            if (siIntervals.length === 0) {
+                document.getElementById('si-output').innerHTML = '<span style="color:var(--error);">Add some intervals first.</span>';
+                return;
+            }
+            const sorted = [...siIntervals].sort((a, b) => (a.end - a.start) - (b.end - b.start));
+            const greedy = runGreedy(sorted);
+            const optimal = findOptimal(siIntervals);
+            showCounterexampleResult('si', greedy, optimal, 'Shortest Interval');
+        }
+
+        // Fewest Conflicts
+        let fcIntervals = [];
+
+        function addFCInterval() {
+            const start = parseInt(document.getElementById('fc-start').value);
+            const end = parseInt(document.getElementById('fc-end').value);
+            if (end <= start) { alert('End must be > start'); return; }
+            fcIntervals.push({ id: fcIntervals.length, start, end });
+            renderCounterexample('fc', fcIntervals);
+        }
+
+        function resetFC() {
+            fcIntervals = [];
+            document.getElementById('fc-canvas').innerHTML = '';
+            document.getElementById('fc-output').innerHTML = 'Build an instance where "Fewest Conflicts" fails. (This one is trickier!)';
+        }
+
+        function runFewestConflicts() {
+            if (fcIntervals.length === 0) {
+                document.getElementById('fc-output').innerHTML = '<span style="color:var(--error);">Add some intervals first.</span>';
+                return;
+            }
+
+            const withConflicts = fcIntervals.map(interval => {
+                let conflicts = 0;
+                for (const other of fcIntervals) {
+                    if (other.id !== interval.id && intervalsOverlap(interval, other)) {
+                        conflicts++;
+                    }
+                }
+                return { ...interval, conflicts };
+            });
+
+            const sorted = [...withConflicts].sort((a, b) => a.conflicts - b.conflicts);
+            const greedy = runGreedy(sorted);
+            const optimal = findOptimal(fcIntervals);
+            showCounterexampleResult('fc', greedy, optimal, 'Fewest Conflicts');
+        }
+
+        // Earliest Finish (correct)
+        let efIntervals = [];
+
+        function addEFInterval() {
+            const start = parseInt(document.getElementById('ef-start').value);
+            const end = parseInt(document.getElementById('ef-end').value);
+            if (end <= start) { alert('End must be > start'); return; }
+            efIntervals.push({ id: efIntervals.length, start, end });
+            renderCounterexample('ef', efIntervals);
+        }
+
+        function resetEF() {
+            efIntervals = [];
+            document.getElementById('ef-canvas').innerHTML = '';
+            document.getElementById('ef-output').innerHTML = 'Build an instance where "Earliest Finish" fails to find optimal.';
+        }
+
+        function runEarliestFinish() {
+            if (efIntervals.length === 0) {
+                document.getElementById('ef-output').innerHTML = '<span style="color:var(--error);">Add some intervals first.</span>';
+                return;
+            }
+            const greedy = findOptimal(efIntervals);
+            const optimal = findOptimal(efIntervals);
+            showCounterexampleResult('ef', greedy, optimal, 'Earliest Finish', false);
+        }
+
+        function runGreedy(sortedIntervals) {
+            const result = [];
+            let lastEnd = -Infinity;
+            for (const interval of sortedIntervals) {
+                if (interval.start >= lastEnd) {
+                    result.push(interval);
+                    lastEnd = interval.end;
+                }
+            }
+            return result;
+        }
+
+        function renderCounterexample(prefix, intervals) {
+            const canvas = document.getElementById(`${prefix}-canvas`);
+            if (intervals.length === 0) {
+                canvas.innerHTML = '';
+                return;
+            }
+
+            const width = 1020;
+            const maxTime = Math.max(...intervals.map(i => i.end), 12);
+            const scale = (width - 60) / maxTime;
+            const rowHeight = 26;
+            const height = intervals.length * rowHeight + 40;
+
+            let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block;">`;
+
+            svg += `<line x1="30" y1="${height - 20}" x2="${width - 30}" y2="${height - 20}" stroke="#cbd5e1" stroke-width="2"/>`;
+            for (let t = 0; t <= maxTime; t++) {
+                const x = 30 + t * scale;
+                svg += `<line x1="${x}" y1="${height - 25}" x2="${x}" y2="${height - 15}" stroke="#cbd5e1" stroke-width="1"/>`;
+                if (t % 2 === 0) {
+                    svg += `<text x="${x}" y="${height - 4}" fill="#64748b" text-anchor="middle" font-size="9" font-family="Nunito">${t}</text>`;
+                }
+            }
+
+            intervals.forEach((interval, idx) => {
+                const x = 30 + interval.start * scale;
+                const w = (interval.end - interval.start) * scale;
+                const y = idx * rowHeight + 6;
+                const color = intervalColors[idx % intervalColors.length];
+
+                svg += `<rect x="${x}" y="${y}" width="${w}" height="20" fill="${color}" rx="4"/>`;
+                svg += `<text x="${x + w/2}" y="${y + 14}" fill="white" text-anchor="middle"
+                        font-size="10" font-weight="600" font-family="Nunito">[${interval.start},${interval.end})</text>`;
+            });
+
+            svg += '</svg>';
+            canvas.innerHTML = svg;
+        }
+
+        function showCounterexampleResult(prefix, greedy, optimal, algoName, isCorrect = false) {
+            const output = document.getElementById(`${prefix}-output`);
+
+            const greedyStr = greedy.map(i => `[${i.start},${i.end})`).join(', ');
+            const optimalStr = optimal.map(i => `[${i.start},${i.end})`).join(', ');
+
+            let html = `<strong>${algoName}:</strong> ${greedy.length} → ${greedyStr}<br>`;
+            html += `<strong>Optimal:</strong> ${optimal.length} → ${optimalStr}<br>`;
+
+            if (greedy.length < optimal.length) {
+                html += `<div class="feedback feedback-success">Counterexample found! Algorithm got ${greedy.length}, optimal is ${optimal.length}.</div>`;
+            } else {
+                if (isCorrect) {
+                    html += `<div class="feedback feedback-success">Algorithm succeeded! As expected, Earliest Finish is optimal.</div>`;
+                } else {
+                    html += `<div class="feedback feedback-error">Algorithm succeeded here. Try a different instance!</div>`;
+                }
+            }
+
+            output.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', renderMath);
+
+        // ============ AUDIENCE SUGGESTIONS ============
+        const suggestionColors = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#dc2626', '#0891b2', '#db2777', '#65a30d'];
+        let suggestionCount = 0;
+
+        function addSuggestion() {
+            const input = document.getElementById('suggestion-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const list = document.getElementById('suggestions-list');
+            const placeholder = document.getElementById('suggestions-placeholder');
+            if (placeholder) placeholder.remove();
+
+            const chip = document.createElement('div');
+            chip.className = 'suggestion-chip';
+            chip.style.cssText = `
+                background: ${suggestionColors[suggestionCount % suggestionColors.length]};
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 0.95em;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                animation: fadeIn 0.3s ease;
+            `;
+            chip.innerHTML = `
+                <span>${text}</span>
+                <span onclick="this.parentElement.remove(); checkPlaceholder();"
+                      style="cursor: pointer; opacity: 0.7; font-size: 1.2em; line-height: 1;">&times;</span>
+            `;
+            list.appendChild(chip);
+
+            suggestionCount++;
+            input.value = '';
+            input.focus();
+        }
+
+        function clearSuggestions() {
+            const list = document.getElementById('suggestions-list');
+            list.innerHTML = `
+                <p style="color: var(--text-secondary); font-style: italic; width: 100%; text-align: center; margin-top: 40px;" id="suggestions-placeholder">
+                    Suggestions will appear here...
+                </p>
+            `;
+            suggestionCount = 0;
+        }
+
+        function checkPlaceholder() {
+            const list = document.getElementById('suggestions-list');
+            if (list.children.length === 0) {
+                clearSuggestions();
+            }
+        }
+    </script>
+</body>
+</html>
