@@ -8,7 +8,39 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Overlock:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Heliotrope font */
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_italic.woff2') format('woff2');
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_bold_italic.woff2') format('woff2');
+            font-weight: bold;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
 
     <!-- RevealJS CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
@@ -18,184 +50,200 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 
     <style>
-        :root {
-            /* Light theme with distinguishable colors */
-            --bg-main: #fafafa;
+        /* ============================================
+           CLEAN MINIMALIST STYLES - gwern.net inspired
+           ============================================ */
+
+        :root, .reveal {
+            /* Base palette */
+            --bg-main: #f5f5f5;
             --bg-slide: #ffffff;
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
+            --text: #222222;
+            --text-primary: #222222;
+            --text-secondary: #666666;
+            --text-light: #666666;
+            --border: #cccccc;
+            --border-dark: #888888;
+            --border-light: #dddddd;
+            --border-medium: #aaaaaa;
+            --error: #c44;
+            --r-main-color: #222222;
+            --r-heading-color: #222222;
+            --r-link-color: #222222;
+            --r-selection-color: #222222;
 
-            /* Accent colors - distinguishable on projector */
-            --color-blue: #2563eb;
-            --color-teal: #0d9488;
-            --color-orange: #ea580c;
-            --color-purple: #7c3aed;
-            --color-rose: #e11d48;
-            --color-emerald: #059669;
-            --color-amber: #d97706;
-            --color-indigo: #4f46e5;
-
-            /* UI colors */
-            --success: #059669;
-            --error: #dc2626;
-            --warning: #d97706;
-            --info: #2563eb;
-
-            --border-light: #e2e8f0;
-            --border-medium: #cbd5e1;
-            --shadow: rgba(0, 0, 0, 0.1);
+            /* 7 distinct pastel accent colors */
+            --pastel-blue: #a8d4f0;
+            --pastel-green: #b8e6c1;
+            --pastel-coral: #f5c4c0;
+            --pastel-lavender: #d4c4e8;
+            --pastel-gold: #f5e6a3;
+            --pastel-mint: #a8e6d5;
+            --pastel-peach: #f5d4b8;
         }
 
+        /* Base reveal overrides */
         .reveal-viewport {
             background: var(--bg-main);
         }
 
-        .reveal,
-        .reveal .slides,
-        .reveal .slides section,
-        .reveal .slides section * {
-            color: #1a1a1a;
-        }
-
         .reveal {
-            font-family: 'Nunito', sans-serif;
-            font-size: 22px;
+            font-family: 'Heliotrope', Georgia, serif;
+            font-size: 20px;
+            color: var(--text);
         }
 
         .reveal .slides {
             text-align: left;
         }
 
-        .reveal .slides section {
-            padding: 20px 35px;
+        /* Slide container with double border - consistent sizing */
+        .reveal .slides > section {
+            background: var(--bg-slide);
+            border: 3px double var(--border);
+            padding: 55px 35px 30px 35px;
             box-sizing: border-box;
+            width: 100% !important;
+            height: 100% !important;
         }
 
+        /* Nested sections (vertical slides) */
+        .reveal .slides section > section {
+            border: none;
+            padding: 40px 0 0 0 !important;
+            background: transparent;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Ensure all text is dark by default */
+        .reveal .slides section {
+            color: var(--text) !important;
+        }
+        .reveal .slides section p,
+        .reveal .slides section span,
+        .reveal .slides section li,
+        .reveal .slides section strong,
+        .reveal .slides section em,
+        .reveal .slides section div {
+            color: var(--text);
+        }
+
+        /* Ensure fragments are visible */
+        .reveal .slides .fragment,
+        .reveal .slides .fragment * {
+            color: var(--text) !important;
+        }
+
+        /* Exceptions for elements with dark backgrounds */
+        .reveal .slides .btn-primary,
+        .reveal .slides .nav-btn:not(.back),
+        .reveal .slides table th {
+            color: white !important;
+        }
+
+        /* Typography */
         .reveal h1, .reveal h2, .reveal h3 {
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'EB Garamond', Georgia, serif;
             font-weight: 700;
+            color: var(--text);
             text-transform: none;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
 
         .reveal h1 {
-            color: var(--color-blue) !important;
-            font-size: 2em;
+            font-size: 1.7em;
             margin-bottom: 0.3em;
         }
 
         .reveal h2 {
-            color: var(--color-indigo) !important;
-            font-size: 1.5em;
-            margin-bottom: 0.4em;
-            border-bottom: 3px solid var(--color-blue);
-            padding-bottom: 0.2em;
+            font-size: 1.25em;
+            margin-bottom: 0.25em;
+            padding-bottom: 0.15em;
+            border-bottom: 1px solid var(--border-dark);
             display: inline-block;
         }
 
         .reveal h3 {
-            color: var(--color-teal) !important;
-            font-size: 1.1em;
-            margin-bottom: 0.3em;
+            font-size: 0.95em;
+            margin-bottom: 0.2em;
+            font-style: italic;
+            color: var(--text-light);
         }
 
         .reveal p {
+            color: var(--text);
             line-height: 1.5;
-            margin-bottom: 0.6em;
-            color: var(--text-primary);
+            margin-bottom: 0.5em;
         }
 
         .reveal ul, .reveal ol {
-            margin-left: 0.8em;
-            color: var(--text-primary);
+            color: var(--text);
+            margin-left: 1em;
         }
 
         .reveal li {
-            margin-bottom: 0.4em;
-            line-height: 1.5;
-            color: var(--text-primary);
+            color: var(--text);
+            margin-bottom: 0.3em;
+            line-height: 1.45;
         }
 
         .reveal strong {
-            color: var(--color-blue) !important;
+            color: var(--text);
             font-weight: 700;
         }
 
         .reveal em {
-            color: #475569 !important;
+            color: var(--text-light);
         }
 
-        .reveal .highlight {
-            background: linear-gradient(120deg, #fef3c7 0%, #fde68a 100%);
-            padding: 2px 6px;
-            border-radius: 4px;
+        /* Simple framed boxes */
+        .definition-box, .theorem-box, .algorithm-box, .success-box {
+            background: var(--bg-slide);
+            border: 1px solid var(--border-dark);
+            padding: 10px 14px;
+            margin: 10px 0;
+            max-width: 88%;
+            box-sizing: border-box;
         }
 
-        /* Box styles */
         .definition-box {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-left: 4px solid var(--color-blue);
-            padding: 12px 16px;
-            margin: 12px 0;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 0 2px 6px var(--shadow);
-        }
-
-        .definition-box p {
-            margin-bottom: 0.3em;
-            color: var(--text-primary);
+            border-left: 3px solid var(--pastel-blue);
         }
 
         .theorem-box {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-left: 4px solid var(--color-emerald);
-            padding: 12px 16px;
-            margin: 12px 0;
-            border-radius: 0 8px 8px 0;
-            box-shadow: 0 2px 6px var(--shadow);
-        }
-
-        .theorem-box p, .theorem-box strong, .theorem-box em {
-            color: var(--text-primary);
+            border-left: 3px solid var(--pastel-green);
         }
 
         .algorithm-box {
-            background: #f8fafc;
-            border: 2px solid var(--border-medium);
-            padding: 14px 18px;
-            margin: 12px 0;
-            border-radius: 8px;
+            border-left: 3px solid var(--pastel-lavender);
             font-family: 'Consolas', 'Monaco', monospace;
             font-size: 0.85em;
-            line-height: 1.7;
-            color: var(--text-primary);
-        }
-
-        .algorithm-box .keyword {
-            color: var(--color-purple);
-            font-weight: 600;
+            line-height: 1.6;
+            background: #fafafa;
         }
 
         .success-box {
-            background: linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%);
-            border-left: 4px solid var(--color-emerald);
-            padding: 12px 16px;
-            margin: 12px 0;
-            border-radius: 0 8px 8px 0;
+            border-left: 3px solid var(--pastel-mint);
         }
 
-        .success-box strong, .success-box em, .success-box p {
-            color: var(--text-primary);
+        .goal-box {
+            border-left: 3px solid #9b8bb8;
         }
 
-        /* Interactive demo styles */
+        .algorithm-box .keyword {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Demo containers */
         .demo-container {
-            background: #f8fafc;
-            border: 1px solid var(--border-light);
-            border-radius: 10px;
-            padding: 14px;
+            background: #fafafa;
+            border: 1px solid var(--border);
+            padding: 10px;
             margin: 10px 0;
-            box-shadow: 0 2px 8px var(--shadow);
+            max-width: 95%;
+            box-sizing: border-box;
         }
 
         .demo-header {
@@ -203,16 +251,16 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
             gap: 8px;
         }
 
         .demo-title {
-            font-family: 'Open Sans', sans-serif;
-            font-weight: 600;
-            color: var(--color-indigo);
+            font-family: 'Overlock', sans-serif;
+            font-weight: 700;
+            color: var(--text);
             font-size: 0.9em;
         }
 
@@ -225,166 +273,156 @@
 
         .demo-controls label {
             font-size: 0.75em;
-            color: var(--text-secondary);
+            color: var(--text-light);
             font-weight: 600;
         }
 
         .demo-controls input {
             background: white;
-            border: 1px solid var(--border-medium);
-            color: var(--text-primary);
-            padding: 4px 8px;
-            border-radius: 4px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 4px 6px;
             font-size: 0.8em;
             width: 50px;
-            font-family: 'Nunito', sans-serif;
         }
 
         .demo-controls input:focus {
             outline: none;
-            border-color: var(--color-blue);
-        }
-
-        .btn {
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.75em;
-            font-weight: 600;
-            font-family: 'Nunito', sans-serif;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--color-blue);
-            color: white !important;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-success {
-            background: var(--color-emerald);
-            color: white !important;
-        }
-
-        .btn-success:hover {
-            background: #047857;
-        }
-
-        .btn-warning {
-            background: var(--color-orange);
-            color: white !important;
-        }
-
-        .btn-warning:hover {
-            background: #c2410c;
-        }
-
-        .btn-secondary {
-            background: var(--border-medium);
-            color: #1a1a1a !important;
-        }
-
-        .btn-secondary:hover {
-            background: #94a3b8;
-        }
-
-        /* White text for navigation buttons */
-        .nav-btn {
-            color: white !important;
-        }
-
-        /* White text inside table header */
-        .reveal table tr th {
-            color: white !important;
+            border-color: var(--border-dark);
         }
 
         .demo-canvas {
             background: white;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
+            border: 1px solid var(--border);
             margin: 8px 0;
-            min-height: 120px;
-            overflow: hidden;
+            min-height: 280px;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .demo-output {
             background: white;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            padding: 10px 14px;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
             margin-top: 8px;
             font-size: 0.85em;
-            color: var(--text-primary);
+            color: var(--text);
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
-        .demo-output p {
-            margin: 0.3em 0;
-            color: var(--text-primary);
+        /* Buttons */
+        .btn {
+            background: white;
+            border: 1px solid var(--border-dark);
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 600;
+            font-family: 'Heliotrope', sans-serif;
+            color: var(--text);
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
+
+        .btn-primary:hover {
+            background: #444444;
+        }
+
+        .btn-success {
+            background: var(--pastel-green);
+            border-color: #8bc99b;
+            color: var(--text);
+        }
+
+        .btn-warning {
+            background: var(--pastel-gold);
+            border-color: #d4c47a;
+            color: var(--text);
+        }
+
+        .btn-secondary {
+            background: #eeeeee;
+            border-color: var(--border);
+            color: var(--text);
         }
 
         /* Approach cards */
         .approach-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 12px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 10px 0;
+            max-width: 88%;
         }
 
         .approach-card {
             background: white;
-            border: 2px solid var(--border-light);
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
+            border: 1px solid var(--border);
+            padding: 8px 10px;
             text-decoration: none;
+            box-sizing: border-box;
         }
 
         .approach-card:hover {
-            border-color: var(--color-blue);
-            box-shadow: 0 4px 12px var(--shadow);
-            transform: translateY(-2px);
+            background: #f8f8f8;
+            border-color: var(--border-dark);
         }
 
         .approach-card h3 {
+            font-size: 0.9em;
             margin-bottom: 4px;
-            font-size: 0.95em;
+            color: var(--text);
+            font-style: normal;
         }
 
         .approach-card p {
             font-size: 0.8em;
-            color: var(--text-secondary);
+            color: var(--text-light);
             margin: 0;
         }
 
         .approach-card.correct {
-            border-color: var(--color-emerald);
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 2px solid var(--pastel-green);
+            background: #f8fff8;
         }
 
         /* Navigation buttons */
         .nav-btn {
             display: inline-block;
-            padding: 6px 12px;
-            background: var(--color-blue);
+            padding: 5px 12px;
+            background: var(--text);
             color: white;
-            border-radius: 5px;
             text-decoration: none;
             font-size: 0.75em;
             font-weight: 600;
-            transition: all 0.2s;
         }
 
         .nav-btn:hover {
-            background: #1d4ed8;
+            background: #444444;
         }
 
         .nav-btn.back {
-            background: var(--text-secondary);
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border-dark);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
         }
 
         /* Title slide */
@@ -393,189 +431,99 @@
         }
 
         .title-slide h1 {
-            font-size: 2.5em;
-            margin-bottom: 0.2em;
+            font-size: 2em;
         }
 
         .subtitle {
-            color: #475569 !important;
-            font-size: 1.2em;
-            margin-bottom: 2em;
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
         }
 
-        /* Small text */
-        .small { font-size: 0.85em; }
-        .tiny { font-size: 0.75em; }
+        /* Tables */
+        .reveal table {
+            color: var(--text);
+        }
 
-        /* Slide number styling */
-        .reveal .slide-number {
-            background: var(--color-blue);
+        .reveal table th {
+            background: var(--text);
             color: white;
-            font-family: 'Nunito', sans-serif;
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 8px;
         }
 
-        .reveal .progress {
-            height: 3px;
-            background: var(--border-light);
-        }
-
-        .reveal .progress span {
-            background: var(--color-blue);
-        }
-
-        /* KaTeX overrides */
-        .reveal .katex,
-        .reveal .katex * {
-            font-size: 1em;
-            color: #1a1a1a !important;
-        }
-
-        /* Ensure theorem box text is dark */
-        .theorem-box {
-            color: #1a1a1a !important;
-        }
-        .theorem-box em {
-            color: #475569 !important;
-        }
-        .theorem-box strong {
-            color: var(--color-blue) !important;
-        }
-
-        /* Ensure definition box text is dark */
-        .definition-box {
-            color: #1a1a1a !important;
-        }
-        .definition-box em {
-            color: #475569 !important;
-        }
-        .definition-box strong {
-            color: var(--color-blue) !important;
-        }
-
-        /* Ensure proof list text is dark */
-        .proof-list li {
-            color: #1a1a1a !important;
-        }
-        .proof-list li strong {
-            color: var(--color-blue) !important;
-        }
-
-        /* Fragment text should be dark */
-        .reveal .fragment {
-            color: #1a1a1a !important;
-        }
-        .reveal .fragment strong {
-            color: var(--color-blue) !important;
-        }
-        .reveal .fragment em {
-            color: #475569 !important;
-        }
-
-        /* Override for colored spans */
-        .reveal span[style*="color: var(--color-rose)"] {
-            color: var(--color-rose) !important;
-        }
-
-        /* Algorithm box text */
-        .algorithm-box {
-            color: #1a1a1a !important;
-        }
-        .algorithm-box strong {
-            color: var(--color-blue) !important;
-        }
-
-        /* Force dark text on proof slides - very specific selectors */
-        .reveal .slides section .theorem-box,
-        .reveal .slides section .theorem-box *,
-        .reveal .slides section .proof-list,
-        .reveal .slides section .proof-list *,
-        .reveal .slides section ul li,
-        .reveal .slides section ol li,
-        .reveal .slides section p {
-            color: #1a1a1a !important;
-        }
-
-        .reveal .slides section .theorem-box strong,
-        .reveal .slides section .proof-list strong,
-        .reveal .slides section ul li strong,
-        .reveal .slides section p strong {
-            color: var(--color-blue) !important;
-        }
-
-        .reveal .slides section .theorem-box em,
-        .reveal .slides section .proof-list em {
-            color: #475569 !important;
-        }
-
-        /* Visible and current fragments */
-        .reveal .slides section .fragment.visible,
-        .reveal .slides section .fragment.current-fragment,
-        .reveal .slides section li.fragment.visible,
-        .reveal .slides section li.fragment.current-fragment,
-        .reveal .slides section p.fragment.visible,
-        .reveal .slides section p.fragment.current-fragment {
-            color: #1a1a1a !important;
-        }
-
-        .reveal .slides section .fragment.visible strong,
-        .reveal .slides section .fragment.current-fragment strong {
-            color: var(--color-blue) !important;
+        .reveal table td {
+            color: var(--text);
+            padding: 6px 8px;
+            border: 1px solid var(--border);
         }
 
         /* Feedback messages */
         .feedback {
-            padding: 10px 14px;
-            border-radius: 6px;
+            padding: 8px 12px;
             margin: 8px 0;
-            font-weight: 600;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            border: 1px solid var(--border);
         }
 
         .feedback-success {
-            background: #dcfce7;
-            color: #166534 !important;
-            border: 1px solid #86efac;
+            background: #f0fff0;
+            border-color: var(--pastel-green);
+            color: var(--text);
         }
 
         .feedback-error {
-            background: #fef2f2;
-            color: #991b1b !important;
-            border: 1px solid #fecaca;
+            background: #fff5f5;
+            border-color: var(--pastel-coral);
+            color: var(--text);
         }
 
         .feedback-info {
-            background: #dbeafe;
-            color: #1e40af !important;
-            border: 1px solid #93c5fd;
+            background: #f5faff;
+            border-color: var(--pastel-blue);
+            color: var(--text);
         }
 
-        /* Table styling */
-        .reveal table {
-            color: var(--text-primary);
+        /* Small text helpers */
+        .small { font-size: 0.85em; }
+        .tiny { font-size: 0.75em; }
+
+        /* Highlight for key terms */
+        .highlight {
+            background: var(--pastel-gold);
+            padding: 1px 4px;
         }
 
-        .reveal table td, .reveal table th {
-            color: var(--text-primary);
+        /* Slide number */
+        .reveal .slide-number {
+            background: transparent;
+            color: var(--text-light);
+            font-size: 11px;
         }
 
-        /* Proof list styling */
-        .reveal .proof-list li {
-            color: var(--text-primary);
+        /* Progress bar */
+        .reveal .progress {
+            height: 3px;
+            background: var(--border);
+        }
+
+        .reveal .progress span {
+            background: var(--text);
+        }
+
+        /* KaTeX math */
+        .reveal .katex {
+            color: var(--text);
+        }
+
+        /* Suggestion chips for audience */
+        .suggestion-chip {
+            color: var(--text);
         }
 
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Suggestion chips - override dark text rules */
-        .suggestion-chip,
-        .suggestion-chip * {
-            color: white !important;
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -586,7 +534,13 @@
             <!-- ===== TITLE ===== -->
             <section class="title-slide">
                 <h1>Greedy Algorithms</h1>
-                <p class="subtitle">Interval Scheduling</p>
+                <p class="subtitle">Interval Scheduling, Matroids, and Scheduling with Deadlines</p>
+
+                <div style="margin-top: 350px; text-align:left; font-size: 0.75em;">
+                    <p>The material for interval scheduling is borrowed largely from the presentation in Klienberg Tardos, <a href="https://www.amazon.in/Algorithm-Design-Pearson-New-International-ebook/dp/B00IZ0FXUE" style="color: seagreen;">Algorithm Design</a>.</p>
+                    <p>The presentation for matroids is based on <a href="https://jeffe.cs.illinois.edu/" style="color: seagreen;">Erickson</a>'s <a href="https://jeffe.cs.illinois.edu/teaching/algorithms/notes/E-matroids.pdf" style="color: seagreen;">chapter on matroids</a> in the textbook <a href="https://jeffe.cs.illinois.edu/teaching/algorithms/" style="color: seagreen;">Algorithms</a>.</p>
+                    <p>Slides made in collaboration with Claude. All the cool bits are thanks to Claude, and blame <a href="https://www.neeldhara.com" style="color: seagreen;">me</a> for oversights :) </p>
+                </div>
             </section>
 
             <!-- ===== PROBLEM & WARM-UP COLUMN ===== -->
@@ -599,47 +553,9 @@
                         <p class="fragment">You receive <strong>requests</strong> to use it during specific time intervals.</p>
                         <p class="fragment">Two requests are <strong>compatible</strong> if they don't overlap.</p>
                     </div>
-                    <p class="fragment" style="font-size: 1.1em; color: var(--color-blue); text-align: center; margin-top: 20px;">
+                    <div class="definition-box goal-box fragment" style="margin-top: 20px;">
                         <strong>Goal:</strong> Accept as many requests as possible!
-                    </p>
-                </section>
-
-                <!-- Formal Definition -->
-                <section>
-                    <h2>Formal Definition</h2>
-                    <div class="definition-box">
-                        <p><strong>Input:</strong> Set of requests \(\{1, 2, \ldots, n\}\)</p>
-                        <p>Request \(i\) has start time \(s(i)\) and finish time \(f(i)\)</p>
                     </div>
-                    <p class="fragment"><strong>Compatible:</strong> Requests \(i, j\) are compatible if \(f(i) \leq s(j)\) or \(f(j) \leq s(i)\)</p>
-                    <div class="fragment" style="margin-top: 15px;">
-                        <svg width="100%" height="120" viewBox="0 0 900 120">
-                            <!-- Compatible example -->
-                            <text x="10" y="20" fill="#059669" font-size="14" font-weight="600" font-family="Open Sans">Compatible:</text>
-                            <rect x="10" y="35" width="150" height="28" fill="#2563eb" rx="4"/>
-                            <text x="85" y="54" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">i</text>
-                            <rect x="180" y="35" width="150" height="28" fill="#059669" rx="4"/>
-                            <text x="255" y="54" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">j</text>
-                            <!-- Arrow showing f(i) <= s(j) -->
-                            <line x1="160" y1="70" x2="180" y2="70" stroke="#475569" stroke-width="2"/>
-                            <text x="170" y="90" fill="#475569" text-anchor="middle" font-size="11" font-family="Nunito">f(i) ≤ s(j)</text>
-                            <text x="200" y="110" fill="#059669" text-anchor="start" font-size="12" font-family="Nunito">✓ No overlap</text>
-
-                            <!-- Not compatible example -->
-                            <text x="480" y="20" fill="#dc2626" font-size="14" font-weight="600" font-family="Open Sans">Not Compatible:</text>
-                            <rect x="480" y="30" width="180" height="24" fill="#2563eb" rx="4"/>
-                            <text x="570" y="46" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">i</text>
-                            <rect x="580" y="60" width="180" height="24" fill="#dc2626" rx="4"/>
-                            <text x="670" y="76" fill="white" text-anchor="middle" font-size="12" font-weight="600" font-family="Nunito">j</text>
-                            <!-- Overlap indicator - dashed lines showing time overlap -->
-                            <line x1="580" y1="30" x2="580" y2="84" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2"/>
-                            <line x1="660" y1="30" x2="660" y2="84" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2"/>
-                            <rect x="580" y="90" width="80" height="6" fill="#fbbf24" rx="2"/>
-                            <text x="620" y="108" fill="#475569" text-anchor="middle" font-size="11" font-family="Nunito">time overlap</text>
-                            <text x="720" y="108" fill="#dc2626" text-anchor="start" font-size="12" font-family="Nunito">✗</text>
-                        </svg>
-                    </div>
-                    <p class="fragment"><strong>Goal:</strong> Find a maximum-size subset of mutually compatible requests</p>
                 </section>
 
                 <!-- Warm-up Interactive -->
@@ -663,6 +579,42 @@
                     </div>
                 </section>
 
+                <!-- Formal Definition -->
+                <section>
+                    <h2>Formal Definition</h2>
+                    <div class="definition-box">
+                        <p><strong>Input:</strong> Set of requests \(\{1, 2, \ldots, n\}\)</p>
+                        <p>Request \(i\) has start time \(s(i)\) and finish time \(f(i)\)</p>
+                    </div>
+                    <p class="fragment"><strong>Compatible:</strong> Requests \(i, j\) are compatible if \(f(i) \leq s(j)\) or \(f(j) \leq s(i)\)</p>
+                    <div class="fragment" style="margin-top: 15px;">
+                        <svg width="100%" height="120" viewBox="0 0 700 120">
+                            <!-- Compatible example -->
+                            <text x="10" y="20" fill="#555555" font-size="13" font-weight="600" font-family="Open Sans">Compatible:</text>
+                            <rect x="10" y="35" width="120" height="24" fill="#a8d4f0" rx="4"/>
+                            <text x="70" y="51" fill="#222222" text-anchor="middle" font-size="11" font-weight="600" font-family="Heliotrope, sans-serif">i</text>
+                            <rect x="145" y="35" width="120" height="24" fill="#b8e6c1" rx="4"/>
+                            <text x="205" y="51" fill="#222222" text-anchor="middle" font-size="11" font-weight="600" font-family="Heliotrope, sans-serif">j</text>
+                            <line x1="130" y1="65" x2="145" y2="65" stroke="#475569" stroke-width="2"/>
+                            <text x="137" y="82" fill="#475569" text-anchor="middle" font-size="10" font-family="Heliotrope, sans-serif">f(i) ≤ s(j)</text>
+                            <text x="160" y="105" fill="#555555" text-anchor="start" font-size="11" font-family="Heliotrope, sans-serif">✓ No overlap</text>
+
+                            <!-- Not compatible example -->
+                            <text x="370" y="20" fill="#666666" font-size="13" font-weight="600" font-family="Open Sans">Not Compatible:</text>
+                            <rect x="370" y="30" width="150" height="22" fill="#a8d4f0" rx="4"/>
+                            <text x="445" y="45" fill="#222222" text-anchor="middle" font-size="11" font-weight="600" font-family="Heliotrope, sans-serif">i</text>
+                            <rect x="450" y="56" width="150" height="22" fill="#f5c4c0" rx="4"/>
+                            <text x="525" y="71" fill="#222222" text-anchor="middle" font-size="11" font-weight="600" font-family="Heliotrope, sans-serif">j</text>
+                            <line x1="450" y1="30" x2="450" y2="78" stroke="#f5c4c0" stroke-width="2" stroke-dasharray="4,2"/>
+                            <line x1="520" y1="30" x2="520" y2="78" stroke="#f5c4c0" stroke-width="2" stroke-dasharray="4,2"/>
+                            <rect x="450" y="85" width="70" height="5" fill="#f5c4c0" rx="2"/>
+                            <text x="485" y="102" fill="#475569" text-anchor="middle" font-size="10" font-family="Heliotrope, sans-serif">time overlap</text>
+                            <text x="560" y="102" fill="#666666" text-anchor="start" font-size="11" font-family="Heliotrope, sans-serif">✗</text>
+                        </svg>
+                    </div>
+                    <p class="fragment"><strong>Goal:</strong> Find a maximum-size subset of mutually compatible requests</p>
+                </section>
+
                 <!-- Audience Brainstorm -->
                 <section>
                     <h2>What Strategy Would You Try?</h2>
@@ -677,7 +629,7 @@
                         <div style="display: flex; gap: 10px; margin-bottom: 12px;">
                             <input type="text" id="suggestion-input" placeholder="Type a greedy strategy..."
                                    style="flex: 1; padding: 10px 14px; border: 2px solid var(--border-medium); border-radius: 6px;
-                                          font-size: 1em; font-family: 'Nunito', sans-serif; color: #1a1a1a !important; background: white;"
+                                          font-size: 1em; font-family: 'Heliotrope', sans-serif !important; color: #1a1a1a !important; background: white;"
                                    onkeypress="if(event.key === 'Enter') addSuggestion()">
                             <button class="btn btn-primary" onclick="addSuggestion()" style="padding: 10px 20px; font-size: 1em;">Add</button>
                         </div>
@@ -695,19 +647,19 @@
                     <p>What greedy strategy should we use?</p>
                     <div class="approach-grid">
                         <a href="#/2/0" class="approach-card">
-                            <h3 style="color: var(--color-orange);">Earliest Start Time</h3>
+                            <h3 style="color: var(--text-primary);">Earliest Start Time</h3>
                             <p>Pick the interval that starts first</p>
                         </a>
                         <a href="#/2/1" class="approach-card">
-                            <h3 style="color: var(--color-purple);">Shortest Interval</h3>
+                            <h3 style="color: var(--text-primary);">Shortest Interval</h3>
                             <p>Pick the shortest interval</p>
                         </a>
                         <a href="#/2/2" class="approach-card">
-                            <h3 style="color: var(--color-rose);">Fewest Conflicts</h3>
+                            <h3 style="color: var(--text-primary);">Fewest Conflicts</h3>
                             <p>Pick the interval with fewest overlaps</p>
                         </a>
                         <a href="#/3/0" class="approach-card">
-                            <h3 style="color: var(--color-blue);">Earliest Finish Time</h3>
+                            <h3 style="color: var(--text-primary);">Earliest Finish Time</h3>
                             <p>Pick the interval that ends first</p>
                         </a>
                     </div>
@@ -741,7 +693,7 @@
                             Build an instance where "Earliest Start" fails to find optimal.
                         </div>
                     </div>
-                    <p style="text-align: center; margin-top: 8px;"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></p>
+                    <div class="bottom-nav"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></div>
                 </section>
 
                 <!-- Approach 2: Shortest Interval -->
@@ -769,7 +721,7 @@
                             Build an instance where "Shortest Interval" fails to find optimal.
                         </div>
                     </div>
-                    <p style="text-align: center; margin-top: 8px;"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></p>
+                    <div class="bottom-nav"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></div>
                 </section>
 
                 <!-- Approach 3: Fewest Conflicts -->
@@ -797,7 +749,7 @@
                             Build an instance where "Fewest Conflicts" fails. (This one is trickier!)
                         </div>
                     </div>
-                    <p style="text-align: center; margin-top: 8px;"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></p>
+                    <div class="bottom-nav"><a href="#/1/3" class="nav-btn back">← Back to Approaches</a></div>
                 </section>
             </section>
 
@@ -853,9 +805,9 @@
                         <p>Let \(i_1, i_2, \ldots, i_k\) be greedy's choices (in order)</p>
                         <p>Let \(j_1, j_2, \ldots, j_m\) be any optimal solution (sorted)</p>
                     </div>
-                    <p class="fragment" style="text-align: center; color: var(--color-blue); margin-top: 15px;">
+                    <div class="definition-box goal-box fragment" style="margin-top: 15px;">
                         <strong>Goal:</strong> Show that \(k = m\)
-                    </p>
+                    </div>
                 </section>
 
                 <!-- Stays Ahead Lemma - Statement & Base Case -->
@@ -867,31 +819,31 @@
                     </div>
                     <p class="fragment"><strong>Proof by induction:</strong></p>
                     <div class="fragment">
-                        <p style="margin-bottom: 8px;"><strong style="color: var(--color-blue);">Base case (\(r=1\)):</strong> Greedy picks the interval with earliest finish time.</p>
+                        <p style="margin-bottom: 8px;"><strong style="color: var(--text-primary);">Base case (\(r=1\)):</strong> Greedy picks the interval with earliest finish time.</p>
                         <p style="margin-left: 20px;">So \(f(i_1) \leq f(j_1)\) for any other interval \(j_1\). ✓</p>
                         <!-- Visual for base case -->
                         <div style="margin: 20px 0 0 20px;">
                             <svg width="600" height="70" viewBox="0 0 600 70">
-                                <text x="0" y="15" fill="#475569" font-size="11" font-family="Nunito">All intervals sorted by finish time:</text>
+                                <text x="0" y="15" fill="#475569" font-size="11" font-family="Heliotrope, sans-serif">All intervals sorted by finish time:</text>
                                 <!-- Timeline -->
                                 <line x1="0" y1="60" x2="580" y2="60" stroke="#cbd5e1" stroke-width="2"/>
                                 <!-- Greedy's first pick (earliest finish) -->
-                                <rect x="20" y="28" width="80" height="22" fill="#2563eb" rx="4"/>
-                                <text x="60" y="43" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i₁ (greedy)</text>
+                                <rect x="20" y="28" width="80" height="22" fill="#a8d4f0" rx="4"/>
+                                <text x="60" y="43" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">i₁ (greedy)</text>
                                 <!-- Optimal's first (could be same or later) -->
-                                <rect x="40" y="28" width="120" height="22" fill="none" stroke="#059669" stroke-width="2" stroke-dasharray="4,2" rx="4"/>
-                                <text x="100" y="43" fill="#059669" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j₁ (any)</text>
+                                <rect x="40" y="28" width="120" height="22" fill="none" stroke="#d4c4e8" stroke-width="2" stroke-dasharray="4,2" rx="4"/>
+                                <text x="100" y="43" fill="#7c6c98" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">j₁ (any)</text>
                                 <!-- Finish markers -->
-                                <line x1="100" y1="50" x2="100" y2="65" stroke="#2563eb" stroke-width="2"/>
-                                <text x="100" y="55" fill="#2563eb" font-size="8" font-family="Nunito" text-anchor="middle">↓</text>
-                                <line x1="160" y1="50" x2="160" y2="65" stroke="#059669" stroke-width="2"/>
+                                <line x1="100" y1="50" x2="100" y2="65" stroke="#a8d4f0" stroke-width="2"/>
+                                <text x="100" y="55" fill="#5a9ac4" font-size="8" font-family="Heliotrope, sans-serif" text-anchor="middle">↓</text>
+                                <line x1="160" y1="50" x2="160" y2="65" stroke="#d4c4e8" stroke-width="2"/>
                                 <!-- Result -->
-                                <text x="280" y="43" fill="#059669" font-size="11" font-weight="600" font-family="Nunito">f(i₁) ≤ f(j₁) ✓</text>
+                                <text x="280" y="43" fill="#555555" font-size="11" font-weight="600" font-family="Heliotrope, sans-serif">f(i₁) ≤ f(j₁) ✓</text>
                                 <!-- Legend -->
-                                <rect x="420" y="32" width="14" height="12" fill="#2563eb" rx="2"/>
-                                <text x="440" y="42" fill="#1a1a1a" font-size="10" font-family="Nunito">Greedy</text>
-                                <rect x="500" y="32" width="14" height="12" fill="none" stroke="#059669" stroke-width="2" rx="2"/>
-                                <text x="520" y="42" fill="#1a1a1a" font-size="10" font-family="Nunito">Optimal</text>
+                                <rect x="420" y="32" width="14" height="12" fill="#a8d4f0" rx="2"/>
+                                <text x="440" y="42" fill="#1a1a1a" font-size="10" font-family="Heliotrope, sans-serif">Greedy</text>
+                                <rect x="500" y="32" width="14" height="12" fill="none" stroke="#d4c4e8" stroke-width="2" rx="2"/>
+                                <text x="520" y="42" fill="#1a1a1a" font-size="10" font-family="Heliotrope, sans-serif">Optimal</text>
                             </svg>
                         </div>
                     </div>
@@ -900,25 +852,30 @@
                 <!-- Stays Ahead - Induction Step -->
                 <section>
                     <h2>Greedy Stays Ahead <span style="font-size: 0.6em; color: var(--text-secondary);">(Induction Step)</span></h2>
-                    <p><strong style="color: var(--color-blue);">Assume:</strong> \(f(i_{r-1}) \leq f(j_{r-1})\) <span style="color: var(--text-secondary); font-size: 0.9em;">(induction hypothesis)</span></p>
+                    <div class="theorem-box" style="margin-bottom: 12px;">
+                        <strong>Lemma:</strong> For all \(r \leq k\): \(f(i_r) \leq f(j_r)\)
+                        <br><em>Greedy's r-th interval finishes no later than optimal's r-th.</em>
+                    </div>
+                    <p><strong>Proof by induction:</strong></p>
+                    <p><strong style="color: var(--text-primary);">Assume:</strong> \(f(i_{r-1}) \leq f(j_{r-1})\) <span style="color: var(--text-secondary); font-size: 0.9em;">(induction hypothesis)</span></p>
                     <!-- Visual: Induction hypothesis -->
                     <div style="margin: 8px 0 12px 0;">
                         <svg width="650" height="55" viewBox="0 0 650 55">
                             <!-- Greedy i_{r-1} -->
-                            <rect x="0" y="8" width="120" height="20" fill="#2563eb" rx="4"/>
-                            <text x="60" y="22" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i(r-1)</text>
+                            <rect x="0" y="8" width="120" height="20" fill="#a8d4f0" rx="4"/>
+                            <text x="60" y="22" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">i(r-1)</text>
                             <!-- Optimal j_{r-1} -->
-                            <rect x="0" y="32" width="150" height="20" fill="#059669" rx="4"/>
-                            <text x="75" y="46" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r-1)</text>
+                            <rect x="0" y="32" width="150" height="20" fill="#d4c4e8" rx="4"/>
+                            <text x="75" y="46" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">j(r-1)</text>
                             <!-- Finish markers -->
-                            <line x1="120" y1="8" x2="120" y2="55" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
-                            <line x1="150" y1="32" x2="150" y2="55" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2"/>
-                            <text x="135" y="6" fill="#475569" font-size="9" font-family="Nunito" text-anchor="middle">f(i) ≤ f(j)</text>
+                            <line x1="120" y1="8" x2="120" y2="55" stroke="#a8d4f0" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <line x1="150" y1="32" x2="150" y2="55" stroke="#d4c4e8" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <text x="135" y="6" fill="#475569" font-size="9" font-family="Heliotrope, sans-serif" text-anchor="middle">f(i) ≤ f(j)</text>
                             <!-- Legend -->
-                            <rect x="450" y="15" width="14" height="12" fill="#2563eb" rx="2"/>
-                            <text x="470" y="25" fill="#1a1a1a" font-size="10" font-family="Nunito">Greedy</text>
-                            <rect x="530" y="15" width="14" height="12" fill="#059669" rx="2"/>
-                            <text x="550" y="25" fill="#1a1a1a" font-size="10" font-family="Nunito">Optimal</text>
+                            <rect x="450" y="15" width="14" height="12" fill="#a8d4f0" rx="2"/>
+                            <text x="470" y="25" fill="#1a1a1a" font-size="10" font-family="Heliotrope, sans-serif">Greedy</text>
+                            <rect x="530" y="15" width="14" height="12" fill="#d4c4e8" rx="2"/>
+                            <text x="550" y="25" fill="#1a1a1a" font-size="10" font-family="Heliotrope, sans-serif">Optimal</text>
                         </svg>
                     </div>
 
@@ -926,12 +883,12 @@
                     <!-- Visual: compatibility -->
                     <div class="fragment" style="margin: 8px 0 12px 0;">
                         <svg width="500" height="32" viewBox="0 0 500 32">
-                            <rect x="0" y="6" width="150" height="20" fill="#059669" rx="4"/>
-                            <text x="75" y="20" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r-1)</text>
-                            <line x1="150" y1="16" x2="190" y2="16" stroke="#d97706" stroke-width="2"/>
-                            <text x="170" y="6" fill="#d97706" font-size="9" font-family="Nunito" text-anchor="middle">gap</text>
-                            <rect x="190" y="6" width="130" height="20" fill="#059669" rx="4"/>
-                            <text x="255" y="20" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r)</text>
+                            <rect x="0" y="6" width="150" height="20" fill="#d4c4e8" rx="4"/>
+                            <text x="75" y="20" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">j(r-1)</text>
+                            <line x1="150" y1="16" x2="190" y2="16" stroke="#999999" stroke-width="2"/>
+                            <text x="170" y="6" fill="#777777" font-size="9" font-family="Heliotrope, sans-serif" text-anchor="middle">gap</text>
+                            <rect x="190" y="6" width="130" height="20" fill="#d4c4e8" rx="4"/>
+                            <text x="255" y="20" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">j(r)</text>
                         </svg>
                     </div>
 
@@ -939,14 +896,14 @@
                     <!-- Visual: availability -->
                     <div class="fragment" style="margin: 8px 0 12px 0;">
                         <svg width="500" height="50" viewBox="0 0 500 50">
-                            <rect x="0" y="6" width="120" height="20" fill="#2563eb" rx="4"/>
-                            <text x="60" y="20" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i(r-1)</text>
-                            <path d="M120 16 L175 16" stroke="#059669" stroke-width="2" marker-end="url(#arrowG2)"/>
-                            <rect x="190" y="6" width="130" height="20" fill="#059669" rx="4" opacity="0.4" stroke="#059669" stroke-width="2" stroke-dasharray="4,2"/>
-                            <text x="255" y="20" fill="#047857" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r)</text>
-                            <rect x="120" y="32" width="220" height="14" fill="#dcfce7" rx="3" stroke="#059669" stroke-width="1"/>
-                            <text x="230" y="43" fill="#047857" text-anchor="middle" font-size="9" font-weight="600" font-family="Nunito">Available zone</text>
-                            <defs><marker id="arrowG2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#059669"/></marker></defs>
+                            <rect x="0" y="6" width="120" height="20" fill="#a8d4f0" rx="4"/>
+                            <text x="60" y="20" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">i(r-1)</text>
+                            <path d="M120 16 L175 16" stroke="#999999" stroke-width="2" marker-end="url(#arrowG2)"/>
+                            <rect x="190" y="6" width="130" height="20" fill="#d4c4e8" rx="4" opacity="0.4" stroke="#d4c4e8" stroke-width="2" stroke-dasharray="4,2"/>
+                            <text x="255" y="20" fill="#555555" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">j(r)</text>
+                            <rect x="120" y="32" width="220" height="14" fill="#f5e6a3" rx="3" stroke="#d4c080" stroke-width="1"/>
+                            <text x="230" y="43" fill="#666666" text-anchor="middle" font-size="9" font-weight="600" font-family="Heliotrope, sans-serif">Available zone</text>
+                            <defs><marker id="arrowG2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#999999"/></marker></defs>
                         </svg>
                     </div>
 
@@ -954,15 +911,15 @@
                     <!-- Visual: final -->
                     <div class="fragment" style="margin: 8px 0 0 0;">
                         <svg width="500" height="55" viewBox="0 0 500 55">
-                            <rect x="0" y="6" width="120" height="18" fill="#2563eb" rx="4" opacity="0.3"/>
-                            <text x="60" y="18" fill="#2563eb" text-anchor="middle" font-size="9" font-weight="600" font-family="Nunito">i(r-1)</text>
-                            <rect x="130" y="6" width="100" height="18" fill="#2563eb" rx="4"/>
-                            <text x="180" y="18" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">i(r)</text>
-                            <rect x="190" y="30" width="130" height="18" fill="#059669" rx="4"/>
-                            <text x="255" y="42" fill="white" text-anchor="middle" font-size="10" font-weight="600" font-family="Nunito">j(r)</text>
-                            <line x1="230" y1="6" x2="230" y2="52" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="4,2"/>
-                            <line x1="320" y1="30" x2="320" y2="52" stroke="#059669" stroke-width="1.5" stroke-dasharray="4,2"/>
-                            <text x="275" y="52" fill="#047857" font-size="10" font-weight="600" font-family="Nunito">f(i_r) ≤ f(j_r) ✓</text>
+                            <rect x="0" y="6" width="120" height="18" fill="#a8d4f0" rx="4" opacity="0.3"/>
+                            <text x="60" y="18" fill="#5a9ac4" text-anchor="middle" font-size="9" font-weight="600" font-family="Heliotrope, sans-serif">i(r-1)</text>
+                            <rect x="130" y="6" width="100" height="18" fill="#a8d4f0" rx="4"/>
+                            <text x="180" y="18" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">i(r)</text>
+                            <rect x="190" y="30" width="130" height="18" fill="#d4c4e8" rx="4"/>
+                            <text x="255" y="42" fill="#222222" text-anchor="middle" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">j(r)</text>
+                            <line x1="230" y1="6" x2="230" y2="52" stroke="#a8d4f0" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <line x1="320" y1="30" x2="320" y2="52" stroke="#d4c4e8" stroke-width="1.5" stroke-dasharray="4,2"/>
+                            <text x="275" y="52" fill="#444444" font-size="10" font-weight="600" font-family="Heliotrope, sans-serif">f(i_r) ≤ f(j_r) ✓</text>
                         </svg>
                     </div>
                 </section>
@@ -979,39 +936,10 @@
                         <li class="fragment">By "stays ahead": \(f(i_k) \leq f(j_k)\)</li>
                         <li class="fragment">Since \(m > k\), there exists \(j_{k+1}\) starting after \(j_k\) ends</li>
                         <li class="fragment">So \(j_{k+1}\) starts after \(i_k\) ends — it was available!</li>
-                        <li class="fragment">But greedy stopped. <span style="color: var(--color-rose);">Contradiction!</span></li>
+                        <li class="fragment">But greedy stopped. <span style="color: var(--text-primary);">Contradiction!</span></li>
                     </ul>
                 </section>
 
-                <!-- Summary -->
-                <section>
-                    <h2>Summary</h2>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
-                        <tr style="background: var(--color-blue); color: white;">
-                            <th style="padding: 8px; text-align: left;">Strategy</th>
-                            <th style="padding: 8px; text-align: center;">Works?</th>
-                        </tr>
-                        <tr class="fragment" style="background: #fef2f2;">
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Earliest Start Time</td>
-                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border-light); color: var(--error);">✗</td>
-                        </tr>
-                        <tr class="fragment" style="background: #fef2f2;">
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Shortest Interval</td>
-                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border-light); color: var(--error);">✗</td>
-                        </tr>
-                        <tr class="fragment" style="background: #fef2f2;">
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Fewest Conflicts</td>
-                            <td style="padding: 8px; text-align: center; border-bottom: 1px solid var(--border-light); color: var(--error);">✗</td>
-                        </tr>
-                        <tr class="fragment" style="background: #f0fdf4;">
-                            <td style="padding: 8px; font-weight: 600;">Earliest Finish Time</td>
-                            <td style="padding: 8px; text-align: center; color: var(--success); font-weight: 600;">✓ Optimal!</td>
-                        </tr>
-                    </table>
-                    <div class="theorem-box fragment" style="margin-top: 15px;">
-                        <strong>Key insight:</strong> Free up resource ASAP → maximize future opportunities
-                    </div>
-                </section>
             </section>
 
             <!-- ===== MATROIDS: MOTIVATION COLUMN ===== -->
@@ -1023,26 +951,19 @@
                     <div class="definition-box fragment">
                         <p><strong>Goal:</strong> Find a structural property of optimization problems that guarantees greedy success.</p>
                     </div>
-                    <p class="fragment" style="text-align: center; margin-top: 30px; font-size: 1.2em; color: var(--color-blue);">
-                        <strong>Enter: Matroids</strong>
-                    </p>
-                </section>
 
-                <!-- Generic Optimization Problem -->
-                <section>
-                    <h2>A Generic Optimization Problem</h2>
-                    <div class="definition-box">
+                    <div class="definition-box fragment">
                         <p><strong>Setup:</strong></p>
                         <p>• A finite universe \(\mathbf{U} = \{e_1, e_2, \ldots, e_n\}\)</p>
                         <p>• A weight function \(w: \mathbf{U} \to \mathbb{Q}_{\geq 0}\)</p>
-                        <p>• A family \(\mathcal{F} = \{S_1, \ldots, S_m\}\) of "feasible" subsets</p>
+                        <p>• A family \(\mathcal{F} = \{S_1, \ldots, S_m\}\) of feasible subsets</p>
                     </div>
                     <p class="fragment">Weight of a set: \(w(S) = \sum_{e \in S} w(e)\)</p>
-                    <p class="fragment" style="color: var(--color-blue); font-weight: 600; margin-top: 15px;">
+                    <p class="fragment" style="color: var(--text-primary); font-weight: 600; margin-top: 15px;">
                         Goal: Find maximum weight set in \(\mathcal{F}\)
                     </p>
-                    <div class="fragment" style="background: #fef3c7; padding: 10px 14px; border-radius: 6px; margin-top: 15px;">
-                        <strong>Challenge:</strong> \(m\) can be exponential in \(n\)!
+                    <div class="fragment" style="background: #fef3c7; padding: 10px 14px; border-radius: 6px; margin-top: 15px; max-width: 88%; box-sizing: border-box;">
+                        <strong>Note:</strong> \(m\) can be exponential in \(n\)!
                         <br><span style="font-size: 0.9em;">Access \(\mathcal{F}\) via oracle: "Is \(S \in \mathcal{F}\)?"</span>
                     </div>
                 </section>
@@ -1073,15 +994,85 @@
                         <p>\(\mathcal{F} = \{\{p\}, \{q, r\}\}\)</p>
                     </div>
                     <div class="fragment" style="margin-top: 15px;">
-                        <p><strong style="color: var(--color-blue);">Greedy:</strong> Picks \(\{p\}\) → weight <strong>40</strong></p>
-                        <p><strong style="color: var(--color-emerald);">Optimal:</strong> \(\{q, r\}\) → weight <strong>50</strong></p>
+                        <p><strong style="color: var(--text-primary);">Greedy:</strong> Picks \(\{p\}\) → weight <strong>40</strong></p>
+                        <p><strong style="color: var(--text-primary);">Optimal:</strong> \(\{q, r\}\) → weight <strong>50</strong></p>
                     </div>
-                    <p class="fragment" style="color: var(--color-rose); font-weight: 600; margin-top: 15px;">
+                    <p class="fragment" style="color: var(--text-primary); font-weight: 600; margin-top: 15px;">
                         Greedy is suboptimal!
                     </p>
                 </section>
 
-                <!-- Exchange Insight -->
+                <!-- Exchange Argument Visualization -->
+                <section>
+                    <h2>Visualizing the Exchange Argument</h2>
+                    <p style="font-size: 0.9em; margin-bottom: 15px; text-align: center;">Greedy choices \(g_1, \ldots, g_k\) vs Optimal choices \(o_1, \ldots, o_\ell\) (sorted by weight)</p>
+
+                    <!-- Grid-based visualization for proper alignment -->
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <!-- Main grid: label + 4 boxes + gap + 4 boxes + size-labels -->
+                        <div style="display: grid; grid-template-columns: 25px 65px 65px 65px 65px 25px 65px 65px 65px 65px 90px; gap: 8px 8px; align-items: center; position: relative;">
+
+                            <!-- Row 1: Greedy boxes -->
+                            <span class="fragment" data-fragment-index="21" style="font-size: 13px; color: #c9a080; font-weight: bold; text-align: right;">\(T\)</span>
+                            <div class="fragment" data-fragment-index="1" style="background: #f5d4b8; border: 2px solid #c9a080; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(g_1\)</div>
+                            <div class="fragment" data-fragment-index="2" style="background: #f5d4b8; border: 2px solid #c9a080; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(g_2\)</div>
+                            <span class="fragment" data-fragment-index="3" style="color: #666; font-size: 16px; text-align: center;">…</span>
+                            <div class="fragment" data-fragment-index="4" style="background: #f5d4b8; border: 2px solid #c9a080; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(g_{i-1}\)</div>
+                            <span></span>
+                            <div class="fragment" data-fragment-index="5" style="background: #f5d4b8; border: 2px solid #c9a080; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(g_i\)</div>
+                            <span class="fragment" data-fragment-index="6" style="color: #666; font-size: 16px; text-align: center;">…</span>
+                            <div class="fragment" data-fragment-index="7" style="background: #f5d4b8; border: 2px solid #c9a080; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(g_{k-1}\)</div>
+                            <div class="fragment" data-fragment-index="8" style="background: #f5d4b8; border: 2px solid #c9a080; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(g_k\)</div>
+                            <span class="fragment" data-fragment-index="21" style="font-size: 11px; color: #555; padding-left: 8px;">\(|T| = i-1\)</span>
+
+                            <!-- Row 2: Comparison symbols -->
+                            <span></span>
+                            <span class="fragment" data-fragment-index="17" style="text-align: center; font-size: 15px; color: #555;">\(\geqslant\)</span>
+                            <span class="fragment" data-fragment-index="18" style="text-align: center; font-size: 15px; color: #555;">\(\geqslant\)</span>
+                            <span></span>
+                            <span class="fragment" data-fragment-index="19" style="text-align: center; font-size: 15px; color: #555;">\(\geqslant\)</span>
+                            <span></span>
+                            <span class="fragment" data-fragment-index="20" style="text-align: center; font-size: 17px; color: #c44; font-weight: bold;">\(<\)</span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span class="fragment" data-fragment-index="23" style="font-size: 12px; color: #c44; font-weight: bold; padding-left: 8px;">\(|S| > |T|\)</span>
+
+                            <!-- Row 3: Optimal boxes -->
+                            <span class="fragment" data-fragment-index="22" style="font-size: 13px; color: #7cb887; font-weight: bold; text-align: right;">\(S\)</span>
+                            <div class="fragment" data-fragment-index="9" style="background: #b8e6c1; border: 2px solid #7cb887; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(o_1\)</div>
+                            <div class="fragment" data-fragment-index="10" style="background: #b8e6c1; border: 2px solid #7cb887; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(o_2\)</div>
+                            <span class="fragment" data-fragment-index="11" style="color: #666; font-size: 16px; text-align: center;">…</span>
+                            <div class="fragment" data-fragment-index="12" style="background: #b8e6c1; border: 2px solid #7cb887; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(o_{i-1}\)</div>
+                            <span></span>
+                            <div class="fragment" data-fragment-index="13" style="background: #b8e6c1; border: 2px solid #7cb887; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(o_i\)</div>
+                            <span class="fragment" data-fragment-index="14" style="color: #666; font-size: 16px; text-align: center;">…</span>
+                            <div class="fragment" data-fragment-index="15" style="background: #b8e6c1; border: 2px solid #7cb887; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(o_{\ell-1}\)</div>
+                            <div class="fragment" data-fragment-index="16" style="background: #b8e6c1; border: 2px solid #7cb887; border-radius: 4px; padding: 8px 6px; font-size: 13px; text-align: center;">\(o_\ell\)</div>
+                            <span class="fragment" data-fragment-index="22" style="font-size: 11px; color: #555; padding-left: 8px;">\(|S| = i\)</span>
+
+                            <!-- T dashed rectangle overlay (spans columns 2-5, row 1) -->
+                            <div class="fragment" data-fragment-index="21" style="position: absolute; top: -6px; left: calc(25px + 8px - 6px); width: calc(4 * 65px + 3 * 8px + 12px); height: 46px; border: 2px dashed #c9a080; border-radius: 10px; pointer-events: none;"></div>
+
+                            <!-- S dashed rectangle overlay (spans columns 2-7, row 3) -->
+                            <div class="fragment" data-fragment-index="22" style="position: absolute; bottom: -6px; left: calc(25px + 8px - 6px); width: calc(5 * 65px + 4 * 8px + 25px + 12px); height: 46px; border: 2px dashed #7cb887; border-radius: 10px; pointer-events: none;"></div>
+                        </div>
+
+                        <!-- Contradiction note -->
+                        <div class="fragment" data-fragment-index="20" style="margin-top: 15px; font-size: 13px; color: #c44; font-style: italic; text-align: center;">
+                            At position \(i\): greedy chose \(g_i\) but optimal has heavier \(o_i\).
+                        </div>
+                    </div>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <!-- Exchange property definition -->
+                    <div class="definition-box fragment" data-fragment-index="24" style="margin-top: 15px;">
+                        <strong>Exchange Property:</strong> If \(S, T \in \mathcal{F}\) and \(|S| > |T|\), then \(\exists e \in S \setminus T\) such that \(T \cup \{e\} \in \mathcal{F}\).
+                    </div>
+                </section>
+
+                <!-- Exchange Insight
                 <section>
                     <h2>What Went Wrong?</h2>
                     <p>When greedy chose \(\{p\}\), there was no way to "exchange" to reach \(\{q,r\}\).</p>
@@ -1090,10 +1081,10 @@
                         <br><br>
                         <em>...then greedy would always succeed!</em>
                     </div>
-                    <p class="fragment" style="text-align: center; margin-top: 20px; color: var(--color-blue); font-size: 1.1em;">
+                    <p class="fragment" style="text-align: center; margin-top: 20px; color: var(--text-primary); font-size: 1.1em;">
                         This motivates the definition of <strong>matroids</strong>.
                     </p>
-                </section>
+                </section> -->
             </section>
 
             <!-- ===== MATROIDS: DEFINITION COLUMN ===== -->
@@ -1102,31 +1093,20 @@
                 <section>
                     <h2>Toward a Definition</h2>
                     <p>What property of \(\mathcal{F}\) makes greedy work?</p>
+                    
                     <div class="definition-box fragment">
-                        <p><strong>"Fantastic" family</strong> (first attempt):</p>
-                        <p>If \(T \in \mathcal{F}\) and \(|S| > |T|\) for any \(S \subseteq U\),</p>
-                        <p>then \(\exists e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)</p>
-                    </div>
-                    <p class="fragment" style="color: var(--color-rose); margin-top: 15px;">
-                        <strong>Problem:</strong> Too restrictive! Forces \(\mathcal{F}\) to be the entire powerset.
-                    </p>
-                </section>
-
-                <!-- Second Attempt -->
-                <section>
-                    <h2>Second Attempt</h2>
-                    <div class="definition-box">
-                        <p><strong>"Nice" family:</strong></p>
+                        <p><strong>Nice Family:</strong></p>
                         <p>If \(S, T \in \mathcal{F}\) and \(|S| > |T|\),</p>
                         <p>then \(\exists e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)</p>
                     </div>
                     <p class="fragment"><strong>Counterexample:</strong></p>
                     <div class="fragment" style="background: #f8fafc; padding: 10px; border-radius: 6px; font-size: 0.9em;">
                         <p>\(\mathbf{U} = \{p, q\}\), \(w(p) = 40\), \(w(q) = 30\)</p>
-                        <p>\(\mathcal{F} = \{\{q\}, \{p, q\}\}\)</p>
-                        <p style="margin-top: 8px;">Greedy picks \(\{q\}\) (weight 30), but optimal is \(\{p,q\}\) (weight 70)!</p>
+                        <p>\(\mathcal{F} = \{\{p, q\}\}\)</p>
+                        <p>&nbsp;</p>
+                        <p style="margin-top: 8px;">Greedy picks \(\emptyset\) (weight 0), but optimal is \(\{p,q\}\) (weight 70)!</p>
                     </div>
-                    <p class="fragment" style="color: var(--color-rose); margin-top: 10px;">
+                    <p class="fragment" style="color: var(--text-primary); margin-top: 10px;">
                         <strong>Issue:</strong> Greedy's intermediate sets may not be in \(\mathcal{F}\).
                     </p>
                 </section>
@@ -1137,6 +1117,7 @@
                     <p>We need greedy's partial solutions to always be in \(\mathcal{F}\).</p>
                     <div class="theorem-box fragment">
                         <strong>Hereditary Property:</strong>
+                        <br />
                         <br>If \(S \in \mathcal{F}\) and \(T \subseteq S\), then \(T \in \mathcal{F}\).
                         <br><br>
                         <em>"Subsets of feasible sets are feasible."</em>
@@ -1155,9 +1136,9 @@
                         <p>• A collection \(\mathcal{F}\) of subsets satisfying:</p>
                     </div>
                     <ul style="margin-top: 15px;">
-                        <li class="fragment"><strong style="color: var(--color-blue);">Non-emptiness:</strong> \(\emptyset \in \mathcal{F}\)</li>
-                        <li class="fragment"><strong style="color: var(--color-emerald);">Heredity:</strong> If \(S \in \mathcal{F}\) and \(T \subseteq S\), then \(T \in \mathcal{F}\)</li>
-                        <li class="fragment"><strong style="color: var(--color-purple);">Exchange:</strong> If \(S, T \in \mathcal{F}\) with \(|S| > |T|\),<br>
+                        <li class="fragment"><strong style="color: var(--text-primary);">Non-emptiness:</strong> \(\emptyset \in \mathcal{F}\)</li>
+                        <li class="fragment"><strong style="color: var(--text-primary);">Heredity:</strong> If \(S \in \mathcal{F}\) and \(T \subseteq S\), then \(T \in \mathcal{F}\)</li>
+                        <li class="fragment"><strong style="color: var(--text-primary);">Exchange:</strong> If \(S, T \in \mathcal{F}\) with \(|S| > |T|\),<br>
                             &nbsp;&nbsp;&nbsp;&nbsp;then \(\exists e \in S \setminus T\) with \(T \cup \{e\} \in \mathcal{F}\)</li>
                     </ul>
                 </section>
@@ -1165,7 +1146,7 @@
                 <!-- Terminology -->
                 <section>
                     <h2>Matroid Terminology</h2>
-                    <table style="width: 100%; font-size: 0.9em;">
+                    <table style="max-width: 88%; font-size: 0.9em; border-collapse: collapse; margin-left: 0; margin-right: auto;">
                         <tr class="fragment">
                             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Independent set</strong></td>
                             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">A set in \(\mathcal{F}\)</td>
@@ -1183,8 +1164,8 @@
                             <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Size of any basis (all bases have same size!)</td>
                         </tr>
                         <tr class="fragment">
-                            <td style="padding: 8px;"><strong>Circuit</strong></td>
-                            <td style="padding: 8px;">Minimal dependent set</td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Circuit</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Minimal dependent set</td>
                         </tr>
                     </table>
                 </section>
@@ -1220,7 +1201,7 @@
                         <li><strong>Rank:</strong> \(|V| - 1\) (for connected \(G\))</li>
                         <li><strong>Circuits:</strong> Cycles</li>
                     </ul>
-                    <p class="fragment" style="margin-top: 15px; color: var(--color-blue);">
+                    <p class="fragment" style="margin-top: 15px; color: var(--text-primary);">
                         <em>Kruskal's algorithm = greedy on graphic matroid!</em>
                     </p>
                 </section>
@@ -1228,18 +1209,18 @@
                 <!-- More Examples -->
                 <section>
                     <h2>More Matroid Examples</h2>
-                    <div style="font-size: 0.9em;">
+                    <div style="font-size: 0.9em; max-width: 88%;">
                         <div class="fragment" style="background: #f0fdf4; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                            <strong style="color: var(--color-emerald);">Cographic Matroid \(M^*(G)\):</strong>
+                            <strong style="color: var(--text-primary);">Cographic Matroid \(M^*(G)\):</strong>
                             <br>\(I \subseteq E\) independent iff \((V, E \setminus I)\) is connected
                             <br><span style="font-size: 0.85em;">Bases = complements of spanning trees</span>
                         </div>
                         <div class="fragment" style="background: #eff6ff; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                            <strong style="color: var(--color-blue);">Matching Matroid:</strong>
+                            <strong style="color: var(--text-primary);">Matching Matroid:</strong>
                             <br>\(I \subseteq V\) independent iff a matching covers all of \(I\)
                         </div>
                         <div class="fragment" style="background: #faf5ff; padding: 10px; border-radius: 6px;">
-                            <strong style="color: var(--color-purple);">Disjoint Path Matroid:</strong>
+                            <strong style="color: var(--text-primary);">Disjoint Path Matroid:</strong>
                             <br>For digraph with source \(s\): \(I \subseteq V\) independent iff
                             <br>edge-disjoint paths exist from \(s\) to each vertex in \(I\)
                         </div>
@@ -1276,7 +1257,7 @@
                         <p><em>Greedy's i-th choice is at least as heavy as optimal's i-th.</em></p>
                     </div>
                     <p class="fragment" style="margin-top: 15px;">Since all bases have the same size (\(k = m\)), this implies:</p>
-                    <p class="fragment" style="text-align: center; color: var(--color-emerald); font-weight: 600;">
+                    <p class="fragment" style="text-align: center; color: var(--text-primary); font-weight: 600;">
                         \(w(G) = \sum w(g_i) \geq \sum w(o_i) = w(O)\)
                     </p>
                 </section>
@@ -1308,8 +1289,8 @@
                         <p style="margin-left: 20px;">• We assumed \(w(o_i) > w(g_i)\)</p>
                         <p style="margin-left: 20px;">• So \(w(o_j) > w(g_i)\)</p>
                     </div>
-                    <div class="fragment" style="margin-top: 15px; background: #fef2f2; padding: 12px; border-radius: 6px;">
-                        <strong style="color: var(--color-rose);">Contradiction!</strong>
+                    <div class="fragment" style="margin-top: 15px; background: #fef2f2; padding: 12px; border-radius: 6px; max-width: 88%;">
+                        <strong style="color: var(--text-primary);">Contradiction!</strong>
                         <br>Greedy considers elements in decreasing weight order.
                         <br>When greedy chose \(g_i\), it should have chosen \(o_j\) instead (heavier and feasible)!
                     </div>
@@ -1318,46 +1299,150 @@
                 <!-- Corollary -->
                 <section>
                     <h2>The Converse</h2>
-                    <div class="theorem-box">
-                        <strong>Theorem:</strong> If greedy works for <em>all</em> weight functions on \((U, \mathcal{F})\), then \((U, \mathcal{F})\) must be a matroid.
+                    <div class="theorem-box" style="max-width: 88%;">
+                        <strong>Theorem:</strong> For any subset system \(\mathcal{S}\) that is <em>not</em> a matroid, there is a weight function \(w\) such that greedy does <em>not</em> return a maximum-weight set in \(\mathcal{S}\).
                     </div>
-                    <p class="fragment" style="margin-top: 20px;">
-                        <strong>Proof idea:</strong> If the exchange axiom fails, construct an adversarial weight function that makes greedy fail.
+                    <p class="fragment" style="margin-top: 15px; font-size: 0.9em; max-width: 88%;">
+                        <strong>Proof:</strong> If  \(\mathcal{S}\)  is not heriditary, then let \(S\) be any subset in \(\mathcal{S}\) which is such that there exists \(T \subset S\) and \(T \notin \mathcal{S}\). Assign:
+                        
+                        <ul style="margin-left: 20px; font-size: 0.85em;" class="fragment">
+                            <li>Give every element in \(T\) a weight of 100.</li>
+                            <li>Give every element in \(S \setminus T\) a weight of 1.</li>
+                            <li>Give every element not in \(S\) a weight of 0.</li>
+                        </ul>
+                        </p><p class="fragment">
+                        Then \(S\) is the unique optimal solution, but greedy will never find this set.
+                        </p><hr style="margin-top: 15px; width: 88%; float: left;"/><br>
+                        <p class="fragment" style="margin-top: 15px; font-size: 0.9em; max-width: 88%;">
+                        Let \(X\) and \(Y\) be two sets in \(\mathcal{S}\) that violate the exchange property: \(|X| > |Y|\), but for any \(x \in X \setminus Y\), the set \(Y \cup \{x\} \notin \mathcal{S}\).</p>
+                        
+                    <p class="fragment" style="margin-top: 15px; font-size: 0.9em;">Let \(m = |Y|\). </p>
+                    <div class="fragment" style="margin-top: 10px; font-size: 0.85em;">
+                        <ul style="margin-left: 20px;">
+                            <li>Every element of \(Y\) has weight \(m + 2\)</li>
+                            <li>Every element of \(X \setminus Y\) has weight \(m + 1\)</li>
+                            <li>Every other element has weight zero</li>
+                        </ul>
+                    </div>
+                    <p class="fragment" style="margin-top: 10px; font-size: 0.85em;">
+                        Greedy accepts all of \(Y\), rejects all of \(X \setminus Y\) (infeasible), then considers other elements.
+                        <br>Greedy returns weight \(m(m+2) = m^2 + 2m\).
+                        <br>But \(X\) has weight at least \((m+1)^2 = m^2 + 2m + 1\). <span style="color: var(--text-primary);">Contradiction!</span>
                     </p>
-                    <div class="success-box fragment" style="margin-top: 20px;">
-                        <strong>Bottom line:</strong> Matroids are <em>exactly</em> the structures where greedy works!
+                </section>
+
+            </section>
+
+            <!-- ===== SCHEDULING WITH DEADLINES ===== -->
+            <section>
+                <!-- Problem Introduction -->
+                <section>
+                    <h2>Scheduling with Deadlines</h2>
+                    <div class="definition-box">
+                        <p><strong>Scenario:</strong> You have \(n\) tasks to complete in \(n\) days.</p>
+                        <p class="fragment">Each task requires <strong>one full day</strong> of attention.</p>
+                        <p class="fragment">Each task has a <strong>deadline</strong> \(d_i\) and a <strong>penalty</strong> \(p_i\).</p>
+                        <p class="fragment">If task \(i\) is completed after day \(d_i\), you pay penalty \(p_i\).</p>
+                    </div>
+                    <div class="definition-box goal-box fragment" style="margin-top: 20px;">
+                        <strong>Goal:</strong> Schedule tasks to minimize total penalty!
                     </div>
                 </section>
 
-                <!-- Summary -->
+                <!-- Example -->
                 <section>
-                    <h2>Matroids: Summary</h2>
-                    <table style="width: 100%; font-size: 0.85em; border-collapse: collapse;">
-                        <tr style="background: var(--color-blue);">
-                            <th style="padding: 8px; text-align: left; color: white !important;">Concept</th>
-                            <th style="padding: 8px; text-align: left; color: white !important;">Key Point</th>
+                    <h2>Example</h2>
+                    <table style="width: 80%; font-size: 0.9em; margin-bottom: 15px;">
+                        <tr style="background: var(--text-primary); color: white;">
+                            <th style="padding: 8px;">Task</th>
+                            <th style="padding: 8px;">Deadline</th>
+                            <th style="padding: 8px;">Penalty</th>
                         </tr>
-                        <tr class="fragment">
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Structure</strong></td>
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Heredity + Exchange axioms</td>
-                        </tr>
-                        <tr class="fragment">
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Examples</strong></td>
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Graphic, Uniform, Matching, ...</td>
-                        </tr>
-                        <tr class="fragment">
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);"><strong>Greedy</strong></td>
-                            <td style="padding: 8px; border-bottom: 1px solid var(--border-light);">Always optimal on matroids</td>
-                        </tr>
-                        <tr class="fragment">
-                            <td style="padding: 8px;"><strong>Characterization</strong></td>
-                            <td style="padding: 8px;">Matroids ⟺ Greedy works for all weights</td>
-                        </tr>
+                        <tr><td style="padding: 8px; border: 1px solid var(--border);">A</td><td style="padding: 8px; border: 1px solid var(--border);">2</td><td style="padding: 8px; border: 1px solid var(--border);">5</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid var(--border);">B</td><td style="padding: 8px; border: 1px solid var(--border);">1</td><td style="padding: 8px; border: 1px solid var(--border);">3</td></tr>
+                        <tr><td style="padding: 8px; border: 1px solid var(--border);">C</td><td style="padding: 8px; border: 1px solid var(--border);">2</td><td style="padding: 8px; border: 1px solid var(--border);">7</td></tr>
                     </table>
-                    <p class="fragment" style="text-align: center; margin-top: 20px; color: var(--color-blue); font-weight: 600;">
-                        Matroids unify many greedy algorithms!
-                    </p>
+                    <div class="fragment">
+                        <p><strong>Schedule [B, C, A]:</strong> B on day 1 ✓, C on day 2 ✓, A on day 3 ✗</p>
+                        <p>Penalty = 5 (only A is late)</p>
+                    </div>
+                    <div class="fragment">
+                        <p><strong>Schedule [A, C, B]:</strong> A on day 1 ✓, C on day 2 ✓, B on day 3 ✗</p>
+                        <p>Penalty = 3 (only B is late) — <strong>Better!</strong></p>
+                    </div>
                 </section>
+
+                <!-- Interactive Widget -->
+                <section>
+                    <h2>Try It: Scheduling with Deadlines</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Drag tasks to schedule them</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-primary" onclick="generateDeadlineProblem()">New Problem</button>
+                                <button class="btn btn-warning" onclick="runGreedyDeadline()">Run Greedy</button>
+                                <button class="btn btn-secondary" onclick="resetDeadlineSchedule()">Reset</button>
+                            </div>
+                        </div>
+                        <div id="deadline-tasks" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; min-height: 50px; padding: 8px; background: #f8f8f8; border: 1px dashed var(--border);"></div>
+                        <div class="demo-canvas" id="deadline-canvas" style="min-height: 200px;"></div>
+                        <div class="demo-output" id="deadline-output">
+                            <strong>Total Penalty:</strong> <span id="deadline-penalty">0</span> |
+                            <strong>On-time tasks:</strong> <span id="deadline-ontime">-</span> |
+                            <strong>Late tasks:</strong> <span id="deadline-late">-</span>
+                            <span id="deadline-optimal" style="margin-left: 8px;"></span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Key Insight -->
+                <section>
+                    <h2>Key Insight: Realistic Sets</h2>
+                    <div class="theorem-box">
+                        <p><strong>Observation:</strong> The cost of a schedule is determined by which tasks are <em>on time</em>.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 15px;"><strong>Definition:</strong> A set \(X\) of tasks is <strong>realistic</strong> if there exists a schedule where every task in \(X\) is on time.</p>
+                    <div class="definition-box fragment" style="margin-top: 15px;">
+                        <p><strong>Lemma:</strong> \(X\) is realistic if and only if \(|X(t)| \leq t\) for every \(t\),</p>
+                        <p>where \(X(t) = \{i \in X : d_i \leq t\}\) (tasks with deadline ≤ t)</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 15px;"><em>Intuition:</em> Can't schedule more than $t$ tasks with deadline $\leq t$.</p>
+                </section>
+
+                <!-- Matroid Structure -->
+                <section>
+                    <h2>The Matroid Structure</h2>
+                    <div class="theorem-box">
+                        <p><strong>Theorem:</strong> The collection of realistic sets forms a matroid.</p>
+                    </div>
+                    <ul class="fragment" style="margin-top: 15px;">
+                        <li><strong>Non-emptiness:</strong> ∅ is realistic ✓</li>
+                        <li class="fragment"><strong>Heredity:</strong> Subset of realistic set is realistic ✓</li>
+                        <li class="fragment"><strong>Exchange:</strong> If |X| > |Y| both realistic, can add some task from X to Y ✓</li>
+                    </ul>
+                    <div class="success-box fragment" style="margin-top: 20px;">
+                        <p><strong>Rephrased goal:</strong> Find a realistic set \(X\) maximizing \(\sum_{i \in X} p_i\)</p>
+                        <p>(Maximize penalty of on-time tasks = minimize penalty of late tasks)</p>
+                    </div>
+                </section>
+
+                <!-- Greedy Algorithm -->
+                <section>
+                    <h2>Greedy Algorithm</h2>
+                    <div class="algorithm-box">
+                        <p><span class="keyword">GreedySchedule</span>(tasks):</p>
+                        <p>&nbsp;&nbsp;Sort tasks by penalty (decreasing)</p>
+                        <p>&nbsp;&nbsp;onTime ← ∅</p>
+                        <p>&nbsp;&nbsp;<span class="keyword">for</span> each task i:</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> onTime ∪ {i} is realistic:</p>
+                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;add i to onTime</p>
+                        <p>&nbsp;&nbsp;<span class="keyword">return</span> canonical schedule for onTime</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 15px;"><strong>Canonical schedule:</strong> Execute on-time tasks in deadline order, then late tasks.</p>
+                    <p class="fragment"><strong>Running time:</strong> \(O(n^2)\), or \(O(n \log n)\) with clever data structures.</p>
+                </section>
+
+                
             </section>
 
         </div>
@@ -1400,15 +1485,184 @@
         Reveal.on('slidechanged', renderMath);
         Reveal.on('fragmentshown', renderMath);
 
-        // Colors for intervals - darker shades for better contrast
+        // Colors for intervals - pastel palette
         const intervalColors = [
-            '#2563eb', '#059669', '#d97706', '#dc2626',
-            '#7c3aed', '#db2777', '#0891b2', '#65a30d'
+            '#a8d4f0', '#b8e6c1', '#f5c4c0', '#d4c4e8',
+            '#f5e6a3', '#a8e6d5', '#f5d4b8', '#c4d4e8'
         ];
+
+        // ============ DRAG & DELETE SYSTEM ============
+        let dragState = {
+            active: false,
+            mode: 'move', // 'move', 'resize-left', 'resize-right'
+            prefix: null,
+            intervalId: null,
+            startX: 0,
+            originalStart: 0,
+            originalEnd: 0,
+            scale: 1,
+            maxTime: 20
+        };
+
+        const EDGE_THRESHOLD = 10; // pixels from edge to trigger resize
+
+        function getIntervalArray(prefix) {
+            switch(prefix) {
+                case 'warmup': return warmupIntervals;
+                case 'es': return esIntervals;
+                case 'si': return siIntervals;
+                case 'fc': return fcIntervals;
+                case 'ef': return efIntervals;
+                default: return [];
+            }
+        }
+
+        function setIntervalArray(prefix, arr) {
+            switch(prefix) {
+                case 'warmup': warmupIntervals = arr; break;
+                case 'es': esIntervals = arr; break;
+                case 'si': siIntervals = arr; break;
+                case 'fc': fcIntervals = arr; break;
+                case 'ef': efIntervals = arr; break;
+            }
+        }
+
+        function rerenderCanvas(prefix) {
+            if (prefix === 'warmup') {
+                renderWarmup();
+            } else {
+                renderCounterexample(prefix, getIntervalArray(prefix));
+            }
+        }
+
+        function deleteInterval(prefix, id) {
+            let arr = getIntervalArray(prefix);
+            arr = arr.filter(i => i.id !== id);
+            setIntervalArray(prefix, arr);
+            if (prefix === 'warmup') {
+                warmupSelected.delete(id);
+            }
+            rerenderCanvas(prefix);
+        }
+
+        function detectDragMode(e, rectEl) {
+            const rectBounds = rectEl.getBoundingClientRect();
+            const relX = e.clientX - rectBounds.left;
+            const width = rectBounds.width;
+
+            if (relX <= EDGE_THRESHOLD) {
+                return 'resize-left';
+            } else if (relX >= width - EDGE_THRESHOLD) {
+                return 'resize-right';
+            }
+            return 'move';
+        }
+
+        function startDrag(e, prefix, id, mode = null) {
+            e.preventDefault();
+            e.stopPropagation();
+            const arr = getIntervalArray(prefix);
+            const interval = arr.find(i => i.id === id);
+            if (!interval) return;
+
+            // Auto-detect mode from click position if not provided
+            if (!mode) {
+                mode = detectDragMode(e, e.target);
+            }
+
+            const canvas = document.getElementById(`${prefix}-canvas`);
+            const svg = canvas.querySelector('svg');
+            const rect = svg.getBoundingClientRect();
+            const viewBox = svg.viewBox.baseVal;
+            const scaleX = viewBox.width / rect.width;
+
+            const width = 750;
+            const maxTime = prefix === 'warmup'
+                ? Math.max(...arr.map(i => i.end), 18)
+                : Math.max(...arr.map(i => i.end), 12);
+            const scale = (width - 60) / maxTime;
+
+            dragState = {
+                active: true,
+                mode,
+                prefix,
+                intervalId: id,
+                startX: e.clientX,
+                originalStart: interval.start,
+                originalEnd: interval.end,
+                scale,
+                maxTime,
+                scaleX
+            };
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endDrag);
+        }
+
+        function onDrag(e) {
+            if (!dragState.active) return;
+
+            const arr = getIntervalArray(dragState.prefix);
+            const interval = arr.find(i => i.id === dragState.intervalId);
+            if (!interval) return;
+
+            const dx = (e.clientX - dragState.startX) * dragState.scaleX;
+            const deltaTime = Math.round(dx / dragState.scale);
+
+            if (dragState.mode === 'move') {
+                const duration = dragState.originalEnd - dragState.originalStart;
+                let newStart = dragState.originalStart + deltaTime;
+                let newEnd = newStart + duration;
+
+                // Clamp to valid range
+                if (newStart < 0) {
+                    newStart = 0;
+                    newEnd = duration;
+                }
+                if (newEnd > dragState.maxTime + 5) {
+                    newEnd = dragState.maxTime + 5;
+                    newStart = newEnd - duration;
+                }
+
+                interval.start = newStart;
+                interval.end = newEnd;
+            } else if (dragState.mode === 'resize-left') {
+                let newStart = dragState.originalStart + deltaTime;
+                // Clamp: can't go below 0 or past end - 1
+                newStart = Math.max(0, Math.min(newStart, dragState.originalEnd - 1));
+                interval.start = newStart;
+            } else if (dragState.mode === 'resize-right') {
+                let newEnd = dragState.originalEnd + deltaTime;
+                // Clamp: can't go below start + 1
+                newEnd = Math.max(dragState.originalStart + 1, newEnd);
+                interval.end = newEnd;
+            }
+
+            rerenderCanvas(dragState.prefix);
+        }
+
+        function endDrag(e) {
+            if (dragState.active) {
+                dragState.active = false;
+                document.removeEventListener('mousemove', onDrag);
+                document.removeEventListener('mouseup', endDrag);
+            }
+        }
+
+        function handleIntervalMouseMove(e) {
+            const rect = e.target;
+            const mode = detectDragMode(e, rect);
+            if (mode === 'resize-left' || mode === 'resize-right') {
+                rect.style.cursor = 'ew-resize';
+            } else {
+                rect.style.cursor = 'grab';
+            }
+        }
 
         // ============ WARM-UP INTERACTIVE ============
         let warmupIntervals = [];
         let warmupSelected = new Set();
+        let warmupClickStart = null;
 
         function generateWarmup() {
             warmupIntervals = [];
@@ -1427,12 +1681,17 @@
             warmupIntervals.sort((a, b) => a.start - b.start);
             renderWarmup();
             document.getElementById('warmup-output').innerHTML =
-                'Click on intervals to select them. Pick as many non-overlapping intervals as possible!';
+                'Click to select, drag to move, drag edges to resize, right-click to delete.';
         }
 
         function renderWarmup() {
             const canvas = document.getElementById('warmup-canvas');
-            const width = 1020;
+            if (warmupIntervals.length === 0) {
+                canvas.innerHTML = '<p style="padding: 30px; color: var(--text-secondary); text-align: center;">Click "New Problem" to generate intervals</p>';
+                return;
+            }
+
+            const width = 750;
             const maxTime = Math.max(...warmupIntervals.map(i => i.end), 18);
             const scale = (width - 60) / maxTime;
             const rowHeight = 28;
@@ -1445,7 +1704,7 @@
             for (let t = 0; t <= maxTime; t += 2) {
                 const x = 30 + t * scale;
                 svg += `<line x1="${x}" y1="${height - 27}" x2="${x}" y2="${height - 17}" stroke="#cbd5e1" stroke-width="2"/>`;
-                svg += `<text x="${x}" y="${height - 5}" fill="#64748b" text-anchor="middle" font-size="10" font-family="Nunito">${t}</text>`;
+                svg += `<text x="${x}" y="${height - 5}" fill="#64748b" text-anchor="middle" font-size="10" font-family="Heliotrope, sans-serif">${t}</text>`;
             }
 
             // Intervals
@@ -1463,14 +1722,42 @@
 
                 svg += `<rect x="${x}" y="${y}" width="${w}" height="22" fill="${color}" rx="4"
                         opacity="${opacity}" stroke="${stroke}" stroke-width="${strokeWidth}"
-                        style="cursor: pointer;" onclick="toggleWarmupInterval(${interval.id})"/>`;
-                svg += `<text x="${x + w/2}" y="${y + 15}" fill="white" text-anchor="middle"
-                        font-size="11" font-weight="600" font-family="Nunito"
+                        style="cursor: grab;"
+                        onmousemove="handleIntervalMouseMove(event)"
+                        onmousedown="warmupMouseDown(event, ${interval.id})"
+                        oncontextmenu="event.preventDefault(); deleteInterval('warmup', ${interval.id})"/>`;
+                svg += `<text x="${x + w/2}" y="${y + 15}" fill="#222222" text-anchor="middle"
+                        font-size="11" font-weight="600" font-family="Heliotrope, sans-serif"
                         style="pointer-events: none;">[${interval.start},${interval.end})</text>`;
             });
 
             svg += '</svg>';
             canvas.innerHTML = svg;
+        }
+
+        function warmupMouseDown(e, id) {
+            if (e.button === 2) return; // right click handled by contextmenu
+            e.preventDefault();
+            warmupClickStart = { x: e.clientX, y: e.clientY, id };
+            startDrag(e, 'warmup', id);
+
+            // Override endDrag to check for click vs drag
+            const originalEndDrag = endDrag;
+            document.removeEventListener('mouseup', endDrag);
+            document.addEventListener('mouseup', function warmupEndDrag(ev) {
+                document.removeEventListener('mouseup', warmupEndDrag);
+                if (warmupClickStart) {
+                    const dx = Math.abs(ev.clientX - warmupClickStart.x);
+                    const dy = Math.abs(ev.clientY - warmupClickStart.y);
+                    // If barely moved, treat as click (toggle selection)
+                    if (dx < 5 && dy < 5) {
+                        toggleWarmupInterval(warmupClickStart.id);
+                    }
+                    warmupClickStart = null;
+                }
+                dragState.active = false;
+                document.removeEventListener('mousemove', onDrag);
+            });
         }
 
         function isConflictWithSelected(interval, selected, allIntervals) {
@@ -1534,6 +1821,7 @@
         }
 
         function findOptimal(intervals) {
+            if (intervals.length === 0) return [];
             const sorted = [...intervals].sort((a, b) => a.end - b.end);
             const result = [];
             let lastEnd = -Infinity;
@@ -1549,6 +1837,32 @@
 
         // ============ COUNTEREXAMPLE BUILDERS ============
 
+        // Generic click handler for counterexample intervals
+        let ceClickStart = null;
+
+        function ceMouseDown(e, prefix, id) {
+            if (e.button === 2) return;
+            e.preventDefault();
+            ceClickStart = { x: e.clientX, y: e.clientY, prefix, id };
+            startDrag(e, prefix, id);
+
+            document.removeEventListener('mouseup', endDrag);
+            document.addEventListener('mouseup', function ceEndDrag(ev) {
+                document.removeEventListener('mouseup', ceEndDrag);
+                if (ceClickStart) {
+                    const dx = Math.abs(ev.clientX - ceClickStart.x);
+                    const dy = Math.abs(ev.clientY - ceClickStart.y);
+                    // If barely moved, treat as click (delete)
+                    if (dx < 5 && dy < 5) {
+                        deleteInterval(ceClickStart.prefix, ceClickStart.id);
+                    }
+                    ceClickStart = null;
+                }
+                dragState.active = false;
+                document.removeEventListener('mousemove', onDrag);
+            });
+        }
+
         // Earliest Start
         let esIntervals = [];
 
@@ -1556,14 +1870,15 @@
             const start = parseInt(document.getElementById('es-start').value);
             const end = parseInt(document.getElementById('es-end').value);
             if (end <= start) { alert('End must be > start'); return; }
-            esIntervals.push({ id: esIntervals.length, start, end });
+            const maxId = esIntervals.length > 0 ? Math.max(...esIntervals.map(i => i.id)) + 1 : 0;
+            esIntervals.push({ id: maxId, start, end });
             renderCounterexample('es', esIntervals);
         }
 
         function resetES() {
             esIntervals = [];
             document.getElementById('es-canvas').innerHTML = '';
-            document.getElementById('es-output').innerHTML = 'Build an instance where "Earliest Start" fails to find optimal.';
+            document.getElementById('es-output').innerHTML = 'Click to delete, drag to move, drag edges to resize.';
         }
 
         function runEarliestStart() {
@@ -1584,14 +1899,15 @@
             const start = parseInt(document.getElementById('si-start').value);
             const end = parseInt(document.getElementById('si-end').value);
             if (end <= start) { alert('End must be > start'); return; }
-            siIntervals.push({ id: siIntervals.length, start, end });
+            const maxId = siIntervals.length > 0 ? Math.max(...siIntervals.map(i => i.id)) + 1 : 0;
+            siIntervals.push({ id: maxId, start, end });
             renderCounterexample('si', siIntervals);
         }
 
         function resetSI() {
             siIntervals = [];
             document.getElementById('si-canvas').innerHTML = '';
-            document.getElementById('si-output').innerHTML = 'Build an instance where "Shortest Interval" fails to find optimal.';
+            document.getElementById('si-output').innerHTML = 'Click to delete, drag to move, drag edges to resize.';
         }
 
         function runShortestInterval() {
@@ -1612,14 +1928,15 @@
             const start = parseInt(document.getElementById('fc-start').value);
             const end = parseInt(document.getElementById('fc-end').value);
             if (end <= start) { alert('End must be > start'); return; }
-            fcIntervals.push({ id: fcIntervals.length, start, end });
+            const maxId = fcIntervals.length > 0 ? Math.max(...fcIntervals.map(i => i.id)) + 1 : 0;
+            fcIntervals.push({ id: maxId, start, end });
             renderCounterexample('fc', fcIntervals);
         }
 
         function resetFC() {
             fcIntervals = [];
             document.getElementById('fc-canvas').innerHTML = '';
-            document.getElementById('fc-output').innerHTML = 'Build an instance where "Fewest Conflicts" fails. (This one is trickier!)';
+            document.getElementById('fc-output').innerHTML = 'Click to delete, drag to move, drag edges to resize.';
         }
 
         function runFewestConflicts() {
@@ -1628,18 +1945,33 @@
                 return;
             }
 
-            const withConflicts = fcIntervals.map(interval => {
-                let conflicts = 0;
-                for (const other of fcIntervals) {
-                    if (other.id !== interval.id && intervalsOverlap(interval, other)) {
-                        conflicts++;
-                    }
-                }
-                return { ...interval, conflicts };
-            });
+            // Proper fewest conflicts: recalculate conflicts after each selection
+            let remaining = [...fcIntervals];
+            const greedy = [];
 
-            const sorted = [...withConflicts].sort((a, b) => a.conflicts - b.conflicts);
-            const greedy = runGreedy(sorted);
+            while (remaining.length > 0) {
+                // Calculate conflict counts for remaining intervals
+                const withConflicts = remaining.map(interval => {
+                    let conflicts = 0;
+                    for (const other of remaining) {
+                        if (other.id !== interval.id && intervalsOverlap(interval, other)) {
+                            conflicts++;
+                        }
+                    }
+                    return { ...interval, conflicts };
+                });
+
+                // Pick the one with fewest conflicts (ties broken by first in list)
+                withConflicts.sort((a, b) => a.conflicts - b.conflicts);
+                const chosen = withConflicts[0];
+                greedy.push(chosen);
+
+                // Remove chosen and all conflicting intervals
+                remaining = remaining.filter(interval =>
+                    interval.id !== chosen.id && !intervalsOverlap(interval, chosen)
+                );
+            }
+
             const optimal = findOptimal(fcIntervals);
             showCounterexampleResult('fc', greedy, optimal, 'Fewest Conflicts');
         }
@@ -1651,14 +1983,15 @@
             const start = parseInt(document.getElementById('ef-start').value);
             const end = parseInt(document.getElementById('ef-end').value);
             if (end <= start) { alert('End must be > start'); return; }
-            efIntervals.push({ id: efIntervals.length, start, end });
+            const maxId = efIntervals.length > 0 ? Math.max(...efIntervals.map(i => i.id)) + 1 : 0;
+            efIntervals.push({ id: maxId, start, end });
             renderCounterexample('ef', efIntervals);
         }
 
         function resetEF() {
             efIntervals = [];
             document.getElementById('ef-canvas').innerHTML = '';
-            document.getElementById('ef-output').innerHTML = 'Build an instance where "Earliest Finish" fails to find optimal.';
+            document.getElementById('ef-output').innerHTML = 'Click to delete, drag to move, drag edges to resize.';
         }
 
         function runEarliestFinish() {
@@ -1690,7 +2023,7 @@
                 return;
             }
 
-            const width = 1020;
+            const width = 750;
             const maxTime = Math.max(...intervals.map(i => i.end), 12);
             const scale = (width - 60) / maxTime;
             const rowHeight = 26;
@@ -1703,7 +2036,7 @@
                 const x = 30 + t * scale;
                 svg += `<line x1="${x}" y1="${height - 25}" x2="${x}" y2="${height - 15}" stroke="#cbd5e1" stroke-width="1"/>`;
                 if (t % 2 === 0) {
-                    svg += `<text x="${x}" y="${height - 4}" fill="#64748b" text-anchor="middle" font-size="9" font-family="Nunito">${t}</text>`;
+                    svg += `<text x="${x}" y="${height - 4}" fill="#64748b" text-anchor="middle" font-size="9" font-family="Heliotrope, sans-serif">${t}</text>`;
                 }
             }
 
@@ -1713,9 +2046,13 @@
                 const y = idx * rowHeight + 6;
                 const color = intervalColors[idx % intervalColors.length];
 
-                svg += `<rect x="${x}" y="${y}" width="${w}" height="20" fill="${color}" rx="4"/>`;
-                svg += `<text x="${x + w/2}" y="${y + 14}" fill="white" text-anchor="middle"
-                        font-size="10" font-weight="600" font-family="Nunito">[${interval.start},${interval.end})</text>`;
+                svg += `<rect x="${x}" y="${y}" width="${w}" height="20" fill="${color}" rx="4"
+                        style="cursor: grab;"
+                        onmousemove="handleIntervalMouseMove(event)"
+                        onmousedown="ceMouseDown(event, '${prefix}', ${interval.id})"/>`;
+                svg += `<text x="${x + w/2}" y="${y + 14}" fill="#222222" text-anchor="middle"
+                        font-size="10" font-weight="600" font-family="Heliotrope, sans-serif"
+                        style="pointer-events: none;">[${interval.start},${interval.end})</text>`;
             });
 
             svg += '</svg>';
@@ -1747,7 +2084,7 @@
         document.addEventListener('DOMContentLoaded', renderMath);
 
         // ============ AUDIENCE SUGGESTIONS ============
-        const suggestionColors = ['#2563eb', '#059669', '#d97706', '#7c3aed', '#dc2626', '#0891b2', '#db2777', '#65a30d'];
+        const suggestionColors = ['#a8d4f0', '#b8e6c1', '#f5c4c0', '#d4c4e8', '#f5e6a3', '#a8e6d5', '#f5d4b8', '#c4d4e8'];
         let suggestionCount = 0;
 
         function addSuggestion() {
@@ -1800,6 +2137,368 @@
                 clearSuggestions();
             }
         }
+
+        // ============ SCHEDULING WITH DEADLINES ============
+        let deadlineTasks = [];
+        let scheduledTasks = []; // Array of task indices in scheduled order
+        const taskColors = ['#a8d4f0', '#b8e6c1', '#f5c4c0', '#d4c4e8', '#f5e6a3', '#a8e6d5', '#f5d4b8', '#c4d4e8'];
+
+        function generateDeadlineProblem() {
+            const numTasks = 5 + Math.floor(Math.random() * 3); // 5-7 tasks
+            deadlineTasks = [];
+            scheduledTasks = [];
+
+            const taskNames = 'ABCDEFGHIJ'.split('');
+            for (let i = 0; i < numTasks; i++) {
+                deadlineTasks.push({
+                    id: i,
+                    name: taskNames[i],
+                    deadline: 1 + Math.floor(Math.random() * numTasks), // 1 to n
+                    penalty: 1 + Math.floor(Math.random() * 9) // 1-9
+                });
+            }
+
+            renderDeadlineTasks();
+            renderDeadlineCanvas();
+            updateDeadlineOutput();
+        }
+
+        function renderDeadlineTasks() {
+            const container = document.getElementById('deadline-tasks');
+            if (!container) return;
+
+            // Show unscheduled tasks
+            const unscheduled = deadlineTasks.filter(t => !scheduledTasks.includes(t.id));
+
+            if (unscheduled.length === 0 && deadlineTasks.length > 0) {
+                container.innerHTML = '<span style="color: var(--text-secondary); font-style: italic;">All tasks scheduled! Click a task to unschedule, or drag to reorder.</span>';
+                return;
+            }
+
+            container.innerHTML = '';
+            unscheduled.forEach(task => {
+                const chip = document.createElement('div');
+                chip.className = 'task-chip';
+                chip.draggable = true;
+                chip.style.cssText = `
+                    background: ${taskColors[task.id % taskColors.length]};
+                    padding: 8px 12px; border-radius: 6px; cursor: grab;
+                    font-weight: 600; font-size: 0.9em; color: var(--text);
+                    border: 2px solid transparent; transition: all 0.15s ease;
+                `;
+                chip.innerHTML = `<strong>${task.name}</strong>: d=${task.deadline}, p=${task.penalty}`;
+
+                chip.addEventListener('dragstart', (e) => {
+                    draggedTaskId = task.id;
+                    draggedFromSchedule = false;
+                    e.dataTransfer.setData('text/plain', task.id);
+                    chip.style.opacity = '0.5';
+                    chip.style.transform = 'scale(0.95)';
+                });
+                chip.addEventListener('dragend', () => {
+                    chip.style.opacity = '1';
+                    chip.style.transform = 'scale(1)';
+                });
+
+                container.appendChild(chip);
+            });
+        }
+
+        function renderDeadlineCanvas() {
+            const canvas = document.getElementById('deadline-canvas');
+            if (!canvas) return;
+
+            const n = deadlineTasks.length || 5;
+
+            // Use HTML-based layout for smooth drag/drop
+            canvas.innerHTML = '';
+            canvas.style.display = 'flex';
+            canvas.style.flexDirection = 'column';
+            canvas.style.gap = '8px';
+            canvas.style.paddingTop = '15px';
+
+            // Create slots container
+            const slotsContainer = document.createElement('div');
+            slotsContainer.style.cssText = 'display: flex; gap: 6px; justify-content: center;';
+
+            // Create day labels container
+            const labelsContainer = document.createElement('div');
+            labelsContainer.style.cssText = 'display: flex; gap: 6px; justify-content: center;';
+
+            // Create status container
+            const statusContainer = document.createElement('div');
+            statusContainer.style.cssText = 'display: flex; gap: 6px; justify-content: center;';
+
+            const slotWidth = Math.min(90, Math.floor(620 / n));
+
+            for (let day = 1; day <= n; day++) {
+                // Slot
+                const slot = document.createElement('div');
+                slot.className = 'deadline-slot';
+                slot.dataset.day = day;
+                slot.style.cssText = `
+                    width: ${slotWidth}px; height: 60px;
+                    background: #f8f8f8; border: 2px dashed #ddd; border-radius: 6px;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    padding-top: 4px; box-sizing: border-box;
+                    transition: all 0.15s ease;
+                `;
+
+                const taskId = scheduledTasks[day - 1];
+                const task = taskId !== undefined ? deadlineTasks.find(t => t.id === taskId) : null;
+
+                if (task) {
+                    const isLate = day > task.deadline;
+                    const color = taskColors[task.id % taskColors.length];
+                    const borderColor = isLate ? '#c44' : '#4a4';
+
+                    slot.style.background = color;
+                    slot.style.border = `2px solid ${borderColor}`;
+                    slot.style.cursor = 'grab';
+                    slot.draggable = true;
+                    slot.innerHTML = `
+                        <strong style="font-size: 13px; color: #222;">${task.name}</strong>
+                        <span style="font-size: 10px; color: #444;">d=${task.deadline} p=${task.penalty}</span>
+                    `;
+
+                    slot.addEventListener('dragstart', (e) => {
+                        draggedTaskId = task.id;
+                        draggedFromSchedule = true;
+                        e.dataTransfer.setData('text/plain', task.id);
+                        slot.style.opacity = '0.5';
+                    });
+                    slot.addEventListener('dragend', () => {
+                        slot.style.opacity = '1';
+                    });
+                    slot.addEventListener('click', () => unscheduleTask(task.id));
+                } else {
+                    slot.innerHTML = '<span style="font-size: 11px; color: #aaa; font-style: italic;">Drop here</span>';
+                }
+
+                // Drag over effects
+                slot.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    slot.style.borderColor = '#6366f1';
+                    slot.style.background = task ? slot.style.background : '#e8e8ff';
+                    slot.style.transform = 'scale(1.02)';
+                });
+                slot.addEventListener('dragleave', () => {
+                    const isLate = task && day > task.deadline;
+                    slot.style.borderColor = task ? (isLate ? '#c44' : '#4a4') : '#ddd';
+                    slot.style.background = task ? taskColors[task.id % taskColors.length] : '#f8f8f8';
+                    slot.style.transform = 'scale(1)';
+                });
+                slot.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    handleSlotDrop(day);
+                });
+
+                slotsContainer.appendChild(slot);
+
+                // Day label
+                const label = document.createElement('div');
+                label.style.cssText = `width: ${slotWidth}px; text-align: center; font-size: 12px; color: #666;`;
+                label.textContent = `Day ${day}`;
+                labelsContainer.appendChild(label);
+
+                // Status label
+                const status = document.createElement('div');
+                status.style.cssText = `width: ${slotWidth}px; text-align: center; font-size: 10px; font-weight: 600;`;
+                if (task) {
+                    const isLate = day > task.deadline;
+                    status.textContent = isLate ? '✗ LATE' : '✓';
+                    status.style.color = isLate ? '#c44' : '#4a4';
+                }
+                statusContainer.appendChild(status);
+            }
+
+            canvas.appendChild(slotsContainer);
+            canvas.appendChild(labelsContainer);
+            canvas.appendChild(statusContainer);
+        }
+
+        function handleSlotDrop(day) {
+            if (draggedTaskId === null) return;
+
+            const n = deadlineTasks.length;
+            if (day < 1 || day > n) return;
+
+            // Remove from current position if rescheduling
+            if (draggedFromSchedule) {
+                const currentIdx = scheduledTasks.indexOf(draggedTaskId);
+                if (currentIdx !== -1) {
+                    scheduledTasks[currentIdx] = undefined;
+                }
+            }
+
+            // Handle occupied slot - swap
+            if (scheduledTasks[day - 1] !== undefined) {
+                const existingId = scheduledTasks[day - 1];
+                if (draggedFromSchedule) {
+                    const oldIdx = scheduledTasks.findIndex((id, idx) => id === undefined);
+                    if (oldIdx !== -1) {
+                        scheduledTasks[oldIdx] = existingId;
+                    }
+                }
+            }
+
+            scheduledTasks[day - 1] = draggedTaskId;
+
+            // Clean up undefined slots at the end
+            while (scheduledTasks.length > 0 && scheduledTasks[scheduledTasks.length - 1] === undefined) {
+                scheduledTasks.pop();
+            }
+
+            draggedTaskId = null;
+            renderDeadlineTasks();
+            renderDeadlineCanvas();
+            updateDeadlineOutput();
+        }
+
+        function updateDeadlineOutput() {
+            const penaltyEl = document.getElementById('deadline-penalty');
+            const ontimeEl = document.getElementById('deadline-ontime');
+            const lateEl = document.getElementById('deadline-late');
+            const optimalEl = document.getElementById('deadline-optimal');
+
+            if (!penaltyEl) return;
+
+            let totalPenalty = 0;
+            const onTime = [];
+            const late = [];
+
+            // Calculate penalty for scheduled tasks only (unscheduled tasks don't count)
+            scheduledTasks.forEach((taskId, dayIndex) => {
+                const task = deadlineTasks.find(t => t.id === taskId);
+                if (!task) return;
+
+                const day = dayIndex + 1;
+                if (day > task.deadline) {
+                    totalPenalty += task.penalty;
+                    late.push(task.name);
+                } else {
+                    onTime.push(task.name);
+                }
+            });
+
+            penaltyEl.textContent = totalPenalty;
+            ontimeEl.textContent = onTime.length > 0 ? onTime.join(', ') : '-';
+            lateEl.textContent = late.length > 0 ? late.join(', ') : '-';
+
+            // Show optimal penalty when all tasks are scheduled
+            if (optimalEl) {
+                if (scheduledTasks.length === deadlineTasks.length && deadlineTasks.length > 0) {
+                    const optimalPenalty = calculateOptimalPenalty();
+                    if (totalPenalty === optimalPenalty) {
+                        optimalEl.innerHTML = `| <span style="color: #4a4; font-weight: 600;">✓ Optimal!</span>`;
+                    } else {
+                        optimalEl.innerHTML = `| <strong>Optimal penalty:</strong> <span style="color: #6366f1; font-weight: 600;">${optimalPenalty}</span>`;
+                    }
+                } else {
+                    optimalEl.innerHTML = '';
+                }
+            }
+        }
+
+        function calculateOptimalPenalty() {
+            // Use greedy algorithm: sort by penalty descending, try to schedule each
+            const n = deadlineTasks.length;
+            const sorted = [...deadlineTasks].sort((a, b) => b.penalty - a.penalty);
+
+            function isRealistic(tasks) {
+                for (let t = 1; t <= n; t++) {
+                    const count = tasks.filter(task => task.deadline <= t).length;
+                    if (count > t) return false;
+                }
+                return true;
+            }
+
+            const onTimeSet = [];
+            for (const task of sorted) {
+                const testSet = [...onTimeSet, task];
+                if (isRealistic(testSet)) {
+                    onTimeSet.push(task);
+                }
+            }
+
+            // Calculate penalty: sum of penalties for tasks not in onTimeSet
+            const onTimeIds = new Set(onTimeSet.map(t => t.id));
+            let optimalPenalty = 0;
+            deadlineTasks.forEach(task => {
+                if (!onTimeIds.has(task.id)) {
+                    optimalPenalty += task.penalty;
+                }
+            });
+
+            return optimalPenalty;
+        }
+
+        let draggedTaskId = null;
+        let draggedFromSchedule = false;
+
+        function unscheduleTask(taskId) {
+            const idx = scheduledTasks.indexOf(taskId);
+            if (idx !== -1) {
+                scheduledTasks.splice(idx, 1);
+            }
+            renderDeadlineTasks();
+            renderDeadlineCanvas();
+            updateDeadlineOutput();
+        }
+
+        function resetDeadlineSchedule() {
+            scheduledTasks = [];
+            renderDeadlineTasks();
+            renderDeadlineCanvas();
+            updateDeadlineOutput();
+        }
+
+        function runGreedyDeadline() {
+            // Sort tasks by penalty (decreasing)
+            const sorted = [...deadlineTasks].sort((a, b) => b.penalty - a.penalty);
+            const n = deadlineTasks.length;
+
+            // Greedy: try to add each task to the schedule
+            const onTimeSet = [];
+
+            function isRealistic(tasks) {
+                // Check |X(t)| <= t for all t
+                for (let t = 1; t <= n; t++) {
+                    const count = tasks.filter(task => task.deadline <= t).length;
+                    if (count > t) return false;
+                }
+                return true;
+            }
+
+            for (const task of sorted) {
+                const testSet = [...onTimeSet, task];
+                if (isRealistic(testSet)) {
+                    onTimeSet.push(task);
+                }
+            }
+
+            // Create canonical schedule: on-time tasks in deadline order, then late tasks
+            const onTimeIds = new Set(onTimeSet.map(t => t.id));
+            const onTimeSorted = [...onTimeSet].sort((a, b) => a.deadline - b.deadline);
+            const lateTasks = deadlineTasks.filter(t => !onTimeIds.has(t.id));
+
+            scheduledTasks = [];
+            for (const task of onTimeSorted) {
+                scheduledTasks.push(task.id);
+            }
+            for (const task of lateTasks) {
+                scheduledTasks.push(task.id);
+            }
+
+            renderDeadlineTasks();
+            renderDeadlineCanvas();
+            updateDeadlineOutput();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            generateDeadlineProblem();
+        });
     </script>
 </body>
 </html>
