@@ -1206,6 +1206,30 @@
                     </p>
                 </section>
 
+                <!-- Exchange Property Proof for Graphic Matroid -->
+                <section>
+                    <h2>Exchange Property: Graphic Matroid</h2>
+                    <div class="demo-container" style="margin-top: 10px;">
+                        <div class="demo-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span class="demo-title" style="font-weight: 600;">Graph Arena</span>
+                            <div class="demo-controls" style="display: flex; gap: 6px; align-items: center;">
+                                <select id="graph-mode" onchange="updateGraphMode()" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 12px;">
+                                    <option value="draw">Draw Graph</option>
+                                    <option value="forest-x">Select Forest X (blue)</option>
+                                    <option value="forest-y">Select Forest Y (green)</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="clearForests()" style="font-size: 11px; padding: 4px 10px;">Clear Forests</button>
+                                <button class="btn btn-primary" onclick="showExchange()" style="font-size: 11px; padding: 4px 10px;">Show Exchange</button>
+                                <button class="btn btn-secondary" onclick="resetGraph()" style="font-size: 11px; padding: 4px 10px;">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="graph-canvas" style="background: #fafafa; border: 1px solid var(--border); border-radius: 4px; height: 340px; position: relative; cursor: crosshair;"></div>
+                        <div class="demo-output" id="graph-output" style="margin-top: 8px; padding: 8px; background: #f8fafc; border-radius: 4px; font-size: 12px;">
+                            <strong>Draw mode:</strong> Click to add nodes. Drag between nodes to add edges. Right-click to delete. Drag nodes to reposition.
+                        </div>
+                    </div>
+                </section>
+
                 <!-- More Examples -->
                 <section>
                     <h2>More Matroid Examples</h2>
@@ -2495,9 +2519,452 @@
             updateDeadlineOutput();
         }
 
+        // ============ GRAPH ARENA FOR EXCHANGE PROPERTY ============
+
+        // Graph data structures
+        let graphNodes = [];
+        let graphEdges = [];
+        let forestX = new Set(); // Edge IDs in forest X (blue)
+        let forestY = new Set(); // Edge IDs in forest Y (green)
+        let graphMode = 'draw';
+        let graphNodeIdCounter = 0;
+        let graphEdgeIdCounter = 0;
+
+        // Drag state for graph
+        let graphDragState = {
+            active: false,
+            mode: null, // 'move-node', 'create-edge'
+            nodeId: null,
+            startX: 0,
+            startY: 0,
+            edgePreview: null
+        };
+
+        const NODE_RADIUS = 18;
+        const NODE_COLORS = {
+            default: '#94a3b8',
+            hover: '#64748b',
+            forestX: '#3b82f6',
+            forestY: '#22c55e',
+            both: '#8b5cf6',
+            exchangeable: '#f59e0b'
+        };
+
+        function updateGraphMode() {
+            graphMode = document.getElementById('graph-mode').value;
+            const output = document.getElementById('graph-output');
+            if (graphMode === 'draw') {
+                output.innerHTML = '<strong>Draw mode:</strong> Click to add nodes. Drag between nodes to add edges. Right-click to delete. Drag nodes to reposition.';
+            } else if (graphMode === 'forest-x') {
+                output.innerHTML = '<strong>Forest X (blue):</strong> Click edges to add/remove from forest X. Must remain acyclic!';
+            } else if (graphMode === 'forest-y') {
+                output.innerHTML = '<strong>Forest Y (green):</strong> Click edges to add/remove from forest Y. Must remain acyclic!';
+            }
+            renderGraph();
+        }
+
+        function resetGraph() {
+            graphNodes = [];
+            graphEdges = [];
+            forestX.clear();
+            forestY.clear();
+            graphNodeIdCounter = 0;
+            graphEdgeIdCounter = 0;
+            document.getElementById('graph-mode').value = 'draw';
+            graphMode = 'draw';
+            renderGraph();
+            document.getElementById('graph-output').innerHTML = '<strong>Draw mode:</strong> Click to add nodes. Drag between nodes to add edges. Right-click to delete. Drag nodes to reposition.';
+        }
+
+        function clearForests() {
+            forestX.clear();
+            forestY.clear();
+            renderGraph();
+            document.getElementById('graph-output').innerHTML = 'Forests cleared. Select edges to build forests X and Y.';
+        }
+
+        // Union-Find for cycle detection
+        function makeUnionFind(n) {
+            const parent = Array.from({length: n}, (_, i) => i);
+            const rank = Array(n).fill(0);
+
+            function find(x) {
+                if (parent[x] !== x) parent[x] = find(parent[x]);
+                return parent[x];
+            }
+
+            function union(x, y) {
+                const px = find(x), py = find(y);
+                if (px === py) return false; // Already connected = would create cycle
+                if (rank[px] < rank[py]) parent[px] = py;
+                else if (rank[px] > rank[py]) parent[py] = px;
+                else { parent[py] = px; rank[px]++; }
+                return true;
+            }
+
+            return { find, union };
+        }
+
+        function getNodeIndex(nodeId) {
+            return graphNodes.findIndex(n => n.id === nodeId);
+        }
+
+        // Check if adding an edge to a forest would create a cycle
+        function wouldCreateCycle(edgeId, forest) {
+            const edge = graphEdges.find(e => e.id === edgeId);
+            if (!edge) return true;
+
+            const uf = makeUnionFind(graphNodes.length);
+
+            // Add all edges already in the forest
+            for (const eid of forest) {
+                const e = graphEdges.find(edge => edge.id === eid);
+                if (e) {
+                    const i1 = getNodeIndex(e.from);
+                    const i2 = getNodeIndex(e.to);
+                    if (i1 >= 0 && i2 >= 0) uf.union(i1, i2);
+                }
+            }
+
+            // Check if adding this edge would create a cycle
+            const i1 = getNodeIndex(edge.from);
+            const i2 = getNodeIndex(edge.to);
+            if (i1 < 0 || i2 < 0) return true;
+
+            return uf.find(i1) === uf.find(i2);
+        }
+
+        function toggleForestEdge(edgeId, forest, forestName) {
+            if (forest.has(edgeId)) {
+                forest.delete(edgeId);
+                renderGraph();
+                return true;
+            } else {
+                if (wouldCreateCycle(edgeId, forest)) {
+                    document.getElementById('graph-output').innerHTML =
+                        `<span style="color: var(--error);">Cannot add edge to ${forestName}: would create a cycle!</span>`;
+                    return false;
+                }
+                forest.add(edgeId);
+                renderGraph();
+                return true;
+            }
+        }
+
+        function renderGraph() {
+            const canvas = document.getElementById('graph-canvas');
+            if (!canvas) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width || 750;
+            const height = 340;
+
+            let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block;"
+                        onmousedown="graphCanvasMouseDown(event)"
+                        onmousemove="graphCanvasMouseMove(event)"
+                        onmouseup="graphCanvasMouseUp(event)"
+                        oncontextmenu="event.preventDefault()">`;
+
+            // Draw edges
+            for (const edge of graphEdges) {
+                const n1 = graphNodes.find(n => n.id === edge.from);
+                const n2 = graphNodes.find(n => n.id === edge.to);
+                if (!n1 || !n2) continue;
+
+                const inX = forestX.has(edge.id);
+                const inY = forestY.has(edge.id);
+
+                let strokeColor = '#cbd5e1';
+                let strokeWidth = 3;
+
+                if (inX && inY) {
+                    strokeColor = NODE_COLORS.both;
+                    strokeWidth = 5;
+                } else if (inX) {
+                    strokeColor = NODE_COLORS.forestX;
+                    strokeWidth = 5;
+                } else if (inY) {
+                    strokeColor = NODE_COLORS.forestY;
+                    strokeWidth = 5;
+                }
+
+                if (edge.exchangeable) {
+                    strokeColor = NODE_COLORS.exchangeable;
+                    strokeWidth = 6;
+                }
+
+                svg += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}"
+                        stroke="${strokeColor}" stroke-width="${strokeWidth}" stroke-linecap="round"
+                        style="cursor: pointer;"
+                        onmousedown="graphEdgeClick(event, ${edge.id})"
+                        oncontextmenu="event.preventDefault(); deleteGraphEdge(${edge.id})"/>`;
+
+                // Edge label (optional, for debugging)
+                // const mx = (n1.x + n2.x) / 2, my = (n1.y + n2.y) / 2;
+                // svg += `<text x="${mx}" y="${my}" fill="#666" font-size="10" text-anchor="middle">${edge.id}</text>`;
+            }
+
+            // Draw edge preview while dragging
+            if (graphDragState.active && graphDragState.mode === 'create-edge' && graphDragState.edgePreview) {
+                const n1 = graphNodes.find(n => n.id === graphDragState.nodeId);
+                if (n1) {
+                    svg += `<line x1="${n1.x}" y1="${n1.y}" x2="${graphDragState.edgePreview.x}" y2="${graphDragState.edgePreview.y}"
+                            stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" stroke-linecap="round"/>`;
+                }
+            }
+
+            // Draw nodes
+            for (const node of graphNodes) {
+                // Determine node color based on connected edges in forests
+                let hasXEdge = false, hasYEdge = false;
+                for (const edge of graphEdges) {
+                    if (edge.from === node.id || edge.to === node.id) {
+                        if (forestX.has(edge.id)) hasXEdge = true;
+                        if (forestY.has(edge.id)) hasYEdge = true;
+                    }
+                }
+
+                let fillColor = NODE_COLORS.default;
+                if (hasXEdge && hasYEdge) fillColor = NODE_COLORS.both;
+                else if (hasXEdge) fillColor = NODE_COLORS.forestX;
+                else if (hasYEdge) fillColor = NODE_COLORS.forestY;
+
+                svg += `<circle cx="${node.x}" cy="${node.y}" r="${NODE_RADIUS}"
+                        fill="${fillColor}" stroke="#475569" stroke-width="2"
+                        style="cursor: ${graphMode === 'draw' ? 'grab' : 'default'};"
+                        onmousedown="graphNodeMouseDown(event, ${node.id})"
+                        oncontextmenu="event.preventDefault(); deleteGraphNode(${node.id})"/>`;
+                svg += `<text x="${node.x}" y="${node.y + 4}" fill="white" font-size="12" font-weight="bold"
+                        text-anchor="middle" style="pointer-events: none;">${node.label}</text>`;
+            }
+
+            svg += '</svg>';
+            canvas.innerHTML = svg;
+        }
+
+        function graphCanvasMouseDown(e) {
+            if (e.button !== 0) return; // Only left click
+            if (graphMode !== 'draw') return;
+
+            const canvas = document.getElementById('graph-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Check if clicking on empty space (not a node)
+            const clickedNode = graphNodes.find(n =>
+                Math.sqrt((n.x - x) ** 2 + (n.y - y) ** 2) <= NODE_RADIUS
+            );
+
+            if (!clickedNode) {
+                // Add new node
+                const label = String.fromCharCode(65 + (graphNodeIdCounter % 26)); // A, B, C, ...
+                graphNodes.push({
+                    id: graphNodeIdCounter++,
+                    x: x,
+                    y: y,
+                    label: label
+                });
+                renderGraph();
+            }
+        }
+
+        function graphNodeMouseDown(e, nodeId) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.button !== 0) return; // Only left click
+
+            if (graphMode !== 'draw') return;
+
+            const canvas = document.getElementById('graph-canvas');
+            const rect = canvas.getBoundingClientRect();
+
+            graphDragState = {
+                active: true,
+                mode: 'create-edge', // Start as edge creation, switch to move if no target
+                nodeId: nodeId,
+                startX: e.clientX - rect.left,
+                startY: e.clientY - rect.top,
+                edgePreview: null,
+                moved: false
+            };
+        }
+
+        function graphCanvasMouseMove(e) {
+            if (!graphDragState.active) return;
+
+            const canvas = document.getElementById('graph-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const dx = x - graphDragState.startX;
+            const dy = y - graphDragState.startY;
+
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                graphDragState.moved = true;
+            }
+
+            if (graphDragState.mode === 'create-edge') {
+                graphDragState.edgePreview = { x, y };
+                renderGraph();
+            } else if (graphDragState.mode === 'move-node') {
+                const node = graphNodes.find(n => n.id === graphDragState.nodeId);
+                if (node) {
+                    node.x = Math.max(NODE_RADIUS, Math.min(rect.width - NODE_RADIUS, x));
+                    node.y = Math.max(NODE_RADIUS, Math.min(340 - NODE_RADIUS, y));
+                    renderGraph();
+                }
+            }
+        }
+
+        function graphCanvasMouseUp(e) {
+            if (!graphDragState.active) return;
+
+            const canvas = document.getElementById('graph-canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (graphDragState.mode === 'create-edge' && graphDragState.moved) {
+                // Find target node
+                const targetNode = graphNodes.find(n =>
+                    n.id !== graphDragState.nodeId &&
+                    Math.sqrt((n.x - x) ** 2 + (n.y - y) ** 2) <= NODE_RADIUS
+                );
+
+                if (targetNode) {
+                    // Check if edge already exists
+                    const existingEdge = graphEdges.find(e =>
+                        (e.from === graphDragState.nodeId && e.to === targetNode.id) ||
+                        (e.from === targetNode.id && e.to === graphDragState.nodeId)
+                    );
+
+                    if (!existingEdge) {
+                        graphEdges.push({
+                            id: graphEdgeIdCounter++,
+                            from: graphDragState.nodeId,
+                            to: targetNode.id,
+                            exchangeable: false
+                        });
+                    }
+                }
+            } else if (!graphDragState.moved) {
+                // Click without moving - switch to move mode for next drag
+                graphDragState.mode = 'move-node';
+            }
+
+            graphDragState = { active: false, mode: null, nodeId: null, startX: 0, startY: 0, edgePreview: null };
+            renderGraph();
+        }
+
+        function graphEdgeClick(e, edgeId) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (e.button !== 0) return;
+
+            if (graphMode === 'forest-x') {
+                toggleForestEdge(edgeId, forestX, 'Forest X');
+            } else if (graphMode === 'forest-y') {
+                toggleForestEdge(edgeId, forestY, 'Forest Y');
+            }
+        }
+
+        function deleteGraphNode(nodeId) {
+            // Remove all edges connected to this node
+            const edgesToRemove = graphEdges.filter(e => e.from === nodeId || e.to === nodeId);
+            for (const edge of edgesToRemove) {
+                forestX.delete(edge.id);
+                forestY.delete(edge.id);
+            }
+            graphEdges = graphEdges.filter(e => e.from !== nodeId && e.to !== nodeId);
+
+            // Remove the node
+            graphNodes = graphNodes.filter(n => n.id !== nodeId);
+            renderGraph();
+        }
+
+        function deleteGraphEdge(edgeId) {
+            forestX.delete(edgeId);
+            forestY.delete(edgeId);
+            graphEdges = graphEdges.filter(e => e.id !== edgeId);
+            renderGraph();
+        }
+
+        function showExchange() {
+            // Clear previous exchangeable markings
+            for (const edge of graphEdges) {
+                edge.exchangeable = false;
+            }
+
+            const output = document.getElementById('graph-output');
+
+            if (forestX.size === 0 && forestY.size === 0) {
+                output.innerHTML = '<span style="color: var(--error);">Select edges for forests X and Y first!</span>';
+                renderGraph();
+                return;
+            }
+
+            const sizeX = forestX.size;
+            const sizeY = forestY.size;
+
+            if (sizeX === sizeY) {
+                output.innerHTML = `<strong>|X| = |Y| = ${sizeX}.</strong> Exchange property requires |X| > |Y|. Try adding more edges to X or removing from Y.`;
+                renderGraph();
+                return;
+            }
+
+            // Determine which is larger
+            let largerForest, smallerForest, largerName, smallerName;
+            if (sizeX > sizeY) {
+                largerForest = forestX;
+                smallerForest = forestY;
+                largerName = 'X';
+                smallerName = 'Y';
+            } else {
+                largerForest = forestY;
+                smallerForest = forestX;
+                largerName = 'Y';
+                smallerName = 'X';
+            }
+
+            // Find edges in larger \ smaller that can be added to smaller without creating cycle
+            const diff = new Set([...largerForest].filter(e => !smallerForest.has(e)));
+            const exchangeable = [];
+
+            for (const edgeId of diff) {
+                if (!wouldCreateCycle(edgeId, smallerForest)) {
+                    exchangeable.push(edgeId);
+                    const edge = graphEdges.find(e => e.id === edgeId);
+                    if (edge) edge.exchangeable = true;
+                }
+            }
+
+            renderGraph();
+
+            if (exchangeable.length > 0) {
+                const edge = graphEdges.find(e => e.id === exchangeable[0]);
+                const n1 = graphNodes.find(n => n.id === edge.from);
+                const n2 = graphNodes.find(n => n.id === edge.to);
+                const edgeLabel = n1 && n2 ? `(${n1.label}-${n2.label})` : '';
+
+                output.innerHTML = `<span style="color: #059669;"><strong>Exchange property verified!</strong></span> ` +
+                    `|${largerName}| = ${largerForest.size} > ${smallerForest.size} = |${smallerName}|. ` +
+                    `Found <strong>${exchangeable.length}</strong> edge(s) in ${largerName} \\ ${smallerName} ` +
+                    `that can be added to ${smallerName} (shown in <span style="color: ${NODE_COLORS.exchangeable}; font-weight: bold;">orange</span>). ` +
+                    `e.g., edge ${edgeLabel}`;
+            } else {
+                output.innerHTML = `<span style="color: var(--error);">No exchangeable edge found!</span> ` +
+                    `This shouldn't happen for a valid graphic matroid. Check that your forests are acyclic.`;
+            }
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             generateDeadlineProblem();
+            renderGraph();
         });
     </script>
 </body>
