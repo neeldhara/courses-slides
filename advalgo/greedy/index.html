@@ -1213,6 +1213,13 @@
                         <div class="demo-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                             <span class="demo-title" style="font-weight: 600;">Graph Arena</span>
                             <div class="demo-controls" style="display: flex; gap: 6px; align-items: center;">
+                                <select id="graph-preset" onchange="loadGraphPreset()" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 12px;">
+                                    <option value="">Load preset...</option>
+                                    <option value="grid7">7×7 Grid</option>
+                                    <option value="cycle9">9-Cycle</option>
+                                    <option value="k6">K₆ (Complete)</option>
+                                    <option value="random10">Random (10 vertices)</option>
+                                </select>
                                 <select id="graph-mode" onchange="updateGraphMode()" style="padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); font-size: 12px;">
                                     <option value="draw">Draw Graph</option>
                                     <option value="forest-x">Select Forest X (blue)</option>
@@ -1223,7 +1230,7 @@
                                 <button class="btn btn-secondary" onclick="resetGraph()" style="font-size: 11px; padding: 4px 10px;">Reset</button>
                             </div>
                         </div>
-                        <div class="demo-canvas" id="graph-canvas" style="background: #fafafa; border: 1px solid var(--border); border-radius: 4px; height: 340px; position: relative; cursor: crosshair;"></div>
+                        <div class="demo-canvas" id="graph-canvas" style="background: #fafafa; border: 1px solid var(--border); border-radius: 4px; height: 450px; position: relative; cursor: crosshair;"></div>
                         <div class="demo-output" id="graph-output" style="margin-top: 8px; padding: 8px; background: #f8fafc; border-radius: 4px; font-size: 12px;">
                             <strong>Draw mode:</strong> Click to add nodes. Drag between nodes to add edges. Right-click to delete. Drag nodes to reposition.
                         </div>
@@ -1419,6 +1426,96 @@
                     </div>
                 </section>
 
+                <!-- First Attempt: n² Universe - Intro -->
+                <section>
+                    <h2>A Natural Idea</h2>
+                    <div class="definition-box" style="margin-bottom: 20px;">
+                        <p><strong>Attempt:</strong> Create \(n^2\) elements. Element \((i,j)\) represents "do task \(i\) on day \(j\)".</p>
+                    </div>
+                    <div style="display: flex; gap: 20px; justify-content: center; font-size: 0.9em;">
+                        <div style="flex: 1; max-width: 480px; text-align: left;">
+                            <p><strong>Weight of \((i,j)\):</strong></p>
+                            <ul style="margin-left: 15px;">
+                                <li>\(w(i,j) = 0\) if \(j \leq d_i\) (task on time)</li>
+                                <li>\(w(i,j) = p_i\) if \(j > d_i\) (task late, pay penalty)</li>
+                            </ul>
+                        </div>
+                        <div style="flex: 1; max-width: 350px;">
+                            <p><strong>Feasibility constraints:</strong></p>
+                            <ul style="margin-left: 15px;">
+                                <li>At most one \((i, \cdot)\) per task \(i\)</li>
+                                <li>At most one \((\cdot, j)\) per day \(j\)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fragment" style="margin-top: 20px; padding: 12px; background: #e3f2fd; border-left: 3px solid #2196f3; border-radius: 4px; font-size: 0.9em; max-width: 700px; margin-left: auto; margin-right: auto;">
+                        <strong>Goal:</strong> Find a feasible set minimizing total weight (= total penalty of late tasks)
+                    </div>
+                </section>
+
+                <!-- n² Universe Arena -->
+                <section>
+                    <h2>Explore the \(n^2\) Universe</h2>
+                    <div class="interactive-demo" style="max-width: 900px; margin: 0 auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 0.85em; color: var(--text-secondary);">Click cells to select elements. Build a feasible schedule!</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary" onclick="generateN2Problem()">New Problem</button>
+                                <button class="btn btn-secondary" onclick="resetN2Arena()">Reset</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 20px;">
+                            <!-- Task list -->
+                            <div style="min-width: 140px;">
+                                <div style="font-weight: 600; margin-bottom: 8px; font-size: 0.85em;">Tasks</div>
+                                <div id="n2-tasks" style="font-size: 0.8em;"></div>
+                            </div>
+                            <!-- Grid -->
+                            <div style="flex: 1;">
+                                <div id="n2-arena-grid" style="display: inline-block;"></div>
+                            </div>
+                            <!-- Status -->
+                            <div style="min-width: 180px;">
+                                <div style="font-weight: 600; margin-bottom: 8px; font-size: 0.85em;">Status</div>
+                                <div id="n2-status" style="font-size: 0.85em; padding: 10px; background: #f5f5f5; border-radius: 6px;">
+                                    <div><strong>Selected:</strong> <span id="n2-count">0</span> elements</div>
+                                    <div><strong>Total weight:</strong> <span id="n2-weight">0</span></div>
+                                    <div style="margin-top: 8px;" id="n2-feasibility">Select elements...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Exchange Property Counterexample -->
+                <section>
+                    <h2>Exchange Property Fails!</h2>
+                    <div style="display: flex; gap: 40px; justify-content: center; align-items: flex-start; margin-top: 20px;">
+                        <div style="text-align: center;">
+                            <div style="font-weight: 600; margin-bottom: 10px; color: #1976d2;">Schedule X (2 tasks)</div>
+                            <div id="n2-exchange-x" style="display: inline-block;"></div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+                            <div style="font-size: 1.5em; color: #c62828;">✗</div>
+                            <div style="font-size: 0.85em; color: var(--text-secondary); margin-top: 5px;">Can't exchange!</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-weight: 600; margin-bottom: 10px; color: #388e3c;">Schedule Y (1 task)</div>
+                            <div id="n2-exchange-y" style="display: inline-block;"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                        <div class="warning-box" style="padding: 12px; background: #fff3e0; border-left: 3px solid #ff9800; border-radius: 4px; font-size: 0.9em;">
+                            <p><strong>|X| = 2 > 1 = |Y|</strong>, but we cannot add any element from \(X \setminus Y\) to \(Y\):</p>
+                            <ul style="margin: 8px 0 0 20px;">
+                                <li>Task A is already scheduled in Y (on day 2)</li>
+                                <li>Day 1 is already used in Y (by task A? No... by task B!)</li>
+                            </ul>
+                        </div>
+                        <p class="fragment" style="margin-top: 15px; text-align: center;"><em>The feasible sets do <strong>not</strong> form a matroid. We need a different approach...</em></p>
+                    </div>
+                </section>
+
                 <!-- Key Insight -->
                 <section>
                     <h2>Key Insight: Realistic Sets</h2>
@@ -1431,6 +1528,38 @@
                         <p>where \(X(t) = \{i \in X : d_i \leq t\}\) (tasks with deadline ≤ t)</p>
                     </div>
                     <p class="fragment" style="margin-top: 15px;"><em>Intuition:</em> Can't schedule more than $t$ tasks with deadline $\leq t$.</p>
+                </section>
+
+                <!-- Realistic Set Arena -->
+                <section>
+                    <h2>Build a Realistic Set</h2>
+                    <div class="interactive-demo" style="max-width: 850px; margin: 0 auto;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-size: 0.85em; color: var(--text-secondary);">Drag tasks to build the largest realistic set!</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-primary" onclick="generateRealisticProblem()">New Problem</button>
+                                <button class="btn btn-success" onclick="checkRealisticSet()">Done</button>
+                                <button class="btn btn-secondary" onclick="resetRealisticArena()">Reset</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 15px; min-height: 320px;">
+                            <!-- Available tasks -->
+                            <div style="flex: 1; display: flex; flex-direction: column;">
+                                <div style="font-weight: 600; margin-bottom: 8px; font-size: 0.9em; color: var(--text-secondary);">Available Tasks</div>
+                                <div id="realistic-available" style="flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #f8f8f8; border: 2px dashed var(--border); border-radius: 8px; overflow-y: auto;"></div>
+                            </div>
+                            <!-- Drop zone for selected set -->
+                            <div style="flex: 1.5; display: flex; flex-direction: column;">
+                                <div style="font-weight: 600; margin-bottom: 8px; font-size: 0.9em; color: var(--text-secondary);">Your Realistic Set (drop here)</div>
+                                <div id="realistic-selected" style="flex: 1; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 8px; padding: 10px; background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border: 3px dashed #4caf50; border-radius: 8px; min-height: 200px;"></div>
+                                <div id="realistic-status" style="margin-top: 8px; padding: 8px; background: white; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85em;">
+                                    <strong>Current selection:</strong> <span id="realistic-count">0</span> tasks |
+                                    <span id="realistic-validity" style="color: #666;">Select tasks to begin</span>
+                                    <div id="realistic-feedback" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #eee; display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Matroid Structure -->
@@ -2519,6 +2648,505 @@
             updateDeadlineOutput();
         }
 
+        // ============ N² UNIVERSE ARENA ============
+
+        let n2Tasks = [];
+        let n2Selected = new Set(); // Set of "i,j" strings
+        const n2Colors = ['#ef5350', '#42a5f5', '#66bb6a', '#ffa726', '#ab47bc', '#26c6da'];
+
+        function generateN2Problem() {
+            const numTasks = 7; // Fixed at 7 tasks
+            n2Tasks = [];
+            n2Selected.clear();
+
+            const taskNames = 'ABCDEFGH'.split('');
+            for (let i = 0; i < numTasks; i++) {
+                n2Tasks.push({
+                    id: i,
+                    name: taskNames[i],
+                    deadline: 1 + Math.floor(Math.random() * numTasks),
+                    penalty: 2 + Math.floor(Math.random() * 8)
+                });
+            }
+
+            renderN2Arena();
+            renderN2ExchangeExample();
+        }
+
+        function renderN2Arena() {
+            const tasksDiv = document.getElementById('n2-tasks');
+            const gridDiv = document.getElementById('n2-arena-grid');
+            if (!tasksDiv || !gridDiv) return;
+
+            const n = n2Tasks.length;
+
+            // Render task list
+            tasksDiv.innerHTML = n2Tasks.map((t, i) => `
+                <div style="padding: 4px 8px; margin-bottom: 4px; background: ${n2Colors[i % n2Colors.length]}22; border-left: 3px solid ${n2Colors[i % n2Colors.length]}; border-radius: 3px;">
+                    <strong>${t.name}</strong>: d=${t.deadline}, p=${t.penalty}
+                </div>
+            `).join('');
+
+            // Render grid
+            let html = `<table style="border-collapse: collapse; border: 1px solid #333;">`;
+            // Header
+            html += '<tr><th style="padding: 6px; font-size: 0.8em;"></th>';
+            for (let j = 1; j <= n; j++) {
+                html += `<th style="padding: 6px; font-size: 0.8em; color: var(--text-secondary);">Day ${j}</th>`;
+            }
+            html += '</tr>';
+
+            // Rows
+            for (let i = 0; i < n; i++) {
+                const task = n2Tasks[i];
+                html += `<tr><td style="padding: 6px; font-weight: 600; color: ${n2Colors[i % n2Colors.length]};">${task.name}</td>`;
+                for (let j = 1; j <= n; j++) {
+                    const key = `${i},${j}`;
+                    const isSelected = n2Selected.has(key);
+                    const isOnTime = j <= task.deadline;
+                    const weight = isOnTime ? 0 : task.penalty;
+
+                    let bgColor = isOnTime ? '#e8f5e9' : '#ffebee';
+                    let borderColor = isOnTime ? '#a5d6a7' : '#ef9a9a';
+
+                    if (isSelected) {
+                        bgColor = n2Colors[i % n2Colors.length];
+                        borderColor = n2Colors[i % n2Colors.length];
+                    }
+
+                    html += `<td style="padding: 4px;">
+                        <div onclick="toggleN2Cell(${i}, ${j})" style="
+                            width: 44px; height: 44px; border-radius: 6px; cursor: pointer;
+                            background: ${bgColor}; border: 2px solid ${borderColor};
+                            display: flex; flex-direction: column; align-items: center; justify-content: center;
+                            font-size: 0.75em; transition: all 0.15s ease;
+                            ${isSelected ? 'color: white; font-weight: 600;' : ''}
+                        ">
+                            <span>${isSelected ? (weight > 0 ? '👀' : '✓') : ''}</span>
+                            <span style="font-size: 0.85em; ${isSelected ? '' : 'color: #666;'}">${weight > 0 ? `+${weight}` : '0'}</span>
+                        </div>
+                    </td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</table>';
+            gridDiv.innerHTML = html;
+
+            updateN2Status();
+        }
+
+        function toggleN2Cell(i, j) {
+            const key = `${i},${j}`;
+            if (n2Selected.has(key)) {
+                n2Selected.delete(key);
+            } else {
+                n2Selected.add(key);
+            }
+            renderN2Arena();
+        }
+
+        function checkN2Feasibility() {
+            const n = n2Tasks.length;
+            const taskUsed = new Array(n).fill(false);
+            const dayUsed = new Array(n + 1).fill(false);
+            const conflicts = [];
+
+            for (const key of n2Selected) {
+                const [i, j] = key.split(',').map(Number);
+                if (taskUsed[i]) {
+                    conflicts.push(`Task ${n2Tasks[i].name} scheduled twice`);
+                }
+                if (dayUsed[j]) {
+                    conflicts.push(`Day ${j} has multiple tasks`);
+                }
+                taskUsed[i] = true;
+                dayUsed[j] = true;
+            }
+
+            return { feasible: conflicts.length === 0, conflicts };
+        }
+
+        // Find optimal (minimum weight) assignment using brute force
+        function findOptimalN2Assignment() {
+            const n = n2Tasks.length;
+
+            // Generate all permutations of days [1, 2, ..., n]
+            function permutations(arr) {
+                if (arr.length <= 1) return [arr];
+                const result = [];
+                for (let i = 0; i < arr.length; i++) {
+                    const rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+                    for (const perm of permutations(rest)) {
+                        result.push([arr[i], ...perm]);
+                    }
+                }
+                return result;
+            }
+
+            const days = Array.from({ length: n }, (_, i) => i + 1);
+            const allPerms = permutations(days);
+
+            let minWeight = Infinity;
+            let bestAssignment = null;
+
+            for (const perm of allPerms) {
+                // perm[i] = day assigned to task i
+                let weight = 0;
+                for (let i = 0; i < n; i++) {
+                    const task = n2Tasks[i];
+                    const day = perm[i];
+                    if (day > task.deadline) {
+                        weight += task.penalty;
+                    }
+                }
+                if (weight < minWeight) {
+                    minWeight = weight;
+                    bestAssignment = perm;
+                }
+            }
+
+            return { minWeight, bestAssignment };
+        }
+
+        function updateN2Status() {
+            const countSpan = document.getElementById('n2-count');
+            const weightSpan = document.getElementById('n2-weight');
+            const feasibilityDiv = document.getElementById('n2-feasibility');
+            if (!countSpan || !weightSpan || !feasibilityDiv) return;
+
+            countSpan.textContent = n2Selected.size;
+
+            // Calculate total weight
+            let totalWeight = 0;
+            for (const key of n2Selected) {
+                const [i, j] = key.split(',').map(Number);
+                const task = n2Tasks[i];
+                if (j > task.deadline) {
+                    totalWeight += task.penalty;
+                }
+            }
+            weightSpan.textContent = totalWeight;
+
+            // Check feasibility
+            const { feasible, conflicts } = checkN2Feasibility();
+            const n = n2Tasks.length;
+
+            if (n2Selected.size === 0) {
+                feasibilityDiv.innerHTML = '<span style="color: #666;">Select elements...</span>';
+            } else if (!feasible) {
+                feasibilityDiv.innerHTML = `<span style="color: #c62828;">✗ Not feasible:<br>${conflicts.join('<br>')}</span>`;
+            } else if (n2Selected.size < n) {
+                feasibilityDiv.innerHTML = `<span style="color: #2e7d32;">✓ Feasible so far!</span><br><span style="color: #666;">(${n - n2Selected.size} tasks remaining)</span>`;
+            } else {
+                // All tasks assigned - check optimality
+                const { minWeight } = findOptimalN2Assignment();
+                if (totalWeight === minWeight) {
+                    feasibilityDiv.innerHTML = `<span style="color: #2e7d32;"><strong>🎉 Optimal!</strong></span><br>Your weight ${totalWeight} matches the minimum possible.`;
+                } else {
+                    feasibilityDiv.innerHTML = `<span style="color: #f57c00;"><strong>Complete, but not optimal.</strong></span><br>Your weight: ${totalWeight}<br>Optimal: ${minWeight}`;
+                }
+            }
+        }
+
+        function resetN2Arena() {
+            n2Selected.clear();
+            renderN2Arena();
+        }
+
+        // Exchange counterexample visualization
+        function renderN2ExchangeExample() {
+            const xDiv = document.getElementById('n2-exchange-x');
+            const yDiv = document.getElementById('n2-exchange-y');
+            if (!xDiv || !yDiv) return;
+
+            // Fixed counterexample: 2 tasks, A has deadline 2, B has deadline 1
+            // X = {(A,1), (B,2)} - 2 tasks scheduled (B is late since deadline is 1)
+            // Y = {(A,2)} - 1 task scheduled
+            // Can't add (A,1) to Y because A is already scheduled on day 2
+            // Can't add (B,2) to Y because day 2 is already used by A
+            const tasks = [
+                { name: 'A', deadline: 2 },
+                { name: 'B', deadline: 1 }
+            ];
+            const n = 2;
+
+            const xSelected = new Set(['0,1', '1,2']); // A on day 1, B on day 2
+            const ySelected = new Set(['0,2']); // A on day 2
+
+            function renderExchangeGrid(container, selected, highlightColor) {
+                let html = `<table style="border-collapse: collapse; font-size: 0.85em; border: 1px solid #333;">`;
+                html += '<tr style="background: #333; color: white;"><th style="padding: 5px; border: 1px solid #333;"></th>';
+                for (let j = 1; j <= n; j++) {
+                    html += `<th style="padding: 5px; border: 1px solid #333;">Day ${j}</th>`;
+                }
+                html += '</tr>';
+
+                for (let i = 0; i < n; i++) {
+                    const task = tasks[i];
+                    html += `<tr style="background: ${i % 2 === 0 ? '#fff9c4' : '#fff59d'};"><td style="padding: 5px; font-weight: 600; border: 1px solid #ddd;">${task.name} (d=${task.deadline})</td>`;
+                    for (let j = 1; j <= n; j++) {
+                        const key = `${i},${j}`;
+                        const isSelected = selected.has(key);
+                        const isOnTime = j <= task.deadline;
+
+                        let style = 'width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;';
+                        if (isSelected) {
+                            style += `background: ${highlightColor}; border: 3px solid ${highlightColor}; color: white; font-weight: bold;`;
+                        } else if (isOnTime) {
+                            style += 'background: #f5f5f5; border: 2px solid #e0e0e0;';
+                        } else {
+                            style += 'background: #ffebee; border: 2px dashed #ef9a9a; color: #c62828;';
+                        }
+
+                        html += `<td style="padding: 4px; border: 1px solid #ddd;"><div style="${style}">${isSelected ? '●' : (isOnTime ? '' : '✗')}</div></td>`;
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+                container.innerHTML = html;
+            }
+
+            renderExchangeGrid(xDiv, xSelected, '#1976d2');
+            renderExchangeGrid(yDiv, ySelected, '#388e3c');
+        }
+
+        // Render on slide change
+        Reveal.on('slidechanged', function(event) {
+            if (event.currentSlide.querySelector('#n2-arena-grid')) {
+                if (n2Tasks.length === 0) generateN2Problem();
+                else renderN2Arena();
+            }
+            if (event.currentSlide.querySelector('#n2-exchange-x')) {
+                renderN2ExchangeExample();
+            }
+        });
+
+        // ============ REALISTIC SET ARENA ============
+
+        let realisticTasks = [];
+        let realisticSelected = new Set(); // Set of task IDs in the user's selected set
+        let realisticDraggedId = null;
+
+        function generateRealisticProblem() {
+            const numTasks = 5 + Math.floor(Math.random() * 3); // 5-7 tasks
+            realisticTasks = [];
+            realisticSelected.clear();
+
+            const taskNames = 'ABCDEFGHIJ'.split('');
+            for (let i = 0; i < numTasks; i++) {
+                realisticTasks.push({
+                    id: i,
+                    name: taskNames[i],
+                    deadline: 1 + Math.floor(Math.random() * numTasks), // 1 to n
+                    penalty: 1 + Math.floor(Math.random() * 9) // 1-9
+                });
+            }
+
+            renderRealisticArena();
+            updateRealisticStatus();
+            const feedback = document.getElementById('realistic-feedback');
+            if (feedback) {
+                feedback.style.display = 'none';
+                feedback.innerHTML = '';
+            }
+        }
+
+        function renderRealisticArena() {
+            const availableContainer = document.getElementById('realistic-available');
+            const selectedContainer = document.getElementById('realistic-selected');
+            if (!availableContainer || !selectedContainer) return;
+
+            const taskColors = ['#a8d4f0', '#b8e6c1', '#f5c4c0', '#d4c4e8', '#f5e6a3', '#a8e6d5', '#f5d4b8', '#c4d4e8'];
+
+            // Render available (unselected) tasks
+            const available = realisticTasks.filter(t => !realisticSelected.has(t.id));
+            availableContainer.innerHTML = '';
+            available.forEach(task => {
+                const chip = createRealisticTaskChip(task, taskColors);
+                availableContainer.appendChild(chip);
+            });
+
+            // Render selected tasks
+            const selected = realisticTasks.filter(t => realisticSelected.has(t.id));
+            selectedContainer.innerHTML = '';
+            if (selected.length === 0) {
+                selectedContainer.innerHTML = '<span style="color: #888; font-style: italic; align-self: center; margin: auto;">Drop tasks here</span>';
+            } else {
+                selected.forEach(task => {
+                    const chip = createRealisticTaskChip(task, taskColors);
+                    selectedContainer.appendChild(chip);
+                });
+            }
+
+            // Set up drop zones
+            setupRealisticDropZone(availableContainer, false);
+            setupRealisticDropZone(selectedContainer, true);
+        }
+
+        function createRealisticTaskChip(task, taskColors) {
+            const chip = document.createElement('div');
+            chip.className = 'realistic-task-chip';
+            chip.draggable = true;
+            chip.dataset.taskId = task.id;
+            chip.style.cssText = `
+                background: ${taskColors[task.id % taskColors.length]};
+                padding: 8px 12px; border-radius: 6px; cursor: grab;
+                font-weight: 600; font-size: 0.9em; color: var(--text);
+                border: 2px solid transparent; transition: all 0.15s ease;
+            `;
+            chip.innerHTML = `<strong>${task.name}</strong>: d=${task.deadline}, p=${task.penalty}`;
+
+            chip.addEventListener('dragstart', (e) => {
+                realisticDraggedId = task.id;
+                e.dataTransfer.setData('text/plain', task.id);
+                chip.style.opacity = '0.5';
+                chip.style.transform = 'scale(0.95)';
+            });
+            chip.addEventListener('dragend', () => {
+                chip.style.opacity = '1';
+                chip.style.transform = 'scale(1)';
+                realisticDraggedId = null;
+            });
+
+            return chip;
+        }
+
+        function setupRealisticDropZone(container, isSelectedZone) {
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                container.style.borderColor = isSelectedZone ? '#2e7d32' : '#1976d2';
+                container.style.background = isSelectedZone
+                    ? 'linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%)'
+                    : '#e3f2fd';
+            });
+
+            container.addEventListener('dragleave', (e) => {
+                if (!container.contains(e.relatedTarget)) {
+                    container.style.borderColor = isSelectedZone ? '#4caf50' : 'var(--border)';
+                    container.style.background = isSelectedZone
+                        ? 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'
+                        : '#f8f8f8';
+                }
+            });
+
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+                container.style.borderColor = isSelectedZone ? '#4caf50' : 'var(--border)';
+                container.style.background = isSelectedZone
+                    ? 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)'
+                    : '#f8f8f8';
+
+                if (realisticDraggedId !== null) {
+                    if (isSelectedZone) {
+                        realisticSelected.add(realisticDraggedId);
+                    } else {
+                        realisticSelected.delete(realisticDraggedId);
+                    }
+                    renderRealisticArena();
+                    updateRealisticStatus();
+                }
+            });
+        }
+
+        function isRealisticSet(taskIds) {
+            const tasks = realisticTasks.filter(t => taskIds.has(t.id));
+            const n = realisticTasks.length;
+
+            for (let t = 1; t <= n; t++) {
+                const count = tasks.filter(task => task.deadline <= t).length;
+                if (count > t) {
+                    return { valid: false, failedAt: t, count: count };
+                }
+            }
+            return { valid: true };
+        }
+
+        function updateRealisticStatus() {
+            const countSpan = document.getElementById('realistic-count');
+            const validitySpan = document.getElementById('realistic-validity');
+            if (!countSpan || !validitySpan) return;
+
+            countSpan.textContent = realisticSelected.size;
+
+            const result = isRealisticSet(realisticSelected);
+            if (realisticSelected.size === 0) {
+                validitySpan.innerHTML = '<span style="color: #666;">Select tasks to begin</span>';
+            } else if (result.valid) {
+                validitySpan.innerHTML = '<span style="color: #2e7d32;">✓ Valid realistic set!</span>';
+            } else {
+                validitySpan.innerHTML = `<span style="color: #c62828;">✗ Not realistic: ${result.count} tasks with deadline ≤ ${result.failedAt}, but only ${result.failedAt} slots!</span>`;
+            }
+        }
+
+        function findMaxRealisticSet() {
+            // Greedy algorithm: sort by penalty descending, add if still realistic
+            const sorted = [...realisticTasks].sort((a, b) => b.penalty - a.penalty);
+            const maxSet = new Set();
+
+            for (const task of sorted) {
+                const testSet = new Set(maxSet);
+                testSet.add(task.id);
+                if (isRealisticSet(testSet).valid) {
+                    maxSet.add(task.id);
+                }
+            }
+
+            return maxSet;
+        }
+
+        function checkRealisticSet() {
+            const feedback = document.getElementById('realistic-feedback');
+            if (!feedback) return;
+
+            if (realisticSelected.size === 0) {
+                feedback.style.display = 'block';
+                feedback.innerHTML = '<span style="color: #c62828;">Please select at least one task!</span>';
+                return;
+            }
+
+            const result = isRealisticSet(realisticSelected);
+            const maxSet = findMaxRealisticSet();
+            const maxSize = maxSet.size;
+
+            feedback.style.display = 'block';
+
+            if (!result.valid) {
+                feedback.innerHTML = `<span style="color: #c62828;"><strong>Not a realistic set!</strong></span> ` +
+                    `You have ${result.count} tasks with deadline ≤ ${result.failedAt}, but can only schedule ${result.failedAt} of them by time ${result.failedAt}. ` +
+                    `Try removing some tasks with small deadlines.`;
+            } else if (realisticSelected.size === maxSize) {
+                // Check if it's the optimal (max penalty) realistic set
+                const userPenalty = realisticTasks.filter(t => realisticSelected.has(t.id)).reduce((sum, t) => sum + t.penalty, 0);
+                const maxPenalty = realisticTasks.filter(t => maxSet.has(t.id)).reduce((sum, t) => sum + t.penalty, 0);
+
+                if (userPenalty === maxPenalty) {
+                    feedback.innerHTML = `<span style="color: #2e7d32;"><strong>🎉 Perfect!</strong></span> ` +
+                        `You found a maximum realistic set with ${maxSize} tasks and total penalty ${userPenalty}. ` +
+                        `This is optimal for the greedy algorithm!`;
+                } else {
+                    feedback.innerHTML = `<span style="color: #f57c00;"><strong>Good!</strong></span> ` +
+                        `Your set has ${realisticSelected.size} tasks (maximum size), with total penalty ${userPenalty}. ` +
+                        `The greedy optimal has the same size but penalty ${maxPenalty}.`;
+                }
+            } else {
+                const userPenalty = realisticTasks.filter(t => realisticSelected.has(t.id)).reduce((sum, t) => sum + t.penalty, 0);
+                feedback.innerHTML = `<span style="color: #f57c00;"><strong>Valid, but not maximum!</strong></span> ` +
+                    `Your realistic set has ${realisticSelected.size} tasks (penalty sum: ${userPenalty}). ` +
+                    `The maximum realistic set has <strong>${maxSize}</strong> tasks. Can you find it?`;
+            }
+        }
+
+        function resetRealisticArena() {
+            realisticSelected.clear();
+            renderRealisticArena();
+            updateRealisticStatus();
+            const feedback = document.getElementById('realistic-feedback');
+            if (feedback) {
+                feedback.style.display = 'none';
+                feedback.innerHTML = '';
+            }
+        }
+
         // ============ GRAPH ARENA FOR EXCHANGE PROPERTY ============
 
         // Graph data structures
@@ -2574,6 +3202,133 @@
             graphMode = 'draw';
             renderGraph();
             document.getElementById('graph-output').innerHTML = '<strong>Draw mode:</strong> Click to add nodes. Drag between nodes to add edges. Right-click to delete. Drag nodes to reposition.';
+        }
+
+        function loadGraphPreset() {
+            const preset = document.getElementById('graph-preset').value;
+            if (!preset) return;
+
+            // Reset first
+            graphNodes = [];
+            graphEdges = [];
+            forestX.clear();
+            forestY.clear();
+            graphNodeIdCounter = 0;
+            graphEdgeIdCounter = 0;
+
+            const canvas = document.getElementById('graph-canvas');
+            const rect = canvas ? canvas.getBoundingClientRect() : { width: 750, height: 450 };
+            const width = rect.width || 750;
+            const height = 450;
+            const padding = 30;
+
+            if (preset === 'grid7') {
+                // 7x7 grid graph (49 vertices, laid out as grid)
+                const gridSize = 7;
+                const cellW = (width - 2 * padding) / (gridSize - 1);
+                const cellH = (height - 2 * padding) / (gridSize - 1);
+
+                for (let row = 0; row < gridSize; row++) {
+                    for (let col = 0; col < gridSize; col++) {
+                        graphNodes.push({
+                            id: graphNodeIdCounter++,
+                            x: padding + col * cellW,
+                            y: padding + row * cellH,
+                            label: ''
+                        });
+                    }
+                }
+                // Add edges: horizontal and vertical
+                for (let row = 0; row < gridSize; row++) {
+                    for (let col = 0; col < gridSize; col++) {
+                        const idx = row * gridSize + col;
+                        if (col < gridSize - 1) {
+                            graphEdges.push({ id: graphEdgeIdCounter++, from: idx, to: idx + 1, exchangeable: false });
+                        }
+                        if (row < gridSize - 1) {
+                            graphEdges.push({ id: graphEdgeIdCounter++, from: idx, to: idx + gridSize, exchangeable: false });
+                        }
+                    }
+                }
+            } else if (preset === 'cycle9') {
+                // 9-cycle
+                const n = 9;
+                const cx = width / 2;
+                const cy = height / 2;
+                const radius = Math.min(width, height) / 2 - padding - 20;
+
+                for (let i = 0; i < n; i++) {
+                    const angle = (2 * Math.PI * i / n) - Math.PI / 2;
+                    graphNodes.push({
+                        id: graphNodeIdCounter++,
+                        x: cx + radius * Math.cos(angle),
+                        y: cy + radius * Math.sin(angle),
+                        label: String.fromCharCode(65 + i)
+                    });
+                }
+                for (let i = 0; i < n; i++) {
+                    graphEdges.push({ id: graphEdgeIdCounter++, from: i, to: (i + 1) % n, exchangeable: false });
+                }
+            } else if (preset === 'k6') {
+                // Complete graph K6
+                const n = 6;
+                const cx = width / 2;
+                const cy = height / 2;
+                const radius = Math.min(width, height) / 2 - padding - 30;
+
+                for (let i = 0; i < n; i++) {
+                    const angle = (2 * Math.PI * i / n) - Math.PI / 2;
+                    graphNodes.push({
+                        id: graphNodeIdCounter++,
+                        x: cx + radius * Math.cos(angle),
+                        y: cy + radius * Math.sin(angle),
+                        label: String.fromCharCode(65 + i)
+                    });
+                }
+                for (let i = 0; i < n; i++) {
+                    for (let j = i + 1; j < n; j++) {
+                        graphEdges.push({ id: graphEdgeIdCounter++, from: i, to: j, exchangeable: false });
+                    }
+                }
+            } else if (preset === 'random10') {
+                // Random graph on 10 vertices
+                const n = 10;
+                const cx = width / 2;
+                const cy = height / 2;
+
+                // Place nodes randomly but with some structure
+                for (let i = 0; i < n; i++) {
+                    const angle = (2 * Math.PI * i / n) + (Math.random() - 0.5) * 0.3;
+                    const r = (Math.min(width, height) / 2 - padding - 30) * (0.5 + Math.random() * 0.5);
+                    graphNodes.push({
+                        id: graphNodeIdCounter++,
+                        x: cx + r * Math.cos(angle),
+                        y: cy + r * Math.sin(angle),
+                        label: String.fromCharCode(65 + i)
+                    });
+                }
+                // Add random edges (each edge exists with ~35% probability, ensure connected)
+                const added = new Set();
+                // First ensure connectivity with a spanning path
+                for (let i = 0; i < n - 1; i++) {
+                    graphEdges.push({ id: graphEdgeIdCounter++, from: i, to: i + 1, exchangeable: false });
+                    added.add(`${i},${i + 1}`);
+                }
+                // Add more random edges
+                for (let i = 0; i < n; i++) {
+                    for (let j = i + 1; j < n; j++) {
+                        if (!added.has(`${i},${j}`) && Math.random() < 0.35) {
+                            graphEdges.push({ id: graphEdgeIdCounter++, from: i, to: j, exchangeable: false });
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('graph-mode').value = 'draw';
+            graphMode = 'draw';
+            document.getElementById('graph-preset').value = '';
+            renderGraph();
+            document.getElementById('graph-output').innerHTML = `<strong>Loaded ${preset === 'grid7' ? '7×7 Grid' : preset === 'cycle9' ? '9-Cycle' : preset === 'k6' ? 'K₆' : 'Random'} graph.</strong> Switch to Forest X/Y mode to select edges.`;
         }
 
         function clearForests() {
@@ -2657,7 +3412,7 @@
 
             const rect = canvas.getBoundingClientRect();
             const width = rect.width || 750;
-            const height = 340;
+            const height = 450;
 
             let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="display:block;"
                         onmousedown="graphCanvasMouseDown(event)"
@@ -2676,10 +3431,20 @@
 
                 let strokeColor = '#cbd5e1';
                 let strokeWidth = 3;
+                let strokeDash = '';
 
                 if (inX && inY) {
-                    strokeColor = NODE_COLORS.both;
-                    strokeWidth = 5;
+                    // Draw both: solid blue underneath, dashed green on top
+                    svg += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}"
+                            stroke="${NODE_COLORS.forestX}" stroke-width="5" stroke-linecap="round"
+                            style="cursor: pointer;"
+                            onmousedown="graphEdgeClick(event, ${edge.id})"
+                            oncontextmenu="event.preventDefault(); deleteGraphEdge(${edge.id})"/>`;
+                    svg += `<line x1="${n1.x}" y1="${n1.y}" x2="${n2.x}" y2="${n2.y}"
+                            stroke="${NODE_COLORS.forestY}" stroke-width="5" stroke-linecap="round"
+                            stroke-dasharray="5,10"
+                            style="cursor: pointer; pointer-events: none;"/>`;
+                    continue;
                 } else if (inX) {
                     strokeColor = NODE_COLORS.forestX;
                     strokeWidth = 5;
@@ -2698,10 +3463,6 @@
                         style="cursor: pointer;"
                         onmousedown="graphEdgeClick(event, ${edge.id})"
                         oncontextmenu="event.preventDefault(); deleteGraphEdge(${edge.id})"/>`;
-
-                // Edge label (optional, for debugging)
-                // const mx = (n1.x + n2.x) / 2, my = (n1.y + n2.y) / 2;
-                // svg += `<text x="${mx}" y="${my}" fill="#666" font-size="10" text-anchor="middle">${edge.id}</text>`;
             }
 
             // Draw edge preview while dragging
@@ -2742,14 +3503,28 @@
             canvas.innerHTML = svg;
         }
 
+        // Helper to convert mouse event to SVG coordinates
+        function getSVGCoordinates(e) {
+            const canvas = document.getElementById('graph-canvas');
+            const svg = canvas.querySelector('svg');
+            if (!svg) return null;
+
+            const pt = svg.createSVGPoint();
+            pt.x = e.clientX;
+            pt.y = e.clientY;
+            const ctm = svg.getScreenCTM();
+            if (!ctm) return null;
+            const svgP = pt.matrixTransform(ctm.inverse());
+            return { x: svgP.x, y: svgP.y, svg: svg };
+        }
+
         function graphCanvasMouseDown(e) {
             if (e.button !== 0) return; // Only left click
             if (graphMode !== 'draw') return;
 
-            const canvas = document.getElementById('graph-canvas');
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const coords = getSVGCoordinates(e);
+            if (!coords) return;
+            const { x, y } = coords;
 
             // Check if clicking on empty space (not a node)
             const clickedNode = graphNodes.find(n =>
@@ -2777,15 +3552,15 @@
 
             if (graphMode !== 'draw') return;
 
-            const canvas = document.getElementById('graph-canvas');
-            const rect = canvas.getBoundingClientRect();
+            const coords = getSVGCoordinates(e);
+            if (!coords) return;
 
             graphDragState = {
                 active: true,
                 mode: 'create-edge', // Start as edge creation, switch to move if no target
                 nodeId: nodeId,
-                startX: e.clientX - rect.left,
-                startY: e.clientY - rect.top,
+                startX: coords.x,
+                startY: coords.y,
                 edgePreview: null,
                 moved: false
             };
@@ -2794,10 +3569,9 @@
         function graphCanvasMouseMove(e) {
             if (!graphDragState.active) return;
 
-            const canvas = document.getElementById('graph-canvas');
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const coords = getSVGCoordinates(e);
+            if (!coords) return;
+            const { x, y, svg } = coords;
 
             const dx = x - graphDragState.startX;
             const dy = y - graphDragState.startY;
@@ -2812,8 +3586,9 @@
             } else if (graphDragState.mode === 'move-node') {
                 const node = graphNodes.find(n => n.id === graphDragState.nodeId);
                 if (node) {
-                    node.x = Math.max(NODE_RADIUS, Math.min(rect.width - NODE_RADIUS, x));
-                    node.y = Math.max(NODE_RADIUS, Math.min(340 - NODE_RADIUS, y));
+                    const viewBox = svg.viewBox.baseVal;
+                    node.x = Math.max(NODE_RADIUS, Math.min(viewBox.width - NODE_RADIUS, x));
+                    node.y = Math.max(NODE_RADIUS, Math.min(viewBox.height - NODE_RADIUS, y));
                     renderGraph();
                 }
             }
@@ -2822,10 +3597,9 @@
         function graphCanvasMouseUp(e) {
             if (!graphDragState.active) return;
 
-            const canvas = document.getElementById('graph-canvas');
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+            const coords = getSVGCoordinates(e);
+            if (!coords) return;
+            const { x, y } = coords;
 
             if (graphDragState.mode === 'create-edge' && graphDragState.moved) {
                 // Find target node
@@ -2964,6 +3738,8 @@
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             generateDeadlineProblem();
+            generateRealisticProblem();
+            generateN2Problem();
             renderGraph();
         });
     </script>
