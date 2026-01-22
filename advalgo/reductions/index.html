@@ -1,0 +1,2768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reductions</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Overlock:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Heliotrope font */
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_italic.woff2') format('woff2');
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_bold_italic.woff2') format('woff2');
+            font-weight: bold;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
+
+    <!-- RevealJS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+    <style>
+        /* ============================================
+           CLEAN MINIMALIST STYLES - gwern.net inspired
+           ============================================ */
+
+        :root, .reveal {
+            /* Base palette */
+            --bg-main: #f5f5f5;
+            --bg-slide: #ffffff;
+            --text: #222222;
+            --text-primary: #222222;
+            --text-secondary: #666666;
+            --text-light: #666666;
+            --border: #cccccc;
+            --border-dark: #888888;
+            --border-light: #dddddd;
+            --border-medium: #aaaaaa;
+            --error: #c44;
+            --r-main-color: #222222;
+            --r-heading-color: #222222;
+            --r-link-color: #222222;
+            --r-selection-color: #222222;
+
+            /* 7 distinct pastel accent colors */
+            --pastel-blue: #a8d4f0;
+            --pastel-green: #b8e6c1;
+            --pastel-coral: #f5c4c0;
+            --pastel-lavender: #d4c4e8;
+            --pastel-gold: #f5e6a3;
+            --pastel-mint: #a8e6d5;
+            --pastel-peach: #f5d4b8;
+        }
+
+        /* Base reveal overrides */
+        .reveal-viewport {
+            background: var(--bg-main);
+        }
+
+        .reveal {
+            font-family: 'Heliotrope', Georgia, serif;
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        /* Slide container with double border - consistent sizing */
+        .reveal .slides > section {
+            background: var(--bg-slide);
+            border: 3px double var(--border);
+            padding: 55px 35px 30px 35px;
+            box-sizing: border-box;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Nested sections (vertical slides) */
+        .reveal .slides section > section {
+            border: none;
+            padding: 40px 0 0 0 !important;
+            background: transparent;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Ensure all text is dark by default */
+        .reveal .slides section {
+            color: var(--text) !important;
+        }
+        .reveal .slides section p,
+        .reveal .slides section span,
+        .reveal .slides section li,
+        .reveal .slides section strong,
+        .reveal .slides section em,
+        .reveal .slides section div {
+            color: var(--text);
+        }
+
+        /* Ensure fragments are visible */
+        .reveal .slides .fragment,
+        .reveal .slides .fragment * {
+            color: var(--text) !important;
+        }
+
+        /* Exceptions for elements with dark backgrounds */
+        .reveal .slides .btn-primary,
+        .reveal .slides .nav-btn:not(.back),
+        .reveal .slides table th {
+            color: white !important;
+        }
+
+        /* Typography */
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: -0.01em;
+        }
+
+        .reveal h1 {
+            font-size: 1.7em;
+            margin-bottom: 0.3em;
+        }
+
+        .reveal h2 {
+            font-size: 1.25em;
+            margin-bottom: 0.25em;
+            padding-bottom: 0.15em;
+            border-bottom: 1px solid var(--border-dark);
+            display: inline-block;
+        }
+
+        .reveal h3 {
+            font-size: 0.95em;
+            margin-bottom: 0.2em;
+            font-style: italic;
+            color: var(--text-light);
+        }
+
+        .reveal p {
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 0.5em;
+        }
+
+        .reveal ul, .reveal ol {
+            color: var(--text);
+            margin-left: 1em;
+        }
+
+        .reveal li {
+            color: var(--text);
+            margin-bottom: 0.3em;
+            line-height: 1.45;
+        }
+
+        .reveal strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .reveal em {
+            color: var(--text-light);
+        }
+
+        /* Simple framed boxes */
+        .definition-box, .theorem-box, .algorithm-box, .success-box {
+            background: var(--bg-slide);
+            border: 1px solid var(--border-dark);
+            padding: 10px 14px;
+            margin: 10px 0;
+            max-width: 88%;
+            box-sizing: border-box;
+        }
+
+        .definition-box {
+            border-left: 3px solid var(--pastel-blue);
+        }
+
+        .theorem-box {
+            border-left: 3px solid var(--pastel-green);
+        }
+
+        .algorithm-box {
+            border-left: 3px solid var(--pastel-lavender);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            background: #fafafa;
+        }
+
+        .success-box {
+            border-left: 3px solid var(--pastel-mint);
+        }
+
+        .goal-box {
+            border-left: 3px solid #9b8bb8;
+        }
+
+        .algorithm-box .keyword {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Demo containers */
+        .demo-container {
+            background: #fafafa;
+            border: 1px solid var(--border);
+            padding: 10px;
+            margin: 10px 0;
+            max-width: 95%;
+            box-sizing: border-box;
+        }
+
+        .demo-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+            gap: 8px;
+        }
+
+        .demo-title {
+            font-family: 'Overlock', sans-serif;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .demo-controls label {
+            font-size: 0.75em;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .demo-controls input {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 4px 6px;
+            font-size: 0.8em;
+            width: 50px;
+        }
+
+        .demo-controls input:focus {
+            outline: none;
+            border-color: var(--border-dark);
+        }
+
+        .demo-canvas {
+            background: white;
+            border: 1px solid var(--border);
+            margin: 8px 0;
+            min-height: 280px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: var(--text);
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Buttons */
+        .btn {
+            background: white;
+            border: 1px solid var(--border-dark);
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 600;
+            font-family: 'Heliotrope', sans-serif;
+            color: var(--text);
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
+
+        .btn-primary:hover {
+            background: #444444;
+        }
+
+        .btn-success {
+            background: var(--pastel-green);
+            border-color: #8bc99b;
+            color: var(--text);
+        }
+
+        .btn-warning {
+            background: var(--pastel-gold);
+            border-color: #d4c47a;
+            color: var(--text);
+        }
+
+        .btn-secondary {
+            background: #eeeeee;
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        /* Approach cards */
+        .approach-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin: 10px 0;
+            max-width: 88%;
+        }
+
+        .approach-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .approach-card:hover {
+            background: #f8f8f8;
+            border-color: var(--border-dark);
+        }
+
+        .approach-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 4px;
+            color: var(--text);
+            font-style: normal;
+        }
+
+        .approach-card p {
+            font-size: 0.8em;
+            color: var(--text-light);
+            margin: 0;
+        }
+
+        .approach-card.correct {
+            border: 2px solid var(--pastel-green);
+            background: #f8fff8;
+        }
+
+        /* Navigation buttons */
+        .nav-btn {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--text);
+            color: white;
+            text-decoration: none;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: #444444;
+        }
+
+        .nav-btn.back {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border-dark);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        /* Title slide */
+        .title-slide {
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+        }
+
+        /* Section title slide */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .section-title h1 {
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        /* Tables */
+        .reveal table {
+            color: var(--text);
+        }
+
+        .reveal table th {
+            background: var(--text);
+            color: white;
+            padding: 8px;
+        }
+
+        .reveal table td {
+            color: var(--text);
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* Feedback messages */
+        .feedback {
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 0.85em;
+            border: 1px solid var(--border);
+        }
+
+        .feedback-success {
+            background: #f0fff0;
+            border-color: var(--pastel-green);
+            color: var(--text);
+        }
+
+        .feedback-error {
+            background: #fff5f5;
+            border-color: var(--pastel-coral);
+            color: var(--text);
+        }
+
+        .feedback-info {
+            background: #f5faff;
+            border-color: var(--pastel-blue);
+            color: var(--text);
+        }
+
+        /* Small text helpers */
+        .small { font-size: 0.85em; }
+        .tiny { font-size: 0.75em; }
+
+        /* Highlight for key terms */
+        .highlight {
+            background: var(--pastel-gold);
+            padding: 1px 4px;
+        }
+
+        /* Slide number */
+        .reveal .slide-number {
+            background: transparent;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        /* Progress bar */
+        .reveal .progress {
+            height: 3px;
+            background: var(--border);
+        }
+
+        .reveal .progress span {
+            background: var(--text);
+        }
+
+        /* KaTeX math */
+        .reveal .katex {
+            color: var(--text);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE ===== -->
+            <section class="title-slide">
+                <h1>Reductions</h1>
+                <p class="subtitle">Computational Complexity and Problem Transformations</p>
+
+                <div style="margin-top: 350px; text-align:left; font-size: 0.75em;">
+                    <p>Slides made in collaboration with Claude. All the cool bits are thanks to Claude, and blame <a href="https://www.neeldhara.com" style="color: seagreen;">me</a> for oversights :)</p>
+                </div>
+            </section>
+
+            <!-- ===== SECTION 1: Reductions: an Overview ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Reductions: an Overview</h1>
+                </section>
+
+                <section>
+                    <h2></h2>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 2: Flows ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Flows</h1>
+                </section>
+
+                <!-- Interactive Flow Network -->
+                <section>
+                    <h2>A Flow Network</h2>
+                    <div class="demo-container" style="max-width: 92%;">
+                        <div class="demo-header">
+                            <span class="demo-title">Interactive Flow Network</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-secondary" onclick="resetFlows()">Reset Flows</button>
+                            </div>
+                        </div>
+                        <div id="flow-network-container" style="display: flex; justify-content: center; align-items: center; min-height: 300px;">
+                            <svg id="flow-svg" width="620" height="290" viewBox="0 0 620 290" style="font-family: 'Heliotrope', Georgia, serif;">
+                                <!-- Definitions for arrowheads -->
+                                <defs>
+                                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                        <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+                                    </marker>
+                                </defs>
+
+                                <!-- Source indicator arrow -->
+                                <line x1="15" y1="145" x2="40" y2="145" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                                <!-- Sink indicator arrow -->
+                                <line x1="515" y1="145" x2="545" y2="145" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+                                <!-- Edge: s -> v1 (capacity 20) -->
+                                <line id="edge-s-v1" x1="70" y1="130" x2="160" y2="65" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(100, 82)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-s-v1">0</tspan>/<tspan>20</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('s-v1', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('s-v1', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: s -> v3 (capacity 10) -->
+                                <line id="edge-s-v3" x1="70" y1="160" x2="160" y2="225" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(100, 208)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-s-v3">0</tspan>/<tspan>10</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('s-v3', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('s-v3', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v1 -> v2 (capacity 5) -->
+                                <line id="edge-v1-v2" x1="196" y1="50" x2="358" y2="50" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(277, 22)">
+                                    <text x="0" y="-4" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v1-v2">0</tspan>/<tspan>5</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v1-v2', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v1-v2', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v1 -> v3 (capacity 10) -->
+                                <line id="edge-v1-v3" x1="180" y1="70" x2="180" y2="215" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(205, 140)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v1-v3">0</tspan>/<tspan>10</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v1-v3', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v1-v3', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v1 -> v4 (capacity 15) - diagonal -->
+                                <line id="edge-v1-v4" x1="192" y1="68" x2="362" y2="218" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(300, 125)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v1-v4">0</tspan>/<tspan>15</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v1-v4', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v1-v4', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v3 -> v4 (capacity 10) -->
+                                <line id="edge-v3-v4" x1="196" y1="240" x2="358" y2="240" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(277, 258)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v3-v4">0</tspan>/<tspan>10</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v3-v4', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v3-v4', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v4 -> v2 (capacity 10) -->
+                                <line id="edge-v4-v2" x1="377" y1="215" x2="377" y2="70" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(407, 140)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v4-v2">0</tspan>/<tspan>10</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v4-v2', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v4-v2', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v2 -> t (capacity 15) -->
+                                <line id="edge-v2-t" x1="393" y1="62" x2="480" y2="130" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(452, 82)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v2-t">0</tspan>/<tspan>15</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v2-t', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v2-t', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Edge: v4 -> t (capacity 20) -->
+                                <line id="edge-v4-t" x1="393" y1="228" x2="480" y2="160" stroke="#555" stroke-width="2" marker-end="url(#arrowhead)"/>
+                                <g class="edge-control" transform="translate(452, 208)">
+                                    <text x="0" y="-6" text-anchor="middle" font-size="13" fill="#222" font-weight="600" font-family="Heliotrope, Georgia, serif"><tspan id="flow-v4-t">0</tspan>/<tspan>20</tspan></text>
+                                    <g class="flow-buttons">
+                                        <rect x="-26" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v4-t', -1)"/>
+                                        <text x="-16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">−</text>
+                                        <rect x="6" y="2" width="20" height="16" rx="3" fill="#eee" stroke="#aaa" style="cursor:pointer" onclick="adjustFlow('v4-t', 1)"/>
+                                        <text x="16" y="14" text-anchor="middle" font-size="13" fill="#555" style="pointer-events:none" font-family="Heliotrope, Georgia, serif">+</text>
+                                    </g>
+                                </g>
+
+                                <!-- Nodes -->
+                                <!-- Source s -->
+                                <circle id="node-s" cx="55" cy="145" r="16" fill="white" stroke="#222" stroke-width="2"/>
+                                <text x="55" y="175" text-anchor="middle" font-size="14" font-weight="600" font-style="italic" fill="#222" font-family="Heliotrope, Georgia, serif">s</text>
+                                <text id="netflow-s" x="55" y="150" text-anchor="middle" font-size="12" font-weight="600" fill="#222" font-family="Heliotrope, Georgia, serif">0</text>
+
+                                <!-- v1 -->
+                                <circle id="node-v1" cx="180" cy="50" r="16" fill="white" stroke="#222" stroke-width="2"/>
+                                <text x="153" y="40" text-anchor="middle" font-size="12" fill="#222" font-family="Heliotrope, Georgia, serif">v₁</text>
+                                <text id="netflow-v1" x="180" y="55" text-anchor="middle" font-size="12" font-weight="600" fill="#222" font-family="Heliotrope, Georgia, serif">0</text>
+
+                                <!-- v2 -->
+                                <circle id="node-v2" cx="377" cy="50" r="16" fill="white" stroke="#222" stroke-width="2"/>
+                                <text x="404" y="40" text-anchor="middle" font-size="12" fill="#222" font-family="Heliotrope, Georgia, serif">v₂</text>
+                                <text id="netflow-v2" x="377" y="55" text-anchor="middle" font-size="12" font-weight="600" fill="#222" font-family="Heliotrope, Georgia, serif">0</text>
+
+                                <!-- v3 -->
+                                <circle id="node-v3" cx="180" cy="240" r="16" fill="white" stroke="#222" stroke-width="2"/>
+                                <text x="153" y="255" text-anchor="middle" font-size="12" fill="#222" font-family="Heliotrope, Georgia, serif">v₃</text>
+                                <text id="netflow-v3" x="180" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="#222" font-family="Heliotrope, Georgia, serif">0</text>
+
+                                <!-- v4 -->
+                                <circle id="node-v4" cx="377" cy="240" r="16" fill="white" stroke="#222" stroke-width="2"/>
+                                <text x="404" y="255" text-anchor="middle" font-size="12" fill="#222" font-family="Heliotrope, Georgia, serif">v₄</text>
+                                <text id="netflow-v4" x="377" y="245" text-anchor="middle" font-size="12" font-weight="600" fill="#222" font-family="Heliotrope, Georgia, serif">0</text>
+
+                                <!-- Sink t -->
+                                <circle id="node-t" cx="495" cy="145" r="16" fill="white" stroke="#222" stroke-width="2"/>
+                                <text x="495" y="175" text-anchor="middle" font-size="14" font-weight="600" font-style="italic" fill="#222" font-family="Heliotrope, Georgia, serif">t</text>
+                                <text id="netflow-t" x="495" y="150" text-anchor="middle" font-size="12" font-weight="600" fill="#222" font-family="Heliotrope, Georgia, serif">0</text>
+                            </svg>
+                        </div>
+                        <div class="demo-output" id="flow-commentary">
+                            Here's a flow network. What is the maximum flow that you can drive through it?
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Definition Slide -->
+                <section>
+                    <h2>Flow: Formal Definition</h2>
+                    <div class="definition-box">
+                        <p><strong>Flow Network:</strong> A directed graph \(G = (V, E)\) with:</p>
+                        <ul>
+                            <li class="fragment">A <strong>source</strong> vertex \(s\) and a <strong>sink</strong> vertex \(t\)</li>
+                            <li class="fragment">A <strong>capacity function</strong> \(c: E \to \mathbb{R}_{\geq 0}\)</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box fragment" style="margin-top: 15px;">
+                        <p><strong>(s,t)-Flow:</strong> A function \(f: E \to \mathbb{R}\) satisfying the <em>conservation constraint</em> at every vertex \(v\) except \(s\) and \(t\):</p>
+                        <p style="text-align: center; margin: 10px 0; font-size: 1.1em;">
+                            \(\displaystyle\sum_{u} f(u \to v) = \sum_{w} f(v \to w)\)
+                        </p>
+                        <p class="small" style="color: var(--text-light);"><em>In words: flow into \(v\) equals flow out of \(v\)</em></p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 15px;">
+                        <p><strong>Value of a flow:</strong> \(\displaystyle|f| := \sum_{w} f(s \to w) - \sum_{u} f(u \to s)\)</p>
+                        <p class="small" style="color: var(--text-light);"><em>The net flow leaving the source</em></p>
+                    </div>
+                </section>
+
+                <!-- Feasibility Slide -->
+                <section>
+                    <h2>Feasible Flows</h2>
+                    <div class="definition-box">
+                        <p>A flow \(f\) is <strong>feasible</strong> with respect to capacity \(c\) if:</p>
+                        <p style="text-align: center; margin: 10px 0; font-size: 1.1em;">
+                            \(0 \leq f(e) \leq c(e)\) for every edge \(e\)
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 20px;">
+                        <p><strong>Terminology:</strong></p>
+                        <ul>
+                            <li class="fragment">Flow <strong>saturates</strong> edge \(e\) if \(f(e) = c(e)\)</li>
+                            <li class="fragment">Flow <strong>avoids</strong> edge \(e\) if \(f(e) = 0\)</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box goal-box fragment" style="margin-top: 20px;">
+                        <p><strong>Maximum Flow Problem:</strong> Given a flow network \((G, s, t, c)\), compute a feasible \((s,t)\)-flow with maximum value.</p>
+                    </div>
+                </section>
+
+                <!-- Cuts Definition Slide -->
+                <section>
+                    <h2>Cuts</h2>
+                    <div class="definition-box">
+                        <p><strong>(s,t)-cut:</strong> A partition of vertices into disjoint subsets \(S\) and \(T\) where:</p>
+                        <ul>
+                            <li class="fragment">\(S \cup T = V\) and \(S \cap T = \emptyset\)</li>
+                            <li class="fragment">\(s \in S\) and \(t \in T\)</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box fragment" style="margin-top: 20px;">
+                        <p><strong>Capacity of a cut:</strong></p>
+                        <p style="text-align: center; margin: 10px 0; font-size: 1.1em;">
+                            \(\displaystyle\|S, T\| := \sum_{v \in S} \sum_{w \in T} c(v \to w)\)
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 15px; padding: 10px; background: var(--bg-light); border-radius: 8px;">
+                        <p class="small" style="color: var(--text-light);">
+                            <strong>Note:</strong> The definition is asymmetric—edges from \(T\) to \(S\) are <em>not</em> counted.
+                        </p>
+                        <p class="small fragment" style="color: var(--text-light); margin-top: 5px;">
+                            (If \(v \to w\) is not an edge, we assume \(c(v \to w) = 0\).)
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Cut Example Slide -->
+                <section>
+                    <h2>Example: An (s,t)-cut</h2>
+                    <div style="display: flex; justify-content: center; margin: 20px 0;">
+                        <svg width="500" height="280" viewBox="0 0 500 280">
+                            <!-- S region (teal/green) -->
+                            <ellipse cx="140" cy="140" rx="120" ry="120" fill="rgba(0, 150, 136, 0.15)" stroke="var(--accent)" stroke-width="2"/>
+                            <text x="40" y="260" fill="var(--accent)" font-size="24" font-weight="bold">S</text>
+
+                            <!-- T region (red/pink) -->
+                            <ellipse cx="360" cy="140" rx="120" ry="120" fill="rgba(231, 76, 60, 0.15)" stroke="#e74c3c" stroke-width="2"/>
+                            <text x="460" y="260" fill="#e74c3c" font-size="24" font-weight="bold">T</text>
+
+                            <!-- Edges -->
+                            <!-- s to top-left in S -->
+                            <line x1="100" y1="140" x2="160" y2="60" stroke="#666" stroke-width="2" marker-end="url(#cutArrow)"/>
+                            <text x="115" y="90" fill="var(--text)" font-size="14">20</text>
+
+                            <!-- s to bottom-left in S -->
+                            <line x1="100" y1="140" x2="160" y2="220" stroke="#666" stroke-width="2" marker-end="url(#cutArrow)"/>
+                            <text x="115" y="195" fill="var(--text)" font-size="14">10</text>
+
+                            <!-- top-left to top-right (crosses cut - red) -->
+                            <line x1="170" y1="60" x2="300" y2="60" stroke="#e74c3c" stroke-width="3" marker-end="url(#cutArrowRed)"/>
+                            <text x="230" y="50" fill="#e74c3c" font-size="14" font-weight="bold">5</text>
+
+                            <!-- bottom-right to top-left (crosses cut T→S - does NOT count) -->
+                            <line x1="300" y1="210" x2="180" y2="75" stroke="#666" stroke-width="2" marker-end="url(#cutArrow)"/>
+                            <text x="220" y="155" fill="var(--text)" font-size="14">15</text>
+
+                            <!-- bottom-left to bottom-right (crosses cut - red) -->
+                            <line x1="170" y1="220" x2="300" y2="220" stroke="#e74c3c" stroke-width="3" marker-end="url(#cutArrowRed)"/>
+                            <text x="230" y="245" fill="#e74c3c" font-size="14" font-weight="bold">10</text>
+
+                            <!-- top-right to t -->
+                            <line x1="320" y1="60" x2="400" y2="140" stroke="#666" stroke-width="2" marker-end="url(#cutArrow)"/>
+                            <text x="370" y="85" fill="var(--text)" font-size="14">15</text>
+
+                            <!-- bottom-right to top-right -->
+                            <line x1="310" y1="210" x2="310" y2="70" stroke="#666" stroke-width="2" marker-end="url(#cutArrow)"/>
+                            <text x="318" y="140" fill="var(--text)" font-size="14">10</text>
+
+                            <!-- bottom-right to t -->
+                            <line x1="320" y1="220" x2="400" y2="140" stroke="#666" stroke-width="2" marker-end="url(#cutArrow)"/>
+                            <text x="370" y="195" fill="var(--text)" font-size="14">20</text>
+
+                            <!-- Nodes -->
+                            <circle cx="100" cy="140" r="20" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>
+                            <text x="100" y="145" fill="white" font-size="14" text-anchor="middle" font-weight="bold">s</text>
+
+                            <circle cx="170" cy="60" r="15" fill="var(--bg-light)" stroke="var(--accent)" stroke-width="2"/>
+                            <circle cx="170" cy="220" r="15" fill="var(--bg-light)" stroke="var(--accent)" stroke-width="2"/>
+
+                            <circle cx="310" cy="60" r="15" fill="var(--bg-light)" stroke="#e74c3c" stroke-width="2"/>
+                            <circle cx="310" cy="220" r="15" fill="var(--bg-light)" stroke="#e74c3c" stroke-width="2"/>
+
+                            <circle cx="400" cy="140" r="20" fill="#e74c3c" stroke="var(--bg)" stroke-width="2"/>
+                            <text x="400" y="145" fill="white" font-size="14" text-anchor="middle" font-weight="bold">t</text>
+
+                            <!-- Arrow markers -->
+                            <defs>
+                                <marker id="cutArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L9,3 z" fill="#666"/>
+                                </marker>
+                                <marker id="cutArrowRed" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L9,3 z" fill="#e74c3c"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                    <p style="text-align: center; color: var(--text-light); font-size: 0.9em;">
+                        Capacity of this cut: <span style="color: #e74c3c; font-weight: bold;">\(5 + 10 = 15\)</span>
+                    </p>
+                    <p class="fragment small" style="text-align: center; margin-top: 10px;">
+                        <em>Red edges cross from \(S\) to \(T\) — only these count toward cut capacity</em>
+                    </p>
+                </section>
+
+                <!-- Minimum Cut Problem Slide -->
+                <section>
+                    <h2>The Minimum Cut Problem</h2>
+                    <div class="definition-box goal-box">
+                        <p><strong>Minimum Cut Problem:</strong></p>
+                        <p style="margin-top: 10px;">
+                            Given a flow network \((G, s, t, c)\), compute an \((s,t)\)-cut whose capacity is as small as possible.
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 30px; padding: 15px; background: var(--bg-light); border-radius: 8px; border-left: 4px solid var(--accent); max-width: 92%;">
+                        <p style="font-size: 0.9em;">
+                            <strong>Intuition:</strong> The minimum cut is the "cheapest bottleneck" — the smallest-capacity set of edges whose removal disconnects \(s\) from \(t\).
+                        </p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 25px; color: var(--text-light);">
+                        What's the relationship between maximum flows and minimum cuts?
+                    </p>
+                </section>
+
+                <!-- Max-Flow Min-Cut Lemma Statement -->
+                <section>
+                    <h2>Flows vs. Cuts</h2>
+                    <div class="definition-box" style="border-left-color: var(--accent);">
+                        <p><strong>Lemma:</strong> Let \(f\) be <em>any</em> feasible \((s,t)\)-flow, and let \((S, T)\) be <em>any</em> \((s,t)\)-cut.</p>
+                        <p class="fragment" style="margin-top: 15px; font-size: 1.1em; text-align: center;">
+                            \(|f| \leq \|S, T\|\)
+                        </p>
+                        <p class="fragment" style="margin-top: 10px; color: var(--text-light); font-size: 0.9em;">
+                            The value of any flow is at most the capacity of any cut.
+                        </p>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 25px;">
+                        <p><strong>Moreover:</strong> \(|f| = \|S, T\|\) if and only if:</p>
+                        <ul style="margin-top: 10px;">
+                            <li class="fragment">\(f\) <strong>saturates</strong> every edge from \(S\) to \(T\), and</li>
+                            <li class="fragment">\(f\) <strong>avoids</strong> every edge from \(T\) to \(S\)</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Proof Slide (Combined) -->
+                <section>
+                    <h2>Proof: Flows ≤ Cuts</h2>
+                    <p style="font-size: 0.8em; color: var(--text-light); margin-bottom: 12px;">
+                        Pick any flow \(f\) and any cut \((S, T)\). Follow the bouncing equalities:
+                    </p>
+
+                    <div style="font-size: 0.72em; line-height: 1.5;">
+                        <div style="margin-bottom: 10px;">
+                            <span>\(|f| = \partial f(s)\)</span>
+                            <span class="fragment" style="color: var(--text-light); margin-left: 25px; font-size: 0.85em;">[by definition]</span>
+                        </div>
+
+                        <div class="fragment" style="margin-bottom: 10px;">
+                            <span>\(\displaystyle = \sum_{v \in S} \partial f(v)\)</span>
+                            <span style="color: var(--text-light); margin-left: 25px; font-size: 0.85em;">[conservation]</span>
+                        </div>
+
+                        <div class="fragment" style="margin-bottom: 10px;">
+                            <span>\(\displaystyle = \sum_{v \in S}\sum_{w} f(v \to w) - \sum_{v \in S}\sum_{u} f(u \to v)\)</span>
+                            <span style="color: var(--text-light); margin-left: 25px; font-size: 0.85em;">[expand \(\partial\)]</span>
+                        </div>
+
+                        <div class="fragment" style="margin-bottom: 10px;">
+                            <span>\(\displaystyle = \sum_{v \in S}\sum_{w \in T} f(v \to w) - \sum_{v \in S}\sum_{u \in T} f(u \to v)\)</span>
+                            <span style="color: var(--text-light); margin-left: 25px; font-size: 0.85em;">[edges in \(S\) cancel]</span>
+                        </div>
+
+                        <div class="fragment" style="margin-bottom: 10px;">
+                            <span>\(\displaystyle \leq \sum_{v \in S}\sum_{w \in T} f(v \to w)\)</span>
+                            <span style="color: var(--text-light); margin-left: 25px; font-size: 0.85em;">[since \(f(u \to v) \geq 0\)]</span>
+                        </div>
+
+                        <div class="fragment" style="margin-bottom: 10px;">
+                            <span>\(\displaystyle \leq \sum_{v \in S}\sum_{w \in T} c(v \to w) = \|S, T\|\)</span>
+                            <span style="color: var(--text-light); margin-left: 25px; font-size: 0.85em;">[since \(f(e) \leq c(e)\)]</span>
+                        </div>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 18px; padding: 10px 25px; background: rgba(0, 150, 136, 0.1); border-radius: 8px; border: 1px solid var(--accent); display: inline-block;">
+                        <p style="font-size: 0.8em; text-align: center; margin: 0;">
+                            \(\boxed{|f| \leq \|S, T\|}\) for any flow \(f\) and any cut \((S, T)\) ✓
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Corollary Slide -->
+                <section>
+                    <h2>The Max-Flow Min-Cut Theorem</h2>
+                    <div class="definition-box" style="border-left-color: var(--accent);">
+                        <p><strong>Corollary:</strong></p>
+                        <p class="fragment" style="margin-top: 10px;">
+                            If we find a flow \(f^*\) and a cut \((S^*, T^*)\) with \(|f^*| = \|S^*, T^*\|\), then:
+                        </p>
+                        <ul style="margin-top: 10px;">
+                            <li class="fragment">\(f^*\) is a <strong>maximum flow</strong></li>
+                            <li class="fragment">\((S^*, T^*)\) is a <strong>minimum cut</strong></li>
+                        </ul>
+                    </div>
+
+                    <div class="fragment" style="margin-top: 25px; padding: 15px; background: var(--bg-light); border-radius: 8px;">
+                        <p style="font-size: 0.95em; text-align: center; color: var(--accent); font-weight: bold;">
+                            Max Flow = Min Cut
+                        </p>
+                        <p class="fragment small" style="text-align: center; margin-top: 8px; color: var(--text-light);">
+                            The Ford-Fulkerson algorithm finds both simultaneously!
+                        </p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 3: Reducing to Max Flow or Min Cut ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Reducing to Max Flow or Min Cut</h1>
+                </section>
+
+                <!-- IPL Elimination Subsection Title -->
+                <section>
+                    <h2 style="font-size: 1.6em; color: var(--accent);">Can RCB make it to the top of the IPL league table?</h2>
+                    <div style="display: flex; justify-content: center; gap: 20px; margin: 30px 0;">
+                        <img src="../../assets/images/rcb-logo.png" alt="RCB Logo" style="height: 120px; width: auto;">
+                    </div>
+                    <p class="fragment" style="font-size: 1.1em; color: var(--text-light);">
+                        A classic application of max-flow: <strong>Sports Elimination</strong>
+                    </p>
+                    <p class="fragment small" style="margin-top: 20px;">
+                        Given the current standings and remaining matches,<br>
+                        is it <em>mathematically possible</em> for a team to finish at the top?
+                    </p>
+                </section>
+
+                <!-- Problem Setup -->
+                <section>
+                    <h2>The IPL Elimination Problem</h2>
+                    <div style="max-width: 70%;">
+                        <p><strong>Input:</strong></p>
+                        <ul style="font-size: 0.95em;">
+                            <li class="fragment">Current wins for each team</li>
+                            <li class="fragment">Remaining matches between teams</li>
+                            <li class="fragment">A target team (e.g., RCB)</li>
+                        </ul>
+                        <p class="fragment" style="margin-top: 20px;"><strong>Question:</strong></p>
+                        <p class="fragment" style="color: var(--accent);">
+                            Can remaining matches be played such that the target team finishes with at least as many wins as every other team?
+                        </p>
+                        <p class="fragment" style="margin-top: 20px;"><strong>Assumption:</strong></p>
+                        <p class="fragment" style="font-size: 0.9em; color: var(--text-light);">
+                            We assume the target team wins <em>all</em> its remaining matches. This gives us their maximum possible final score:
+                        </p>
+                        <p class="fragment" style="text-align: center; margin: 10px 0; font-size: 1.1em;">
+                            $X = w_{\text{target}} + r_{\text{target}}$
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Interactive IPL Standings -->
+                <section>
+                    <h2>IPL Standings Scenario</h2>
+                    <div class="demo-container" style="max-width: 95%;">
+                        <div class="demo-header">
+                            <span class="demo-title">Interactive IPL Elimination</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-secondary" onclick="resetIPLDemo()">Reset</button>
+                                <button class="btn btn-primary" onclick="randomIPLInstance()">New Instance</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 15px; align-items: flex-start;">
+                            <!-- Target Score -->
+                            <div style="flex: 0.6; text-align: center;">
+                                <div style="background: #EC1C2415; padding: 12px; border-radius: 8px; border: 2px solid #EC1C24;">
+                                    <p style="font-size: 0.85em; color: #666; margin-bottom: 4px;">Target Score</p>
+                                    <p style="font-size: 2em; font-weight: 700; color: #EC1C24; margin: 0;" id="target-x">11</p>
+                                    <p style="font-size: 0.8em; color: #888; margin-top: 4px;">No team can exceed this</p>
+                                </div>
+                                <button class="btn" onclick="declareHopeless()" style="margin-top: 10px; background: #666; color: white; padding: 8px 12px; font-size: 0.85em;">Declare Hopeless</button>
+                            </div>
+                            <!-- Current Standings -->
+                            <div style="flex: 1;">
+                                <p style="font-weight: 600; font-size: 0.9em; margin-bottom: 8px;">Current Wins:</p>
+                                <div id="ipl-standings-cards" style="display: flex; flex-direction: column; gap: 6px;"></div>
+                            </div>
+                            <!-- Remaining Matches -->
+                            <div style="flex: 1.4;">
+                                <p style="font-weight: 600; font-size: 0.9em; margin-bottom: 8px;">Remaining Matches (click to assign winner):</p>
+                                <div id="ipl-matches" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                            </div>
+                        </div>
+                        <div class="demo-output" id="ipl-commentary">
+                            Assign winners to the remaining matches. Can you keep every team at or below the target?
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Simple vs Non-trivial Elimination -->
+                <section>
+                    <h2>Types of Elimination</h2>
+                    <div style="display: flex; flex-direction: column; gap: 20px; max-width: 85%;">
+                        <div class="fragment" style="background: #f0fff0; padding: 15px 20px; border-radius: 8px; border: 2px solid #90EE90;">
+                            <h3 style="color: #228B22; font-size: 1.1em; margin-bottom: 8px;">Trivial Elimination</h3>
+                            <p style="font-size: 0.9em; margin: 0;">
+                                Some team already has more wins than our maximum possible:
+                                <span style="margin-left: 15px;">$\exists$ team $i$: $w_i > X$</span>
+                                <span style="color: var(--text-light); margin-left: 15px;"><em>— Easy to detect!</em></span>
+                            </p>
+                        </div>
+                        <div class="fragment" style="background: #fff0f0; padding: 15px 20px; border-radius: 8px; border: 2px solid #FFB6C1;">
+                            <h3 style="color: #DC143C; font-size: 1.1em; margin-bottom: 8px;">Non-trivial Elimination</h3>
+                            <p style="font-size: 0.9em; margin: 0;">
+                                No single team beats us, but a <em>group</em> of teams must play each other and <em>someone</em> will exceed $X$.
+                            </p>
+                            <p style="font-size: 0.95em; margin: 10px 0 0 0;">
+                                <span>$\forall i$: $w_i \leq X$, yet eliminated!</span>
+                                <span style="color: var(--text-light); margin-left: 15px;"><em>— Requires careful analysis...</em></span>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flow Network Construction -->
+                <section>
+                    <h2>Reducing to Max Flow</h2>
+                    <p style="margin-bottom: 15px;">Construct a flow network to determine if team $z$ (RCB) is eliminated:</p>
+                    <div style="display: flex; gap: 20px; font-size: 0.9em;">
+                        <div class="fragment" style="flex: 1; background: var(--bg-light); padding: 15px; border-radius: 8px;">
+                            <p><strong>Vertices:</strong></p>
+                            <ul style="margin-top: 8px;">
+                                <li>Source $s$ and sink $t$</li>
+                                <li>One vertex per team pair $(i,j)$</li>
+                                <li>One vertex per team $i \neq z$</li>
+                            </ul>
+                        </div>
+                        <div class="fragment" style="flex: 1; background: var(--bg-light); padding: 15px; border-radius: 8px;">
+                            <p><strong>Edges:</strong></p>
+                            <ul style="margin-top: 8px;">
+                                <li>$s \to (i,j)$: capacity $= g_{ij}$</li>
+                                <li>$(i,j) \to i$ and $(i,j) \to j$: $\infty$</li>
+                                <li>$i \to t$: capacity $= X - w_i$</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="definition-box goal-box fragment" style="margin-top: 20px;">
+                        <p><strong>Theorem:</strong> Team $z$ is <em>not</em> eliminated iff max flow saturates all edges from $s$.</p>
+                        <p class="small" style="color: var(--text-light);">i.e., flow value $= \sum_{i < j} g_{ij}$ (total remaining games among other teams)</p>
+                    </div>
+                </section>
+
+                <!-- Interactive Flow Network Builder -->
+                <section>
+                    <h2>Building the Flow Network</h2>
+                    <div class="demo-container" style="max-width: 95%;">
+                        <!-- Phase 1: Input Form -->
+                        <div id="fb-input-phase">
+                            <div class="demo-header">
+                                <span class="demo-title">Configure Instance</span>
+                                <div class="demo-controls">
+                                    <button class="btn btn-secondary" onclick="randomFlowBuilderInstance()">🎲 Random</button>
+                                    <button class="btn btn-primary" onclick="startFlowBuilder()">Build Network →</button>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 25px; padding: 15px; background: #fafafa; border-radius: 6px;">
+                                <!-- Wins input -->
+                                <div style="flex: 1;">
+                                    <p style="font-weight: 600; margin-bottom: 10px; font-size: 0.9em;">Current Wins</p>
+                                    <div style="display: flex; gap: 10px;">
+                                        <div style="text-align: center;">
+                                            <div style="background: #004BA0; color: #FFD700; padding: 4px 10px; border-radius: 4px 4px 0 0; font-size: 0.8em; font-weight: 600;">MI</div>
+                                            <input type="number" id="fb-input-wins-mi" value="10" min="0" max="14" style="width: 50px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 0 0 4px 4px; font-size: 1em;">
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="background: #FFCB05; color: #0066B3; padding: 4px 10px; border-radius: 4px 4px 0 0; font-size: 0.8em; font-weight: 600;">CSK</div>
+                                            <input type="number" id="fb-input-wins-csk" value="11" min="0" max="14" style="width: 50px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 0 0 4px 4px; font-size: 1em;">
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="background: #3A225D; color: #FFD700; padding: 4px 10px; border-radius: 4px 4px 0 0; font-size: 0.8em; font-weight: 600;">KKR</div>
+                                            <input type="number" id="fb-input-wins-kkr" value="9" min="0" max="14" style="width: 50px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 0 0 4px 4px; font-size: 1em;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Remaining matches input -->
+                                <div style="flex: 1;">
+                                    <p style="font-weight: 600; margin-bottom: 10px; font-size: 0.9em;">Remaining Matches</p>
+                                    <div style="display: flex; gap: 10px;">
+                                        <div style="text-align: center;">
+                                            <div style="background: #666; color: white; padding: 4px 8px; border-radius: 4px 4px 0 0; font-size: 0.75em;">MI-CSK</div>
+                                            <input type="number" id="fb-input-games-mi-csk" value="1" min="0" max="7" style="width: 50px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 0 0 4px 4px; font-size: 1em;">
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="background: #666; color: white; padding: 4px 8px; border-radius: 4px 4px 0 0; font-size: 0.75em;">MI-KKR</div>
+                                            <input type="number" id="fb-input-games-mi-kkr" value="1" min="0" max="7" style="width: 50px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 0 0 4px 4px; font-size: 1em;">
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <div style="background: #666; color: white; padding: 4px 8px; border-radius: 4px 4px 0 0; font-size: 0.75em;">CSK-KKR</div>
+                                            <input type="number" id="fb-input-games-csk-kkr" value="1" min="0" max="7" style="width: 50px; padding: 6px; text-align: center; border: 1px solid #ddd; border-radius: 0 0 4px 4px; font-size: 1em;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Target X input -->
+                                <div style="flex: 0 0 auto;">
+                                    <p style="font-weight: 600; margin-bottom: 10px; font-size: 0.9em;">Target Score</p>
+                                    <div style="text-align: center;">
+                                        <div style="background: #EC1C24; color: white; padding: 4px 12px; border-radius: 4px 4px 0 0; font-size: 0.8em; font-weight: 600;">X</div>
+                                        <input type="number" id="fb-input-target" value="11" min="0" max="14" style="width: 60px; padding: 6px; text-align: center; border: 2px solid #EC1C24; border-radius: 0 0 4px 4px; font-size: 1.1em; font-weight: 600;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="demo-output" style="margin-top: 10px;">
+                                Enter your instance or click <strong>🎲 Random</strong> to generate one, then click <strong>Build Network →</strong> to visualize.
+                            </div>
+                        </div>
+
+                        <!-- Phase 2: Step-by-Step Visualization (hidden initially) -->
+                        <div id="fb-build-phase" style="display: none;">
+                            <div class="demo-header">
+                                <span class="demo-title">Step-by-Step Construction</span>
+                                <div class="demo-controls">
+                                    <button class="btn btn-secondary" onclick="resetFlowBuilder()">← New Instance</button>
+                                    <button class="btn btn-primary" id="flow-next-btn" onclick="flowBuilderNextStep()">Next Step</button>
+                                </div>
+                            </div>
+                            <!-- Canvas for the graph -->
+                            <div id="flow-builder-canvas" style="display: flex; justify-content: center; align-items: center; min-height: 300px; background: #fafafa; border-radius: 6px;">
+                                <svg id="flow-builder-svg" width="750" height="290" viewBox="0 0 750 290" style="font-family: 'Heliotrope', Georgia, serif;">
+                                    <defs>
+                                        <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                            <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+                                        </marker>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <!-- Data table -->
+                            <div style="margin-top: 12px; display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                                <table id="flow-builder-table" style="border-collapse: collapse; font-size: 0.85em;">
+                                    <thead>
+                                        <tr style="background: var(--bg-light);">
+                                            <th style="padding: 6px 12px; border: 1px solid #ddd;"></th>
+                                            <th style="padding: 6px 12px; border: 1px solid #ddd; background: #004BA0; color: #FFD700;">MI</th>
+                                            <th style="padding: 6px 12px; border: 1px solid #ddd; background: #FFCB05; color: #0066B3;">CSK</th>
+                                            <th style="padding: 6px 12px; border: 1px solid #ddd; background: #3A225D; color: #FFD700;">KKR</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="padding: 6px 12px; border: 1px solid #ddd; font-weight: 600;">Wins</td>
+                                            <td id="fb-wins-mi" style="padding: 6px 12px; border: 1px solid #ddd; text-align: center;">10</td>
+                                            <td id="fb-wins-csk" style="padding: 6px 12px; border: 1px solid #ddd; text-align: center;">11</td>
+                                            <td id="fb-wins-kkr" style="padding: 6px 12px; border: 1px solid #ddd; text-align: center;">9</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 6px 12px; border: 1px solid #ddd; font-weight: 600;">Slack (X−w)</td>
+                                            <td id="fb-slack-mi" style="padding: 6px 12px; border: 1px solid #ddd; text-align: center;">1</td>
+                                            <td id="fb-slack-csk" style="padding: 6px 12px; border: 1px solid #ddd; text-align: center;">0</td>
+                                            <td id="fb-slack-kkr" style="padding: 6px 12px; border: 1px solid #ddd; text-align: center;">2</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style="background: #EC1C2420; padding: 8px 16px; border-radius: 6px; border: 2px solid #EC1C24;">
+                                    <span style="font-size: 0.85em; color: #666;">Target X = </span>
+                                    <span id="fb-target-x" style="font-size: 1.3em; font-weight: 700; color: #EC1C24;">11</span>
+                                </div>
+                                <div style="background: #f0f0f0; padding: 8px 16px; border-radius: 6px;">
+                                    <span style="font-size: 0.85em; color: #666;">Remaining games: </span>
+                                    <span id="fb-total-games" style="font-weight: 600;">3</span>
+                                </div>
+                            </div>
+                            <div class="demo-output" id="flow-builder-commentary">
+                                Step 0: Start with source <strong>s</strong> and sink <strong>t</strong>. Click "Next Step" to build the network.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Why it Works -->
+                <section>
+                    <h2>Why Does This Work?</h2>
+                    <div style="font-size: 0.95em;">
+                        <div class="fragment" style="background: var(--bg-light); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <p><strong>Flow Interpretation:</strong></p>
+                            <ul style="margin-top: 8px;">
+                                <li>Flow on $s \to (i,j)$: how many of those games are "assigned"</li>
+                                <li>Flow on $(i,j) \to i$: games from $(i,j)$ that team $i$ wins</li>
+                                <li>Flow on $i \to t$: total additional wins for team $i$</li>
+                            </ul>
+                        </div>
+                        <div class="fragment" style="background: var(--bg-light); padding: 15px; border-radius: 8px;">
+                            <p><strong>Capacity Constraint at $i \to t$:</strong></p>
+                            <p style="margin-top: 8px;">
+                                Team $i$ can receive at most $X - w_i$ additional wins.<br>
+                                This ensures $w_i + (\text{new wins}) \leq X$.
+                            </p>
+                        </div>
+                        <div class="fragment definition-box" style="margin-top: 15px; border-left: 4px solid var(--accent);">
+                            <p><strong>Key Insight:</strong> If max flow $<$ total remaining games, some game <em>cannot</em> be assigned without pushing a team past $X$ wins. RCB is eliminated!</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Certificate of Elimination -->
+                <section>
+                    <h2>Certificate of Elimination</h2>
+                    <p style="margin-bottom: 15px;">When eliminated, the <strong>min-cut</strong> provides a <em>proof</em>:</p>
+                    <div style="display: flex; gap: 25px;">
+                        <div class="fragment" style="flex: 1;">
+                            <div class="definition-box" style="background: #fff8e8; border-left: 4px solid #f0ad4e;">
+                                <p><strong>The Blocking Subset:</strong></p>
+                                <p style="font-size: 0.9em; margin-top: 8px;">
+                                    Let $S$ be the teams reachable from $s$ in the residual graph.
+                                </p>
+                                <p style="font-size: 0.9em; margin-top: 8px;">
+                                    Then for teams in $S$:
+                                </p>
+                                <p style="text-align: center; margin: 10px 0;">
+                                    $\displaystyle\frac{w(S) + g(S)}{|S|} > X$
+                                </p>
+                                <p class="small" style="color: var(--text-light);">
+                                    where $w(S) = \sum_{i \in S} w_i$ and $g(S) = \sum_{i,j \in S} g_{ij}$
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fragment" style="flex: 1;">
+                            <div style="background: var(--bg-light); padding: 15px; border-radius: 8px;">
+                                <p style="font-size: 0.9em;"><strong>In plain English:</strong></p>
+                                <p style="font-size: 0.85em; margin-top: 10px; color: var(--text-light);">
+                                    Teams in $S$ play so many games among themselves that their <em>average</em> wins must exceed $X$.
+                                </p>
+                                <p style="font-size: 0.85em; margin-top: 10px; color: var(--text-light);">
+                                    So at least one team beats $X$ — RCB can't finish on top.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Interactive Certificate Demo -->
+                <section>
+                    <h2>Finding the Certificate</h2>
+                    <div class="demo-container" style="max-width: 95%;">
+                        <div class="demo-header">
+                            <span class="demo-title">Certificate of Elimination</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-secondary" onclick="newCertificateInstance()">🎲 New Instance</button>
+                                <button class="btn btn-primary" id="cert-reveal-btn" onclick="revealCertificate()">Reveal Certificate</button>
+                            </div>
+                        </div>
+                        <!-- Instance display -->
+                        <div style="display: flex; gap: 15px; padding: 10px; background: #fafafa; border-radius: 6px; margin-bottom: 10px; align-items: center; justify-content: center; flex-wrap: wrap;">
+                            <table id="cert-instance-table" style="border-collapse: collapse; font-size: 0.8em;">
+                                <thead>
+                                    <tr style="background: var(--bg-light);">
+                                        <th style="padding: 5px 10px; border: 1px solid #ddd;"></th>
+                                        <th style="padding: 5px 10px; border: 1px solid #ddd; background: #004BA0; color: #FFD700;">MI</th>
+                                        <th style="padding: 5px 10px; border: 1px solid #ddd; background: #FFCB05; color: #0066B3;">CSK</th>
+                                        <th style="padding: 5px 10px; border: 1px solid #ddd; background: #3A225D; color: #FFD700;">KKR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 5px 10px; border: 1px solid #ddd; font-weight: 600;">Wins</td>
+                                        <td id="cert-wins-mi" style="padding: 5px 10px; border: 1px solid #ddd; text-align: center;">10</td>
+                                        <td id="cert-wins-csk" style="padding: 5px 10px; border: 1px solid #ddd; text-align: center;">9</td>
+                                        <td id="cert-wins-kkr" style="padding: 5px 10px; border: 1px solid #ddd; text-align: center;">8</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table id="cert-games-table" style="border-collapse: collapse; font-size: 0.8em;">
+                                <thead>
+                                    <tr style="background: #eee;">
+                                        <th style="padding: 5px 8px; border: 1px solid #ddd;">MI-CSK</th>
+                                        <th style="padding: 5px 8px; border: 1px solid #ddd;">MI-KKR</th>
+                                        <th style="padding: 5px 8px; border: 1px solid #ddd;">CSK-KKR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="cert-games-mi-csk" style="padding: 5px 8px; border: 1px solid #ddd; text-align: center;">2</td>
+                                        <td id="cert-games-mi-kkr" style="padding: 5px 8px; border: 1px solid #ddd; text-align: center;">1</td>
+                                        <td id="cert-games-csk-kkr" style="padding: 5px 8px; border: 1px solid #ddd; text-align: center;">2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div style="background: #EC1C2420; padding: 6px 14px; border-radius: 6px; border: 2px solid #EC1C24;">
+                                <span style="font-size: 0.8em; color: #666;">X = </span>
+                                <span id="cert-target-x" style="font-size: 1.2em; font-weight: 700; color: #EC1C24;">10</span>
+                            </div>
+                        </div>
+                        <!-- Certificate reveal area -->
+                        <div id="cert-reveal-area" style="display: none;">
+                            <div style="display: flex; gap: 20px; padding: 10px;">
+                                <div style="flex: 1;">
+                                    <p style="font-size: 0.9em; margin-bottom: 10px;"><strong>Blocking Subset $S$:</strong></p>
+                                    <div id="certificate-teams" style="display: flex; gap: 10px; flex-wrap: wrap;"></div>
+                                    <div style="margin-top: 12px; background: #f8f8f8; padding: 10px; border-radius: 6px;">
+                                        <p style="font-size: 0.85em;"><strong>Calculation:</strong></p>
+                                        <div id="certificate-calc" style="font-size: 0.85em; margin-top: 8px;"></div>
+                                    </div>
+                                </div>
+                                <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                                    <div id="certificate-visual" style="width: 100%; height: 190px; background: #fff8e8; border: 2px solid #f0ad4e; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                        <svg id="cert-svg" width="320" height="175" viewBox="0 0 320 175"></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-output" id="certificate-result">
+                            This instance is <strong>doomed</strong> — the target team is eliminated! Click <strong>Reveal Certificate</strong> to see why.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Summary -->
+                <section>
+                    <h2>Sports Elimination: Summary</h2>
+                    <div style="font-size: 0.95em;">
+                        <div class="fragment" style="margin-bottom: 15px;">
+                            <p><strong>The Reduction:</strong></p>
+                            <p style="margin-left: 20px;">Sports Elimination $\leq_P$ Max Flow</p>
+                        </div>
+                        <div class="fragment" style="margin-bottom: 15px;">
+                            <p><strong>Complexity:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>$O(n^2)$ vertices, $O(n^2)$ edges</li>
+                                <li>Solvable in $O(n^4)$ time via max flow</li>
+                                <li>Kevin Wayne (2001): All eliminations in $O(n^3)$ time!</li>
+                            </ul>
+                        </div>
+                        <div class="fragment definition-box goal-box">
+                            <p><strong>Takeaway:</strong> A problem that seems to require exhaustive search over all possible game outcomes reduces elegantly to a single max-flow computation.</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 4: SAT, CSP, and LPs ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>SAT, CSP, and LPs</h1>
+                </section>
+
+                <section>
+                    <h2></h2>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 5: Reducing to SAT ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Reducing to SAT</h1>
+                </section>
+
+                <section>
+                    <h2></h2>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 6: Reducing from SAT ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Reducing from SAT</h1>
+                </section>
+
+                <section>
+                    <h2></h2>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 7: PSPACE Hardness ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>PSPACE Hardness</h1>
+                </section>
+
+                <section>
+                    <h2></h2>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- RevealJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <!-- KaTeX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            progress: true,
+            center: false,
+            transition: 'none',
+            width: 1100,
+            height: 700,
+            margin: 0.04
+        });
+
+        // Render math
+        function renderMath() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        }
+
+        Reveal.on('ready', renderMath);
+        Reveal.on('slidechanged', renderMath);
+
+        // ========================================
+        // Flow Network Interactive Demo
+        // ========================================
+
+        const flowNetwork = {
+            edges: {
+                's-v1': { flow: 0, capacity: 20, from: 's', to: 'v1' },
+                's-v3': { flow: 0, capacity: 10, from: 's', to: 'v3' },
+                'v1-v2': { flow: 0, capacity: 5, from: 'v1', to: 'v2' },
+                'v1-v3': { flow: 0, capacity: 10, from: 'v1', to: 'v3' },
+                'v1-v4': { flow: 0, capacity: 15, from: 'v1', to: 'v4' },
+                'v3-v4': { flow: 0, capacity: 10, from: 'v3', to: 'v4' },
+                'v4-v2': { flow: 0, capacity: 10, from: 'v4', to: 'v2' },
+                'v2-t': { flow: 0, capacity: 15, from: 'v2', to: 't' },
+                'v4-t': { flow: 0, capacity: 20, from: 'v4', to: 't' }
+            },
+            nodes: ['s', 'v1', 'v2', 'v3', 'v4', 't']
+        };
+
+        function adjustFlow(edgeId, delta) {
+            const edge = flowNetwork.edges[edgeId];
+            const newFlow = edge.flow + delta;
+
+            // Enforce capacity constraint (0 <= flow <= capacity)
+            if (newFlow < 0 || newFlow > edge.capacity) {
+                return;
+            }
+
+            edge.flow = newFlow;
+            updateFlowDisplay(edgeId);
+            validateAndComment();
+        }
+
+        function updateFlowDisplay(edgeId) {
+            const edge = flowNetwork.edges[edgeId];
+            const flowEl = document.getElementById('flow-' + edgeId);
+            if (flowEl) {
+                flowEl.textContent = edge.flow;
+            }
+        }
+
+        function resetFlows() {
+            for (const edgeId in flowNetwork.edges) {
+                flowNetwork.edges[edgeId].flow = 0;
+                updateFlowDisplay(edgeId);
+                // Reset edge color
+                const edgeEl = document.getElementById('edge-' + edgeId);
+                if (edgeEl) edgeEl.setAttribute('stroke', '#555');
+            }
+            // Reset node colors
+            const allNodes = ['s', 'v1', 'v2', 'v3', 'v4', 't'];
+            for (const node of allNodes) {
+                const nodeEl = document.getElementById('node-' + node);
+                if (nodeEl) nodeEl.setAttribute('fill', 'white');
+                // Reset net flow display
+                const netflowEl = document.getElementById('netflow-' + node);
+                if (netflowEl) netflowEl.textContent = '0';
+            }
+            document.getElementById('flow-commentary').innerHTML =
+                "Here's a flow network. What is the maximum flow that you can drive through it?";
+        }
+
+        function getFlowIn(node) {
+            let total = 0;
+            for (const edgeId in flowNetwork.edges) {
+                const edge = flowNetwork.edges[edgeId];
+                if (edge.to === node) {
+                    total += edge.flow;
+                }
+            }
+            return total;
+        }
+
+        function getFlowOut(node) {
+            let total = 0;
+            for (const edgeId in flowNetwork.edges) {
+                const edge = flowNetwork.edges[edgeId];
+                if (edge.from === node) {
+                    total += edge.flow;
+                }
+            }
+            return total;
+        }
+
+        function updateNetFlowDisplays() {
+            // Update source s: show outgoing flow
+            const sOut = getFlowOut('s');
+            const sEl = document.getElementById('netflow-s');
+            if (sEl) sEl.textContent = sOut;
+
+            // Update sink t: show incoming flow
+            const tIn = getFlowIn('t');
+            const tEl = document.getElementById('netflow-t');
+            if (tEl) tEl.textContent = tIn;
+
+            // Update intermediate nodes: show net flow (in - out)
+            const intermediateNodes = ['v1', 'v2', 'v3', 'v4'];
+            for (const node of intermediateNodes) {
+                const flowIn = getFlowIn(node);
+                const flowOut = getFlowOut(node);
+                const netFlow = flowIn - flowOut;
+                const el = document.getElementById('netflow-' + node);
+                if (el) {
+                    if (netFlow === 0) {
+                        el.textContent = '0';
+                    } else if (netFlow > 0) {
+                        el.textContent = '+' + netFlow;
+                    } else {
+                        el.textContent = netFlow;
+                    }
+                }
+            }
+        }
+
+        function validateAndComment() {
+            const commentary = document.getElementById('flow-commentary');
+            const conservationViolations = [];
+            const capacityViolations = [];
+
+            // Update net flow displays
+            updateNetFlowDisplays();
+
+            // Reset all node colors
+            const allNodes = ['s', 'v1', 'v2', 'v3', 'v4', 't'];
+            for (const node of allNodes) {
+                const nodeEl = document.getElementById('node-' + node);
+                if (nodeEl) nodeEl.setAttribute('fill', 'white');
+            }
+
+            // Reset all edge colors
+            for (const edgeId in flowNetwork.edges) {
+                const edgeEl = document.getElementById('edge-' + edgeId);
+                if (edgeEl) edgeEl.setAttribute('stroke', '#555');
+            }
+
+            // Check capacity constraints on all edges
+            for (const edgeId in flowNetwork.edges) {
+                const edge = flowNetwork.edges[edgeId];
+                if (edge.flow < 0 || edge.flow > edge.capacity) {
+                    capacityViolations.push(edgeId);
+                    const edgeEl = document.getElementById('edge-' + edgeId);
+                    if (edgeEl) edgeEl.setAttribute('stroke', '#E97451'); // Light BurntOrange
+                }
+            }
+
+            // Check conservation at intermediate nodes (not s or t)
+            const intermediateNodes = ['v1', 'v2', 'v3', 'v4'];
+            for (const node of intermediateNodes) {
+                const flowIn = getFlowIn(node);
+                const flowOut = getFlowOut(node);
+                if (flowIn !== flowOut) {
+                    conservationViolations.push({
+                        node: node,
+                        flowIn: flowIn,
+                        flowOut: flowOut
+                    });
+                    // Highlight the node based on violation type
+                    const nodeEl = document.getElementById('node-' + node);
+                    if (nodeEl) {
+                        if (flowIn > flowOut) {
+                            // Flow is pooling at this vertex - blue
+                            nodeEl.setAttribute('fill', '#A0C4E8'); // Light blue
+                        } else {
+                            // Flow is leaking from this vertex - red
+                            nodeEl.setAttribute('fill', '#F0A0A0'); // Light IndianRed
+                        }
+                    }
+                }
+            }
+
+            // Generate commentary
+            if (capacityViolations.length > 0) {
+                const edgeLabel = capacityViolations[0].replace('-', ' → ');
+                commentary.innerHTML =
+                    `<span style="color: #E97451;"><strong>Capacity violated on edge ${edgeLabel}:</strong></span> ` +
+                    `Flow must satisfy 0 ≤ f(e) ≤ c(e).`;
+            } else if (conservationViolations.length > 0) {
+                const v = conservationViolations[0];
+                const nodeLabel = v.node.replace('v', 'v<sub>') + '</sub>';
+                const violationType = v.flowIn > v.flowOut ? 'pooling' : 'leaking';
+                const color = v.flowIn > v.flowOut ? '#4A90D9' : '#CD5C5C';
+                commentary.innerHTML =
+                    `<span style="color: ${color};"><strong>Conservation violated at ${nodeLabel}:</strong></span> ` +
+                    `Flow in = ${v.flowIn}, Flow out = ${v.flowOut} (${violationType}). ` +
+                    `<em>These must be equal!</em>`;
+            } else {
+                // Flow is valid, compute total value
+                const flowValue = getFlowOut('s') - getFlowIn('s');
+                if (flowValue === 0) {
+                    commentary.innerHTML =
+                        "Here's a flow network. What is the maximum flow that you can drive through it?";
+                } else {
+                    commentary.innerHTML =
+                        `<span style="color: #059669;"><strong>Valid flow!</strong></span> ` +
+                        `Total flow value: <strong>|f| = ${flowValue}</strong>`;
+                }
+            }
+        }
+
+        // ========================================
+        // IPL Elimination Interactive Demo
+        // ========================================
+
+        // IPL Team data with colors
+        const iplTeamInfo = {
+            'MI': { name: 'Mumbai Indians', color: '#004BA0', textColor: '#FFD700' },
+            'CSK': { name: 'Chennai Super Kings', color: '#FFCB05', textColor: '#0066B3' },
+            'KKR': { name: 'Kolkata Knight Riders', color: '#3A225D', textColor: '#FFD700' }
+        };
+
+        // Current state (mutable)
+        let iplState = {
+            teams: {},  // { MI: { wins: 10 }, CSK: { wins: 11 }, ... }
+            matches: [], // [ { id: 1, team1: 'MI', team2: 'CSK', winner: null }, ... ]
+            targetX: 11
+        };
+
+        // Default instance
+        const defaultInstance = {
+            teams: { 'MI': 10, 'CSK': 11, 'KKR': 9 },
+            matches: [
+                { team1: 'MI', team2: 'CSK' },
+                { team1: 'MI', team2: 'KKR' },
+                { team1: 'CSK', team2: 'KKR' }
+            ],
+            targetX: 11
+        };
+
+        function initIPLDemo() {
+            loadIPLInstance(defaultInstance);
+        }
+
+        function loadIPLInstance(instance) {
+            // Set up teams
+            iplState.teams = {};
+            for (const team in instance.teams) {
+                iplState.teams[team] = {
+                    ...iplTeamInfo[team],
+                    wins: instance.teams[team]
+                };
+            }
+            // Set up matches with IDs
+            iplState.matches = instance.matches.map((m, idx) => ({
+                id: idx + 1,
+                team1: m.team1,
+                team2: m.team2,
+                winner: null
+            }));
+            iplState.targetX = instance.targetX;
+
+            renderIPLDemo();
+        }
+
+        function randomIPLInstance() {
+            const teams = ['MI', 'CSK', 'KKR'];
+            const maxMatches = 7; // Cap total matches to avoid overflow
+
+            // Generate matches first (1-3 per pair, but cap total)
+            let matches = [];
+            const pairsNeeded = [];
+            for (let i = 0; i < teams.length; i++) {
+                for (let j = i + 1; j < teams.length; j++) {
+                    const numGames = 1 + Math.floor(Math.random() * 3);
+                    for (let k = 0; k < numGames; k++) {
+                        pairsNeeded.push({ team1: teams[i], team2: teams[j] });
+                    }
+                }
+            }
+            // Shuffle and cap at maxMatches
+            pairsNeeded.sort(() => Math.random() - 0.5);
+            matches = pairsNeeded.slice(0, maxMatches);
+
+            // Ensure at least 1 match per pair for variety
+            const hasPair = {};
+            matches.forEach(m => {
+                const key = [m.team1, m.team2].sort().join('-');
+                hasPair[key] = true;
+            });
+            for (let i = 0; i < teams.length; i++) {
+                for (let j = i + 1; j < teams.length; j++) {
+                    const key = [teams[i], teams[j]].sort().join('-');
+                    if (!hasPair[key] && matches.length < maxMatches) {
+                        matches.push({ team1: teams[i], team2: teams[j] });
+                        hasPair[key] = true;
+                    }
+                }
+            }
+
+            const totalGames = matches.length;
+
+            // Generate wins and target X to create a subtle instance
+            // Strategy: set target X first, then set wins such that:
+            // - No team exceeds X initially
+            // - Total slack is close to (but not less than) total games for interesting puzzles
+            const targetX = 10 + Math.floor(Math.random() * 4); // X between 10-13
+
+            const wins = {};
+            // Give each team wins between (X-4) and X, with some randomness
+            teams.forEach(t => {
+                const minWins = Math.max(6, targetX - 4);
+                const maxWins = targetX; // Never exceed X initially
+                wins[t] = minWins + Math.floor(Math.random() * (maxWins - minWins + 1));
+            });
+
+            // Calculate initial slack
+            let totalSlack = teams.reduce((sum, t) => sum + (targetX - wins[t]), 0);
+
+            // Adjust to make it subtle: slack should be close to totalGames
+            // If slack is too high, increase some wins
+            while (totalSlack > totalGames + 2) {
+                const t = teams[Math.floor(Math.random() * teams.length)];
+                if (wins[t] < targetX) {
+                    wins[t]++;
+                    totalSlack--;
+                }
+            }
+
+            // If slack equals games exactly, randomly make it slightly tighter or looser
+            // to create variety (some solvable, some not)
+            if (Math.random() < 0.4 && totalSlack > totalGames) {
+                // Make it tighter (possibly unsolvable)
+                const t = teams[Math.floor(Math.random() * teams.length)];
+                if (wins[t] < targetX) {
+                    wins[t]++;
+                }
+            }
+
+            loadIPLInstance({ teams: wins, matches, targetX });
+        }
+
+        function renderIPLDemo() {
+            renderStandings();
+            renderMatches();
+            updateIPLAnalysis();
+
+            // Update target display
+            const targetEl = document.getElementById('target-x');
+            if (targetEl) targetEl.textContent = iplState.targetX;
+        }
+
+        function renderStandings() {
+            const container = document.getElementById('ipl-standings-cards');
+            if (!container) return;
+
+            // Calculate current wins including match results
+            const currentWins = {};
+            for (const team in iplState.teams) {
+                currentWins[team] = iplState.teams[team].wins;
+            }
+
+            // Add wins from decided matches
+            iplState.matches.forEach(m => {
+                if (m.winner) {
+                    currentWins[m.winner] = (currentWins[m.winner] || 0) + 1;
+                }
+            });
+
+            // Sort teams by wins
+            const sortedTeams = Object.keys(iplState.teams).sort((a, b) => currentWins[b] - currentWins[a]);
+            const X = iplState.targetX;
+
+            let html = '';
+            sortedTeams.forEach((team, idx) => {
+                const t = iplState.teams[team];
+                const wins = currentWins[team];
+                const exceeds = wins > X;
+                const atLimit = wins === X;
+                const bgColor = exceeds ? '#ffebee' : (atLimit ? '#fff8e1' : 'white');
+                const borderColor = exceeds ? '#ef5350' : (atLimit ? '#ffb300' : '#ddd');
+
+                html += `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; background: ${bgColor}; border-radius: 6px; border: 2px solid ${borderColor};">
+                        <span style="display: inline-block; width: 14px; height: 14px; background: ${t.color}; border-radius: 3px; margin-right: 8px;"></span>
+                        <span style="flex: 1; font-weight: 500;">${team}</span>
+                        <span style="font-weight: 600; font-size: 1.1em; color: ${exceeds ? '#c62828' : '#333'};">${wins}</span>
+                        ${exceeds ? '<span style="color: #c62828; font-size: 0.8em; margin-left: 4px;">⚠️</span>' : ''}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderMatches() {
+            const container = document.getElementById('ipl-matches');
+            if (!container) return;
+
+            let html = '';
+            iplState.matches.forEach(match => {
+                const t1 = iplState.teams[match.team1];
+                const t2 = iplState.teams[match.team2];
+                const winner = match.winner;
+
+                html += `
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 6px; background: #f8f8f8; border-radius: 6px;">
+                        <button onclick="assignWinner(${match.id}, '${match.team1}')"
+                                style="flex: 1; padding: 8px; border: 2px solid ${winner === match.team1 ? t1.color : '#ddd'};
+                                       background: ${winner === match.team1 ? t1.color : 'white'};
+                                       color: ${winner === match.team1 ? t1.textColor : '#333'};
+                                       border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.9em;
+                                       transition: all 0.2s;">
+                            ${match.team1} ${winner === match.team1 ? '✓' : ''}
+                        </button>
+                        <span style="color: #888; font-size: 0.85em;">vs</span>
+                        <button onclick="assignWinner(${match.id}, '${match.team2}')"
+                                style="flex: 1; padding: 8px; border: 2px solid ${winner === match.team2 ? t2.color : '#ddd'};
+                                       background: ${winner === match.team2 ? t2.color : 'white'};
+                                       color: ${winner === match.team2 ? t2.textColor : '#333'};
+                                       border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.9em;
+                                       transition: all 0.2s;">
+                            ${match.team2} ${winner === match.team2 ? '✓' : ''}
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function assignWinner(matchId, winner) {
+            const match = iplState.matches.find(m => m.id === matchId);
+            if (match) {
+                // Toggle: if already selected, deselect
+                match.winner = match.winner === winner ? null : winner;
+                renderIPLDemo();
+            }
+        }
+
+        function updateIPLAnalysis() {
+            const commentary = document.getElementById('ipl-commentary');
+            if (!commentary) return;
+
+            const X = iplState.targetX;
+
+            // Calculate projected wins
+            const projectedWins = {};
+            for (const team in iplState.teams) {
+                projectedWins[team] = iplState.teams[team].wins;
+            }
+            iplState.matches.forEach(m => {
+                if (m.winner) {
+                    projectedWins[m.winner]++;
+                }
+            });
+
+            // Count unassigned matches
+            const unassigned = iplState.matches.filter(m => !m.winner).length;
+            const totalMatches = iplState.matches.length;
+
+            // Check if any team exceeds target
+            let exceeds = false;
+            let exceedingTeam = null;
+            for (const team in projectedWins) {
+                if (projectedWins[team] > X) {
+                    exceeds = true;
+                    exceedingTeam = team;
+                    break;
+                }
+            }
+
+            // Calculate slack for each team
+            const slacks = {};
+            for (const team in projectedWins) {
+                slacks[team] = Math.max(0, X - projectedWins[team]);
+            }
+            const totalSlack = Object.values(slacks).reduce((a, b) => a + b, 0);
+
+            if (exceeds) {
+                commentary.innerHTML = `
+                    <span style="color: #DC143C;"><strong>❌ Constraint Violated!</strong></span>
+                    ${exceedingTeam} has ${projectedWins[exceedingTeam]} wins, exceeding target X = ${X}.
+                `;
+            } else if (unassigned === 0) {
+                commentary.innerHTML = `
+                    <span style="color: #059669;"><strong>🎉 Congratulations!</strong></span>
+                    You found a valid assignment! All ${totalMatches} matches assigned with every team ≤ ${X} wins.
+                `;
+            } else {
+                commentary.innerHTML = `
+                    ${unassigned}/${totalMatches} matches remaining. Assign winners to all matches.
+                `;
+            }
+        }
+
+        function declareHopeless() {
+            const commentary = document.getElementById('ipl-commentary');
+            if (!commentary) return;
+
+            const X = iplState.targetX;
+
+            // Calculate current wins
+            const currentWins = {};
+            for (const team in iplState.teams) {
+                currentWins[team] = iplState.teams[team].wins;
+            }
+            iplState.matches.forEach(m => {
+                if (m.winner) {
+                    currentWins[m.winner]++;
+                }
+            });
+
+            // Check if it's actually hopeless by computing max flow
+            // Simple heuristic: total slack vs total unassigned games
+            const unassigned = iplState.matches.filter(m => !m.winner).length;
+            const slacks = {};
+            for (const team in currentWins) {
+                slacks[team] = Math.max(0, X - currentWins[team]);
+            }
+            const totalSlack = Object.values(slacks).reduce((a, b) => a + b, 0);
+
+            // This is a simplified check - actual elimination may require proper max flow
+            // For this demo, we use the heuristic that if total slack < unassigned, it's impossible
+            if (totalSlack < unassigned) {
+                commentary.innerHTML = `
+                    <span style="color: #059669;"><strong>✓ Correct!</strong></span>
+                    This instance is indeed hopeless. Total slack (${totalSlack}) < remaining games (${unassigned}).
+                `;
+            } else {
+                commentary.innerHTML = `
+                    <span style="color: #f59e0b;"><strong>🤔 Are you sure?</strong></span>
+                    There might still be a valid assignment. Keep trying!
+                `;
+            }
+        }
+
+        function resetIPLDemo() {
+            loadIPLInstance(defaultInstance);
+        }
+
+        // ========================================
+        // Flow Network Builder (Step-by-Step)
+        // ========================================
+
+        const flowBuilderData = {
+            teams: ['MI', 'CSK', 'KKR'],
+            teamInfo: {
+                'MI': { color: '#004BA0', textColor: '#FFD700', wins: 10 },
+                'CSK': { color: '#FFCB05', textColor: '#0066B3', wins: 11 },
+                'KKR': { color: '#3A225D', textColor: '#FFD700', wins: 9 }
+            },
+            matches: [
+                { team1: 'MI', team2: 'CSK', games: 1 },
+                { team1: 'MI', team2: 'KKR', games: 1 },
+                { team1: 'CSK', team2: 'KKR', games: 1 }
+            ],
+            targetX: 11,
+            currentStep: 0,
+            flowResult: null // Will store computed flow
+        };
+
+        // Positions for SVG elements
+        const fbPositions = {
+            s: { x: 50, y: 145 },
+            t: { x: 700, y: 145 },
+            teams: {
+                'MI': { x: 530, y: 55 },
+                'CSK': { x: 530, y: 145 },
+                'KKR': { x: 530, y: 235 }
+            },
+            pairs: {
+                'MI-CSK': { x: 250, y: 55 },
+                'MI-KKR': { x: 250, y: 145 },
+                'CSK-KKR': { x: 250, y: 235 }
+            }
+        };
+
+        // Read inputs and load into flowBuilderData
+        function readFlowBuilderInputs() {
+            flowBuilderData.teamInfo['MI'].wins = parseInt(document.getElementById('fb-input-wins-mi').value) || 0;
+            flowBuilderData.teamInfo['CSK'].wins = parseInt(document.getElementById('fb-input-wins-csk').value) || 0;
+            flowBuilderData.teamInfo['KKR'].wins = parseInt(document.getElementById('fb-input-wins-kkr').value) || 0;
+
+            flowBuilderData.matches[0].games = parseInt(document.getElementById('fb-input-games-mi-csk').value) || 0;
+            flowBuilderData.matches[1].games = parseInt(document.getElementById('fb-input-games-mi-kkr').value) || 0;
+            flowBuilderData.matches[2].games = parseInt(document.getElementById('fb-input-games-csk-kkr').value) || 0;
+
+            flowBuilderData.targetX = parseInt(document.getElementById('fb-input-target').value) || 0;
+        }
+
+        // Generate a random instance
+        function randomFlowBuilderInstance() {
+            // Random wins between 6 and 12
+            const miWins = Math.floor(Math.random() * 7) + 6;
+            const cskWins = Math.floor(Math.random() * 7) + 6;
+            const kkrWins = Math.floor(Math.random() * 7) + 6;
+
+            // Random remaining games (1-3 each)
+            let g1 = Math.floor(Math.random() * 3) + 1;
+            let g2 = Math.floor(Math.random() * 3) + 1;
+            let g3 = Math.floor(Math.random() * 3) + 1;
+
+            // Target X: at least max of current wins (ensures no instant elimination)
+            const maxWins = Math.max(miWins, cskWins, kkrWins);
+            // 50% chance of targetX = maxWins (tight), 50% chance of maxWins + 1 (some slack)
+            const targetX = maxWins + Math.floor(Math.random() * 2);
+
+            // Set input values
+            document.getElementById('fb-input-wins-mi').value = miWins;
+            document.getElementById('fb-input-wins-csk').value = cskWins;
+            document.getElementById('fb-input-wins-kkr').value = kkrWins;
+            document.getElementById('fb-input-games-mi-csk').value = g1;
+            document.getElementById('fb-input-games-mi-kkr').value = g2;
+            document.getElementById('fb-input-games-csk-kkr').value = g3;
+            document.getElementById('fb-input-target').value = targetX;
+
+            // Reset any error message
+            const inputPhase = document.getElementById('fb-input-phase');
+            const outputDiv = inputPhase.querySelector('.demo-output');
+            outputDiv.innerHTML = 'Random instance generated! Click <strong>Build Network →</strong> to visualize.';
+        }
+
+        // Compute max flow using Ford-Fulkerson style
+        function computeMaxFlow() {
+            const X = flowBuilderData.targetX;
+            const teams = flowBuilderData.teams;
+            const matches = flowBuilderData.matches;
+
+            // Build adjacency with capacities
+            // Nodes: 's', 't', 'MI', 'CSK', 'KKR', 'MI-CSK', 'MI-KKR', 'CSK-KKR'
+            const nodes = ['s', 't', 'MI', 'CSK', 'KKR', 'MI-CSK', 'MI-KKR', 'CSK-KKR'];
+            const capacity = {};
+            const flow = {};
+
+            // Initialize
+            nodes.forEach(u => {
+                capacity[u] = {};
+                flow[u] = {};
+                nodes.forEach(v => {
+                    capacity[u][v] = 0;
+                    flow[u][v] = 0;
+                });
+            });
+
+            // Source to match nodes
+            matches.forEach((m, i) => {
+                const matchNode = m.team1 + '-' + m.team2;
+                capacity['s'][matchNode] = m.games;
+            });
+
+            // Match nodes to teams (infinite = large number)
+            matches.forEach(m => {
+                const matchNode = m.team1 + '-' + m.team2;
+                capacity[matchNode][m.team1] = 100;
+                capacity[matchNode][m.team2] = 100;
+            });
+
+            // Teams to sink
+            teams.forEach(t => {
+                const slack = X - flowBuilderData.teamInfo[t].wins;
+                capacity[t]['t'] = Math.max(0, slack);
+            });
+
+            // BFS to find augmenting path
+            function bfs() {
+                const visited = { 's': true };
+                const parent = { 's': null };
+                const queue = ['s'];
+
+                while (queue.length > 0) {
+                    const u = queue.shift();
+
+                    for (const v of nodes) {
+                        if (!visited[v] && capacity[u][v] - flow[u][v] > 0) {
+                            visited[v] = true;
+                            parent[v] = u;
+                            if (v === 't') return parent;
+                            queue.push(v);
+                        }
+                    }
+                }
+                return null;
+            }
+
+            // Ford-Fulkerson
+            let maxFlowValue = 0;
+            let parent;
+
+            while ((parent = bfs()) !== null) {
+                // Find min residual capacity
+                let pathFlow = Infinity;
+                let v = 't';
+                while (v !== 's') {
+                    const u = parent[v];
+                    pathFlow = Math.min(pathFlow, capacity[u][v] - flow[u][v]);
+                    v = u;
+                }
+
+                // Update flows
+                v = 't';
+                while (v !== 's') {
+                    const u = parent[v];
+                    flow[u][v] += pathFlow;
+                    flow[v][u] -= pathFlow;
+                    v = u;
+                }
+
+                maxFlowValue += pathFlow;
+            }
+
+            // Find min-cut (reachable from s in residual graph)
+            const reachable = { 's': true };
+            const queue = ['s'];
+            while (queue.length > 0) {
+                const u = queue.shift();
+                for (const v of nodes) {
+                    if (!reachable[v] && capacity[u][v] - flow[u][v] > 0) {
+                        reachable[v] = true;
+                        queue.push(v);
+                    }
+                }
+            }
+
+            // Total games
+            let totalGames = 0;
+            matches.forEach(m => totalGames += m.games);
+
+            return {
+                maxFlow: maxFlowValue,
+                totalGames: totalGames,
+                flow: flow,
+                saturated: maxFlowValue >= totalGames,
+                reachable: reachable,
+                capacity: capacity
+            };
+        }
+
+        // Check if any team already exceeds target X (instant elimination)
+        function checkInstantElimination() {
+            const X = flowBuilderData.targetX;
+            const violators = [];
+            for (const t of flowBuilderData.teams) {
+                const wins = flowBuilderData.teamInfo[t].wins;
+                if (wins > X) {
+                    violators.push({ team: t, wins: wins });
+                }
+            }
+            return violators;
+        }
+
+        // Start the flow builder visualization
+        function startFlowBuilder() {
+            readFlowBuilderInputs();
+
+            // Check for instant elimination (negative slack)
+            const violators = checkInstantElimination();
+            if (violators.length > 0) {
+                // Show error in input phase instead of building network
+                const inputPhase = document.getElementById('fb-input-phase');
+                const outputDiv = inputPhase.querySelector('.demo-output');
+                const violatorList = violators.map(v => `<strong>${v.team}</strong> (${v.wins} wins)`).join(', ');
+                outputDiv.innerHTML = `<span style="color: #c62828;"><strong>Instant Elimination!</strong></span> ${violatorList} already exceed${violators.length === 1 ? 's' : ''} target X = <strong>${flowBuilderData.targetX}</strong>. No network needed — the target team is already eliminated.`;
+                return;
+            }
+
+            flowBuilderData.currentStep = 0;
+            flowBuilderData.flowResult = computeMaxFlow();
+
+            document.getElementById('fb-input-phase').style.display = 'none';
+            document.getElementById('fb-build-phase').style.display = 'block';
+
+            updateFlowBuilderTable();
+            renderFlowBuilderStep();
+        }
+
+        function initFlowBuilder() {
+            // Show input phase
+            const inputPhase = document.getElementById('fb-input-phase');
+            const buildPhase = document.getElementById('fb-build-phase');
+            if (inputPhase) inputPhase.style.display = 'block';
+            if (buildPhase) buildPhase.style.display = 'none';
+        }
+
+        function updateFlowBuilderTable() {
+            const X = flowBuilderData.targetX;
+            document.getElementById('fb-target-x').textContent = X;
+
+            let totalGames = 0;
+            flowBuilderData.teams.forEach(t => {
+                const wins = flowBuilderData.teamInfo[t].wins;
+                const slack = X - wins;
+                document.getElementById('fb-wins-' + t.toLowerCase()).textContent = wins;
+                document.getElementById('fb-slack-' + t.toLowerCase()).innerHTML = slack >= 0 ? slack : `<span style="color:red">${slack}</span>`;
+            });
+
+            flowBuilderData.matches.forEach(m => totalGames += m.games);
+            document.getElementById('fb-total-games').textContent = totalGames;
+        }
+
+        function renderFlowBuilderStep() {
+            const svg = document.getElementById('flow-builder-svg');
+            const commentary = document.getElementById('flow-builder-commentary');
+            const btn = document.getElementById('flow-next-btn');
+            if (!svg || !commentary) return;
+
+            const step = flowBuilderData.currentStep;
+            const X = flowBuilderData.targetX;
+            const result = flowBuilderData.flowResult;
+
+            let html = `<defs>
+                <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+                </marker>
+                <marker id="arrowheadGreen" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#059669"/>
+                </marker>
+                <marker id="arrowheadRed" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#c62828"/>
+                </marker>
+            </defs>`;
+
+            const showFlow = step >= 4;
+            const f = result ? result.flow : null;
+            const reachable = result ? result.reachable : {};
+            const saturated = result ? result.saturated : true;
+
+            // Source node (highlight if in cut for non-saturated)
+            const sInCut = !saturated && reachable['s'];
+            html += `
+                <circle cx="${fbPositions.s.x}" cy="${fbPositions.s.y}" r="22" fill="${sInCut && showFlow ? 'rgba(0,150,136,0.3)' : '#a8d4f0'}" stroke="${sInCut && showFlow ? '#009688' : '#222'}" stroke-width="${sInCut && showFlow ? 3 : 2}"/>
+                <text x="${fbPositions.s.x}" y="${fbPositions.s.y + 5}" text-anchor="middle" font-size="16" font-weight="600" fill="#222">s</text>
+            `;
+
+            // Sink node
+            html += `
+                <circle cx="${fbPositions.t.x}" cy="${fbPositions.t.y}" r="22" fill="#f0a0a0" stroke="#222" stroke-width="2"/>
+                <text x="${fbPositions.t.x}" y="${fbPositions.t.y + 5}" text-anchor="middle" font-size="16" font-weight="600" fill="#222">t</text>
+            `;
+
+            // Step 1+: Team nodes and edges to t
+            if (step >= 1) {
+                flowBuilderData.teams.forEach(t => {
+                    const pos = fbPositions.teams[t];
+                    const info = flowBuilderData.teamInfo[t];
+                    const slack = Math.max(0, X - info.wins);
+                    const inCut = !saturated && reachable[t];
+
+                    // Team node (highlight if in min-cut for non-saturated)
+                    html += `
+                        <circle cx="${pos.x}" cy="${pos.y}" r="26" fill="${inCut && showFlow ? 'rgba(0,150,136,0.3)' : info.color}" stroke="${inCut && showFlow ? '#009688' : '#222'}" stroke-width="${inCut && showFlow ? 3 : 2}"/>
+                        <text x="${pos.x}" y="${pos.y + 5}" text-anchor="middle" font-size="13" font-weight="600" fill="${info.textColor}">${t}</text>
+                    `;
+
+                    // Edge to t
+                    const flowToT = showFlow && f ? Math.max(0, f[t]['t']) : 0;
+                    const isCutEdge = showFlow && !saturated && reachable[t] && !reachable['t'];
+                    const edgeColor = showFlow ? (isCutEdge ? '#c62828' : '#059669') : '#555';
+                    const marker = showFlow ? (isCutEdge ? 'url(#arrowheadRed)' : 'url(#arrowheadGreen)') : 'url(#arrowhead3)';
+
+                    html += `
+                        <line x1="${pos.x + 26}" y1="${pos.y}" x2="${fbPositions.t.x - 24}" y2="${fbPositions.t.y}"
+                              stroke="${edgeColor}" stroke-width="${showFlow ? 3 : 2}" marker-end="${marker}"/>
+                    `;
+
+                    // Capacity/flow label
+                    const labelX = pos.x + 75;
+                    const labelY = pos.y - 10;
+                    if (showFlow) {
+                        html += `<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="11" fill="${edgeColor}" font-weight="600">${flowToT}/${slack}</text>`;
+                    } else {
+                        html += `<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="11" fill="#c62828" font-weight="600">${slack}</text>`;
+                    }
+                });
+            }
+
+            // Step 2+: Pairwise match nodes and edges to teams
+            if (step >= 2) {
+                flowBuilderData.matches.forEach(m => {
+                    const key = m.team1 + '-' + m.team2;
+                    const pos = fbPositions.pairs[key];
+                    const t1Pos = fbPositions.teams[m.team1];
+                    const t2Pos = fbPositions.teams[m.team2];
+                    const inCut = !saturated && reachable[key];
+
+                    // Match node
+                    html += `
+                        <circle cx="${pos.x}" cy="${pos.y}" r="26" fill="${inCut && showFlow ? 'rgba(0,150,136,0.3)' : '#f5e6a3'}" stroke="${inCut && showFlow ? '#009688' : '#222'}" stroke-width="${inCut && showFlow ? 3 : 2}"/>
+                        <text x="${pos.x}" y="${pos.y - 5}" text-anchor="middle" font-size="11" fill="#222">${m.team1}</text>
+                        <text x="${pos.x}" y="${pos.y + 9}" text-anchor="middle" font-size="11" fill="#222">${m.team2}</text>
+                    `;
+
+                    // Edges to teams
+                    const f1 = showFlow && f ? Math.max(0, f[key][m.team1]) : 0;
+                    const f2 = showFlow && f ? Math.max(0, f[key][m.team2]) : 0;
+
+                    // Edge to team1
+                    const color1 = showFlow ? '#059669' : '#888';
+                    html += `
+                        <line x1="${pos.x + 26}" y1="${pos.y - 8}" x2="${t1Pos.x - 28}" y2="${t1Pos.y + 5}"
+                              stroke="${color1}" stroke-width="${showFlow ? 2.5 : 1.5}" ${showFlow ? '' : 'stroke-dasharray="4,2"'} marker-end="${showFlow ? 'url(#arrowheadGreen)' : 'url(#arrowhead3)'}"/>
+                    `;
+                    if (showFlow) {
+                        const mx1 = (pos.x + 26 + t1Pos.x - 28) / 2;
+                        const my1 = (pos.y - 8 + t1Pos.y + 5) / 2 - 8;
+                        html += `<text x="${mx1}" y="${my1}" text-anchor="middle" font-size="10" fill="#059669" font-weight="600">${f1}</text>`;
+                    }
+
+                    // Edge to team2
+                    const color2 = showFlow ? '#059669' : '#888';
+                    html += `
+                        <line x1="${pos.x + 26}" y1="${pos.y + 8}" x2="${t2Pos.x - 28}" y2="${t2Pos.y - 5}"
+                              stroke="${color2}" stroke-width="${showFlow ? 2.5 : 1.5}" ${showFlow ? '' : 'stroke-dasharray="4,2"'} marker-end="${showFlow ? 'url(#arrowheadGreen)' : 'url(#arrowhead3)'}"/>
+                    `;
+                    if (showFlow) {
+                        const mx2 = (pos.x + 26 + t2Pos.x - 28) / 2;
+                        const my2 = (pos.y + 8 + t2Pos.y - 5) / 2 + 12;
+                        html += `<text x="${mx2}" y="${my2}" text-anchor="middle" font-size="10" fill="#059669" font-weight="600">${f2}</text>`;
+                    }
+                });
+            }
+
+            // Step 3+: Source edges to pair nodes
+            if (step >= 3) {
+                flowBuilderData.matches.forEach(m => {
+                    const key = m.team1 + '-' + m.team2;
+                    const pos = fbPositions.pairs[key];
+
+                    const flowFromS = showFlow && f ? Math.max(0, f['s'][key]) : 0;
+                    const isSaturated = flowFromS >= m.games;
+                    const edgeColor = showFlow ? (isSaturated ? '#059669' : '#c62828') : '#555';
+                    const marker = showFlow ? (isSaturated ? 'url(#arrowheadGreen)' : 'url(#arrowheadRed)') : 'url(#arrowhead3)';
+
+                    html += `
+                        <line x1="${fbPositions.s.x + 22}" y1="${fbPositions.s.y}" x2="${pos.x - 28}" y2="${pos.y}"
+                              stroke="${edgeColor}" stroke-width="${showFlow ? 3 : 2}" marker-end="${marker}"/>
+                    `;
+
+                    // Label
+                    const labelX = fbPositions.s.x + 70;
+                    const labelY = pos.y - 10;
+                    if (showFlow) {
+                        html += `<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="11" fill="${edgeColor}" font-weight="600">${flowFromS}/${m.games}</text>`;
+                    } else {
+                        html += `<text x="${labelX}" y="${labelY}" text-anchor="middle" font-size="11" fill="#1565c0" font-weight="600">${m.games}</text>`;
+                    }
+                });
+            }
+
+            // Min-cut legend for step 4 if not saturated
+            if (step >= 4 && !saturated) {
+                html += `
+                    <rect x="10" y="10" width="120" height="50" fill="white" stroke="#ddd" rx="4"/>
+                    <circle cx="25" cy="25" r="8" fill="rgba(0,150,136,0.3)" stroke="#009688" stroke-width="2"/>
+                    <text x="38" y="29" font-size="10" fill="#333">= in S (min-cut)</text>
+                    <line x1="18" y1="42" x2="38" y2="42" stroke="#c62828" stroke-width="2"/>
+                    <text x="43" y="46" font-size="10" fill="#333">= cut edge</text>
+                `;
+            }
+
+            svg.innerHTML = html;
+
+            // Update commentary
+            const stepMessages = [
+                'Step 0: Start with source <strong>s</strong> and sink <strong>t</strong>.',
+                'Step 1: Add team nodes. Connect each to <strong>t</strong> with capacity = <span style="color:#c62828">X − wins</span> (slack).',
+                'Step 2: Add match nodes for each pair. Connect to both teams with <strong>∞</strong> capacity.',
+                'Step 3: Connect <strong>s</strong> to each match node with capacity = <span style="color:#1565c0">number of games</span>.',
+                getMaxFlowResult()
+            ];
+            commentary.innerHTML = stepMessages[step];
+
+            // Update button
+            if (step >= 4) {
+                btn.textContent = 'Done';
+                btn.disabled = true;
+            } else {
+                btn.textContent = 'Next Step';
+                btn.disabled = false;
+            }
+        }
+
+        function getMaxFlowResult() {
+            const result = flowBuilderData.flowResult;
+            if (!result) return 'Error computing flow.';
+
+            const { maxFlow, totalGames, saturated } = result;
+
+            if (saturated) {
+                return `Step 4: <span style="color:#059669"><strong>Max Flow = ${maxFlow}</strong></span> (saturates all source edges). Target team <strong>survives!</strong>`;
+            } else {
+                // Show cut information
+                const reachable = result.reachable;
+                const cutNodes = Object.keys(reachable).filter(n => reachable[n] && n !== 's');
+                const cutStr = cutNodes.length > 0 ? ` Min-cut S = {s, ${cutNodes.join(', ')}}` : '';
+                return `Step 4: <span style="color:#c62828"><strong>Max Flow = ${maxFlow} < ${totalGames}</strong></span>. Target team is <strong>eliminated!</strong>${cutStr}`;
+            }
+        }
+
+        function flowBuilderNextStep() {
+            if (flowBuilderData.currentStep < 4) {
+                flowBuilderData.currentStep++;
+                renderFlowBuilderStep();
+            }
+        }
+
+        function resetFlowBuilder() {
+            // Go back to input phase
+            document.getElementById('fb-input-phase').style.display = 'block';
+            document.getElementById('fb-build-phase').style.display = 'none';
+            flowBuilderData.currentStep = 0;
+            document.getElementById('flow-next-btn').disabled = false;
+            renderFlowBuilderStep();
+        }
+
+        // Certificate of Elimination Demo
+        const certData = {
+            teams: ['MI', 'CSK', 'KKR'],
+            teamInfo: {
+                'MI': { color: '#004BA0', textColor: '#FFD700', wins: 10 },
+                'CSK': { color: '#FFCB05', textColor: '#0066B3', wins: 9 },
+                'KKR': { color: '#3A225D', textColor: '#FFD700', wins: 8 }
+            },
+            games: { 'MI-CSK': 2, 'MI-KKR': 1, 'CSK-KKR': 2 },
+            targetX: 10,
+            blockingSubset: null
+        };
+
+        // Find blocking subset (certificate) - checks all non-empty subsets
+        function findBlockingSubset() {
+            const teams = certData.teams;
+            const X = certData.targetX;
+
+            // Check all non-empty subsets
+            for (let mask = 1; mask < (1 << teams.length); mask++) {
+                const subset = [];
+                for (let i = 0; i < teams.length; i++) {
+                    if (mask & (1 << i)) subset.push(teams[i]);
+                }
+
+                // Calculate w(S) and g(S)
+                let wS = 0;
+                subset.forEach(t => wS += certData.teamInfo[t].wins);
+
+                let gS = 0;
+                for (let i = 0; i < subset.length; i++) {
+                    for (let j = i + 1; j < subset.length; j++) {
+                        const key = [subset[i], subset[j]].sort().join('-');
+                        // Try both orderings
+                        gS += certData.games[subset[i] + '-' + subset[j]] || certData.games[subset[j] + '-' + subset[i]] || 0;
+                    }
+                }
+
+                const avg = (wS + gS) / subset.length;
+                if (avg > X) {
+                    return { subset, wS, gS, avg };
+                }
+            }
+            return null;
+        }
+
+        // Generate a random doomed instance (guaranteed elimination)
+        function newCertificateInstance() {
+            // Strategy: Generate instance where total remaining games > total slack
+            // This guarantees elimination
+
+            // Random wins between 8 and 11
+            const miWins = Math.floor(Math.random() * 4) + 8;
+            const cskWins = Math.floor(Math.random() * 4) + 8;
+            const kkrWins = Math.floor(Math.random() * 4) + 8;
+
+            // Target X = max wins (tight constraint, 0 slack for leader)
+            const maxWins = Math.max(miWins, cskWins, kkrWins);
+            const targetX = maxWins;
+
+            // Calculate total slack
+            const totalSlack = (targetX - miWins) + (targetX - cskWins) + (targetX - kkrWins);
+
+            // Generate remaining games such that total > totalSlack
+            // We need at least totalSlack + 1 games total
+            const minGamesNeeded = totalSlack + 1;
+
+            // Distribute games (ensure we exceed slack)
+            let g1, g2, g3;
+            do {
+                g1 = Math.floor(Math.random() * 3) + 1; // 1-3
+                g2 = Math.floor(Math.random() * 3) + 1;
+                g3 = Math.floor(Math.random() * 3) + 1;
+            } while (g1 + g2 + g3 <= totalSlack);
+
+            // Update data
+            certData.teamInfo['MI'].wins = miWins;
+            certData.teamInfo['CSK'].wins = cskWins;
+            certData.teamInfo['KKR'].wins = kkrWins;
+            certData.games['MI-CSK'] = g1;
+            certData.games['MI-KKR'] = g2;
+            certData.games['CSK-KKR'] = g3;
+            certData.targetX = targetX;
+            certData.blockingSubset = findBlockingSubset();
+
+            // Update display
+            updateCertificateDisplay();
+
+            // Hide reveal area and reset button
+            document.getElementById('cert-reveal-area').style.display = 'none';
+            document.getElementById('cert-reveal-btn').disabled = false;
+            document.getElementById('certificate-result').innerHTML =
+                'This instance is <strong>doomed</strong> — the target team is eliminated! Click <strong>Reveal Certificate</strong> to see why.';
+        }
+
+        function updateCertificateDisplay() {
+            document.getElementById('cert-wins-mi').textContent = certData.teamInfo['MI'].wins;
+            document.getElementById('cert-wins-csk').textContent = certData.teamInfo['CSK'].wins;
+            document.getElementById('cert-wins-kkr').textContent = certData.teamInfo['KKR'].wins;
+            document.getElementById('cert-games-mi-csk').textContent = certData.games['MI-CSK'];
+            document.getElementById('cert-games-mi-kkr').textContent = certData.games['MI-KKR'];
+            document.getElementById('cert-games-csk-kkr').textContent = certData.games['CSK-KKR'];
+            document.getElementById('cert-target-x').textContent = certData.targetX;
+        }
+
+        function revealCertificate() {
+            const teamsDiv = document.getElementById('certificate-teams');
+            const calcDiv = document.getElementById('certificate-calc');
+            const resultDiv = document.getElementById('certificate-result');
+            const svg = document.getElementById('cert-svg');
+            const revealArea = document.getElementById('cert-reveal-area');
+            const btn = document.getElementById('cert-reveal-btn');
+
+            if (!teamsDiv || !calcDiv || !resultDiv || !svg) return;
+
+            const cert = certData.blockingSubset || findBlockingSubset();
+            if (!cert) {
+                resultDiv.innerHTML = '<span style="color: #059669;">No blocking subset found — this instance might be feasible!</span>';
+                return;
+            }
+
+            // Show reveal area
+            revealArea.style.display = 'block';
+            btn.disabled = true;
+
+            // Show blocking teams
+            let teamsHTML = '';
+            cert.subset.forEach(t => {
+                const info = certData.teamInfo[t];
+                teamsHTML += `<div style="padding: 6px 14px; background: ${info.color}; color: ${info.textColor}; border-radius: 20px; font-weight: 600; font-size: 0.9em;">${t}</div>`;
+            });
+            teamsDiv.innerHTML = teamsHTML;
+
+            // Show calculation
+            const winsStr = cert.subset.map(t => `w<sub>${t}</sub>`).join(' + ');
+            const winsVals = cert.subset.map(t => certData.teamInfo[t].wins).join(' + ');
+
+            // Calculate games within subset
+            let gamesDesc = [];
+            for (let i = 0; i < cert.subset.length; i++) {
+                for (let j = i + 1; j < cert.subset.length; j++) {
+                    const t1 = cert.subset[i], t2 = cert.subset[j];
+                    const g = certData.games[t1 + '-' + t2] || certData.games[t2 + '-' + t1] || 0;
+                    if (g > 0) gamesDesc.push(`${t1}-${t2}: ${g}`);
+                }
+            }
+
+            calcDiv.innerHTML = `
+                <p>w(S) = ${winsStr} = ${winsVals} = <strong>${cert.wS}</strong></p>
+                <p style="margin-top: 4px;">g(S) = ${gamesDesc.length > 0 ? gamesDesc.join(' + ') : '0'} = <strong>${cert.gS}</strong></p>
+                <p style="margin-top: 6px;">Average = (${cert.wS} + ${cert.gS}) / ${cert.subset.length} = <strong style="color: #c62828;">${cert.avg.toFixed(2)} > ${certData.targetX}</strong></p>
+            `;
+
+            // Draw visual
+            drawCertificateSVG(svg, cert);
+
+            resultDiv.innerHTML = `
+                <span style="color: #c62828;"><strong>Certificate found!</strong></span>
+                Even optimally, the average final wins for {${cert.subset.join(', ')}} must exceed ${certData.targetX}.
+            `;
+        }
+
+        function drawCertificateSVG(svg, cert) {
+            const subset = cert.subset;
+            const n = subset.length;
+
+            // Position nodes based on count (wider spacing for 3 teams)
+            let positions = {};
+            let winsLabelOffsets = {}; // Custom label offsets per team
+            if (n === 1) {
+                positions[subset[0]] = { x: 160, y: 90 };
+                winsLabelOffsets[subset[0]] = { dx: 0, dy: 45 };
+            } else if (n === 2) {
+                positions[subset[0]] = { x: 100, y: 90 };
+                positions[subset[1]] = { x: 220, y: 90 };
+                winsLabelOffsets[subset[0]] = { dx: 0, dy: 45 };
+                winsLabelOffsets[subset[1]] = { dx: 0, dy: 45 };
+            } else if (n === 3) {
+                // Wider triangle with more vertical spacing
+                positions[subset[0]] = { x: 60, y: 110 };   // bottom-left
+                positions[subset[1]] = { x: 160, y: 45 };   // top-center
+                positions[subset[2]] = { x: 260, y: 110 };  // bottom-right
+                // Wins labels: bottom teams go below, top team goes above
+                winsLabelOffsets[subset[0]] = { dx: 0, dy: 45 };
+                winsLabelOffsets[subset[1]] = { dx: 0, dy: -40 };
+                winsLabelOffsets[subset[2]] = { dx: 0, dy: 45 };
+            }
+
+            let html = `<text x="160" y="18" text-anchor="middle" font-size="11" fill="#666" font-family="Heliotrope, Georgia, serif">Blocking Subset S</text>`;
+
+            // Draw edges (games between teams)
+            let edgeIndex = 0;
+            for (let i = 0; i < subset.length; i++) {
+                for (let j = i + 1; j < subset.length; j++) {
+                    const t1 = subset[i], t2 = subset[j];
+                    const g = certData.games[t1 + '-' + t2] || certData.games[t2 + '-' + t1] || 0;
+                    if (g > 0) {
+                        const p1 = positions[t1], p2 = positions[t2];
+                        let mx = (p1.x + p2.x) / 2;
+                        let my = (p1.y + p2.y) / 2;
+
+                        // Offset edge labels for 3-team case to avoid overlap
+                        if (n === 3) {
+                            if (edgeIndex === 0) { my -= 12; mx -= 15; } // left edge
+                            else if (edgeIndex === 1) { my += 15; }      // bottom edge
+                            else if (edgeIndex === 2) { my -= 12; mx += 15; } // right edge
+                        } else {
+                            my -= 10;
+                        }
+
+                        html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#333" stroke-width="2"/>`;
+                        html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="9" fill="#333" font-family="Heliotrope, Georgia, serif">${g}</text>`;
+                    }
+                    edgeIndex++;
+                }
+            }
+
+            // Draw nodes
+            subset.forEach(t => {
+                const pos = positions[t];
+                const info = certData.teamInfo[t];
+                const labelOff = winsLabelOffsets[t] || { dx: 0, dy: 45 };
+                html += `<circle cx="${pos.x}" cy="${pos.y}" r="26" fill="${info.color}" stroke="#222" stroke-width="2"/>`;
+                html += `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-size="11" font-weight="600" fill="${info.textColor}" font-family="Heliotrope, Georgia, serif">${t}</text>`;
+                html += `<text x="${pos.x + labelOff.dx}" y="${pos.y + labelOff.dy}" text-anchor="middle" font-size="9" fill="#666" font-family="Heliotrope, Georgia, serif">${info.wins} wins</text>`;
+            });
+
+            svg.innerHTML = html;
+        }
+
+        function initCertificateDemo() {
+            // Generate initial doomed instance
+            newCertificateInstance();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initIPLDemo();
+            initFlowBuilder();
+            initCertificateDemo();
+        });
+
+        // Also init when Reveal is ready (for slide navigation)
+        Reveal.on('ready', function() {
+            initIPLDemo();
+            initFlowBuilder();
+            initCertificateDemo();
+        });
+
+        Reveal.on('slidechanged', function() {
+            initIPLDemo();
+            initFlowBuilder();
+        });
+    </script>
+</body>
+</html>
