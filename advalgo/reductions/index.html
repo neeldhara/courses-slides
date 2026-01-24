@@ -1003,6 +1003,22 @@
                         </p>
                     </div>
                 </section>
+
+                <!-- Video: Flows -->
+                <section>
+                    <h2>Further Viewing</h2>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <a href="https://www.youtube.com/watch?v=LdOnanfc5TM" target="_blank" style="position: relative; display: inline-block;">
+                            <img src="https://img.youtube.com/vi/LdOnanfc5TM/hqdefault.jpg" alt="Introduction to Max Flow" style="width: 640px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px; background: rgba(255,0,0,0.8); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <div style="width: 0; height: 0; border-left: 20px solid white; border-top: 12px solid transparent; border-bottom: 12px solid transparent; margin-left: 4px;"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <p class="small" style="text-align: center; margin-top: 15px; color: var(--text-light);">
+                        Introduction to Max Flow <span style="color: var(--accent);">(click to open)</span>
+                    </p>
+                </section>
             </section>
 
             <!-- ===== SECTION 3: Reducing to Max Flow or Min Cut ===== -->
@@ -1423,6 +1439,308 @@
                             <p><strong>Takeaway:</strong> A problem that seems to require exhaustive search over all possible game outcomes reduces elegantly to a single max-flow computation.</p>
                         </div>
                     </div>
+                </section>
+
+                <!-- Video: Sports Elimination -->
+                <section>
+                    <h2>Further Viewing</h2>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <a href="https://www.youtube.com/watch?v=XK6qZjHWo9A" target="_blank" style="position: relative; display: inline-block;">
+                            <img src="https://img.youtube.com/vi/XK6qZjHWo9A/hqdefault.jpg" alt="Baseball Elimination Problem" style="width: 640px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px; background: rgba(255,0,0,0.8); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <div style="width: 0; height: 0; border-left: 20px solid white; border-top: 12px solid transparent; border-bottom: 12px solid transparent; margin-left: 4px;"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <p class="small" style="text-align: center; margin-top: 15px; color: var(--text-light);">
+                        Baseball Elimination Problem <span style="color: var(--accent);">(click to open)</span>
+                    </p>
+                </section>
+
+                <!-- ===== Election Problem ===== -->
+                <!-- Introduction -->
+                <section>
+                    <h2>The Election Problem</h2>
+                    <div style="font-size: 0.9em; max-width: 95%;">
+                        <p style="margin-bottom: 20px;">A community holds an election between <span style="color: #3B82F6; font-weight: 600;">Candidate A</span> and <span style="color: #EF4444; font-weight: 600;">Candidate B</span>.</p>
+
+                        <div class="fragment" style="background: var(--bg-light); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                            <p><strong>Each person has:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>A <em>personal preference</em> for one candidate</li>
+                                <li><em>Friendships</em> with other people in the community</li>
+                            </ul>
+                        </div>
+
+                        <div class="fragment" style="background: #FEF3C7; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #F59E0B;">
+                            <p><strong>The Conflict:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>Voting <em>against</em> your preference incurs a <strong>preference penalty</strong></li>
+                                <li>Friends voting <em>differently</em> incurs a <strong>friendship penalty</strong></li>
+                            </ul>
+                        </div>
+
+                        <div class="fragment definition-box goal-box" style="max-width: 90%;">
+                            <p><strong>Goal:</strong> Find a voting assignment that minimizes total penalty.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Formal Definition -->
+                <section>
+                    <h2>Formal Problem Definition</h2>
+                    <div style="font-size: 0.9em; max-width: 95%; margin: 0 auto;">
+                        <p><strong>Input:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>$n$ people, each with preference for A or B</li>
+                            <li>Preference penalty $p_i$ for person $i$ voting against their preference</li>
+                            <li>Friendship pairs $(i,j)$ with penalty weight $w_{ij}$ for voting differently</li>
+                        </ul>
+
+                        <p><strong>Question:</strong></p>
+                        <p style="margin-left: 20px;" class="fragment">Find assignment $f: \{1,\ldots,n\} \to \{A, B\}$ minimizing:</p>
+
+                        <div class="fragment" style="text-align: center; background: #f0f4f8; padding: 12px; border-radius: 8px; margin: 15px auto; max-width: 90%; overflow-x: auto;">
+                            $$\sum_{\substack{i:\; f(i) \neq \text{pref}(i)}} p_i \;+\; \sum_{\substack{(i,j):\; f(i) \neq f(j)}} w_{ij}$$
+                        </div>
+
+                        <p class="fragment" style="text-align: center; color: #666; font-size: 0.9em;">
+                            (preference penalties) + (friendship penalties)
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Why it's Min-Cut -->
+                <section>
+                    <h2>Why This is a Min-Cut Problem</h2>
+                    <div style="font-size: 0.85em; max-width: 80%; margin: 0 auto;">
+                        <p style="margin-bottom: 15px;">The key insight: this maps perfectly to finding a minimum $(s,t)$-cut!</p>
+
+                        <table style="width: 100%; border-collapse: collapse; font-size: 0.8em; table-layout: fixed;">
+                            <tr style="background: #e8f4f8;">
+                                <th style="padding: 6px; border: 1px solid #ddd; text-align: left; width: 50%;">Real World</th>
+                                <th style="padding: 6px; border: 1px solid #ddd; text-align: left; width: 50%;">Flow Network</th>
+                            </tr>
+                            <tr class="fragment">
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;"><span style="color: #3B82F6;">A-preferring</span> people</td>
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Connected to Source ($s$)</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;"><span style="color: #EF4444;">B-preferring</span> people</td>
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Connected to Sink ($t$)</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Preference penalty $p_i$</td>
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Capacity of edge from/to $s$/$t$</td>
+                            </tr>
+                            <tr class="fragment">
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Friendship penalty $w_{ij}$</td>
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Capacity of edges between $i$, $j$</td>
+                            </tr>
+                            <tr class="fragment" style="background: #f0fdf4;">
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">People voting for A</td>
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Nodes on <strong>Source side</strong> of cut</td>
+                            </tr>
+                            <tr class="fragment" style="background: #fef2f2;">
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">People voting for B</td>
+                                <td style="padding: 5px 6px; border: 1px solid #ddd;">Nodes on <strong>Sink side</strong> of cut</td>
+                            </tr>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Interactive Demo: Build Social Network -->
+                <section>
+                    <h2>Build Your Community</h2>
+                    <div class="demo-container" style="max-width: 95%;">
+                        <div class="demo-header">
+                            <span class="demo-title">Social Network Builder</span>
+                            <div class="demo-controls">
+                                <select id="election-scenario" onchange="loadElectionScenario()" style="padding: 6px 10px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.9em;">
+                                    <option value="custom">Custom</option>
+                                    <option value="dinner">The Dinner Party (4 people)</option>
+                                    <option value="influencer">The Influencer (5 people)</option>
+                                    <option value="communities">Two Communities (6 people)</option>
+                                    <option value="swing">The Swing Voter (5 people)</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="clearElectionNetwork()">Clear</button>
+                                <button class="btn btn-primary" onclick="buildElectionFlowNetwork()">Build Flow Network →</button>
+                            </div>
+                        </div>
+
+                        <!-- Add/Edit Controls -->
+                        <div style="display: flex; gap: 15px; padding: 10px; background: #fafafa; border-radius: 6px; margin-bottom: 10px; flex-wrap: wrap; align-items: center;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <button class="btn" style="background: #3B82F6; color: white; padding: 6px 12px;" onclick="addElectionPerson('A')">+ Person (prefers A)</button>
+                                <button class="btn" style="background: #EF4444; color: white; padding: 6px 12px;" onclick="addElectionPerson('B')">+ Person (prefers B)</button>
+                            </div>
+                            <div style="border-left: 1px solid #ddd; padding-left: 15px; display: flex; gap: 8px; align-items: center;">
+                                <label style="font-size: 0.85em; color: #666;">Mode:</label>
+                                <button id="election-mode-select" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.85em;" onclick="toggleElectionMode('select')">Select</button>
+                                <button id="election-mode-connect" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.85em;" onclick="toggleElectionMode('connect')">Connect Friends</button>
+                                <button id="election-mode-delete" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.85em;" onclick="toggleElectionMode('delete')">Delete</button>
+                            </div>
+                        </div>
+
+                        <!-- Social Network Canvas -->
+                        <div style="display: flex; gap: 15px;">
+                            <div style="flex: 2; background: #f8f9fa; border-radius: 8px; border: 2px solid #e0e0e0; min-height: 280px; position: relative;">
+                                <svg id="election-social-svg" width="100%" height="280" viewBox="0 0 420 280" preserveAspectRatio="xMidYMid meet" style="display: block;"></svg>
+                            </div>
+
+                            <!-- Properties Panel -->
+                            <div id="election-props-panel" style="flex: 1; background: #fafafa; border-radius: 8px; padding: 12px; font-size: 0.85em; min-width: 180px;">
+                                <p style="font-weight: 600; margin-bottom: 10px; color: #666;">Properties</p>
+                                <div id="election-props-content">
+                                    <p style="color: #999; font-style: italic;">Click a person or friendship to edit</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="demo-output" id="election-social-output">
+                            Add people and connect friends to build your community. Select a scenario or create your own!
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flow Network Visualization -->
+                <section>
+                    <h2>The Flow Network</h2>
+                    <div class="demo-container" style="max-width: 95%;">
+                        <div class="demo-header">
+                            <span class="demo-title">Transformation to Flow Network</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-secondary" onclick="resetElectionToSocial()">← Back to Social Network</button>
+                                <button class="btn btn-primary" id="election-run-btn" onclick="runElectionMaxFlow()">Run Max-Flow →</button>
+                            </div>
+                        </div>
+
+                        <!-- Side-by-side view -->
+                        <div style="display: flex; gap: 10px;">
+                            <!-- Social Network (small) -->
+                            <div style="flex: 1; background: #f8f9fa; border-radius: 8px; padding: 8px; border: 1px solid #e0e0e0;">
+                                <p style="font-size: 0.75em; text-align: center; color: #666; margin-bottom: 5px;">Social Network</p>
+                                <svg id="election-social-mini" width="100%" height="180" viewBox="0 0 250 180" preserveAspectRatio="xMidYMid meet"></svg>
+                            </div>
+
+                            <!-- Flow Network -->
+                            <div style="flex: 2; background: #f0f4f8; border-radius: 8px; padding: 8px; border: 2px solid #3B82F6;">
+                                <p style="font-size: 0.75em; text-align: center; color: #3B82F6; margin-bottom: 5px; font-weight: 600;">Flow Network</p>
+                                <svg id="election-flow-svg" width="100%" height="260" viewBox="0 0 600 260" preserveAspectRatio="xMidYMid meet"></svg>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 10px; font-size: 0.8em; flex-wrap: wrap;">
+                            <span><span style="display: inline-block; width: 12px; height: 12px; background: #a8d4f0; border: 1px solid #333; border-radius: 50%; margin-right: 4px;"></span> Source (s) = "Vote A"</span>
+                            <span><span style="display: inline-block; width: 12px; height: 12px; background: #f5c4c0; border: 1px solid #333; border-radius: 50%; margin-right: 4px;"></span> Sink (t) = "Vote B"</span>
+                            <span><span style="display: inline-block; width: 20px; height: 3px; background: #3B82F6; margin-right: 4px; vertical-align: middle;"></span> Preference edge</span>
+                            <span><span style="display: inline-block; width: 20px; height: 3px; background: #8B5CF6; margin-right: 4px; vertical-align: middle;"></span> Friendship edge</span>
+                        </div>
+
+                        <div class="demo-output" id="election-flow-output">
+                            The flow network is ready. Click <strong>Run Max-Flow</strong> to find the optimal voting assignment.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Results & Min-Cut Visualization -->
+                <section>
+                    <h2>Optimal Voting Assignment</h2>
+                    <div class="demo-container" style="max-width: 95%;">
+                        <div class="demo-header">
+                            <span class="demo-title">Min-Cut = Optimal Votes</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-secondary" onclick="resetElectionToSocial()">← New Scenario</button>
+                                <button class="btn btn-primary" onclick="toggleElectionWhatIf()">What If? Mode</button>
+                            </div>
+                        </div>
+
+                        <!-- Results visualization -->
+                        <div style="display: flex; gap: 15px;">
+                            <!-- Cut visualization -->
+                            <div style="flex: 2; background: linear-gradient(to right, #EBF5FF 0%, #EBF5FF 48%, #ddd 48%, #ddd 52%, #FEF2F2 52%, #FEF2F2 100%); border-radius: 8px; padding: 10px; min-height: 280px;">
+                                <svg id="election-result-svg" width="100%" height="270" viewBox="0 0 500 270" preserveAspectRatio="xMidYMid meet"></svg>
+                            </div>
+
+                            <!-- Results panel -->
+                            <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                                <!-- Vote counts -->
+                                <div style="background: #f0f4f8; border-radius: 8px; padding: 12px; text-align: center;">
+                                    <p style="font-size: 0.8em; color: #666; margin-bottom: 8px;">Election Results</p>
+                                    <div style="display: flex; justify-content: center; gap: 20px;">
+                                        <div>
+                                            <div style="font-size: 1.8em; font-weight: 700; color: #3B82F6;" id="election-votes-a">0</div>
+                                            <div style="font-size: 0.8em; color: #666;">Candidate A</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 1.8em; font-weight: 700; color: #EF4444;" id="election-votes-b">0</div>
+                                            <div style="font-size: 0.8em; color: #666;">Candidate B</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Penalty breakdown -->
+                                <div style="background: #fffbeb; border-radius: 8px; padding: 12px; border: 1px solid #fcd34d;">
+                                    <p style="font-size: 0.8em; color: #92400e; margin-bottom: 8px; font-weight: 600;">Penalty Breakdown</p>
+                                    <div id="election-penalty-breakdown" style="font-size: 0.85em;"></div>
+                                    <div style="border-top: 1px solid #fcd34d; margin-top: 8px; padding-top: 8px;">
+                                        <strong>Total: <span id="election-total-penalty">0</span></strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- What-if mode (hidden by default) -->
+                        <div id="election-whatif-panel" style="display: none; margin-top: 15px; background: #f0fdf4; border-radius: 8px; padding: 12px; border: 2px solid #10B981;">
+                            <p style="font-weight: 600; color: #059669; margin-bottom: 10px;">What If? Mode — Click on people to toggle their votes</p>
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <div>Your penalty: <strong id="election-user-penalty">0</strong></div>
+                                <div>Optimal penalty: <strong id="election-opt-penalty">0</strong></div>
+                                <div>Difference: <span id="election-diff-penalty" style="font-weight: 600;">0</span></div>
+                                <button class="btn btn-secondary" onclick="resetElectionWhatIf()" style="margin-left: auto;">Reset to Optimal</button>
+                            </div>
+                        </div>
+
+                        <div class="demo-output" id="election-result-output">
+                            The minimum cut determines the optimal voting assignment with minimum total penalty.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Election Problem Summary -->
+                <section>
+                    <h2>Election Problem: Summary</h2>
+                    <div style="font-size: 0.95em;">
+                        <div class="fragment" style="margin-bottom: 15px;">
+                            <p><strong>The Reduction:</strong></p>
+                            <p style="margin-left: 20px;">Election Problem $\leq_P$ Min Cut</p>
+                        </div>
+                        <div class="fragment" style="margin-bottom: 15px;">
+                            <p><strong>Key Insight:</strong></p>
+                            <ul style="margin-left: 20px;">
+                                <li>Cutting an edge from $s$ = A-supporter votes B (pays preference penalty)</li>
+                                <li>Cutting an edge to $t$ = B-supporter votes A (pays preference penalty)</li>
+                                <li>Cutting a friendship edge = friends vote differently (pays friendship penalty)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Video: Election Problem / Min-Cut -->
+                <section>
+                    <h2>Further Viewing</h2>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <a href="https://www.youtube.com/watch?v=lCPvFXgH53s&t=5024s" target="_blank" style="position: relative; display: inline-block;">
+                            <img src="https://img.youtube.com/vi/lCPvFXgH53s/hqdefault.jpg" alt="Introduction to Flows - Election Problem" style="width: 640px; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 68px; height: 48px; background: rgba(255,0,0,0.8); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <div style="width: 0; height: 0; border-left: 20px solid white; border-top: 12px solid transparent; border-bottom: 12px solid transparent; margin-left: 4px;"></div>
+                            </div>
+                        </a>
+                    </div>
+                    <p class="small" style="text-align: center; margin-top: 15px; color: var(--text-light);">
+                        Introduction to Flows (starts at Election Problem) <span style="color: var(--accent);">(click to open)</span>
+                    </p>
                 </section>
             </section>
 
@@ -2745,11 +3063,1001 @@
             newCertificateInstance();
         }
 
+        // ========================================
+        // Election Problem Interactive
+        // ========================================
+
+        const electionData = {
+            people: [],       // { id, name, preference, prefWeight, x, y }
+            friendships: [],  // { id, person1, person2, weight }
+            mode: 'select',   // 'select', 'connect', 'delete'
+            selectedPerson: null,
+            connectingFrom: null,
+            nextPersonId: 1,
+            nextFriendshipId: 1,
+            flowResult: null,
+            userVotes: {},    // For what-if mode
+            whatIfMode: false
+        };
+
+        // Pre-built scenarios
+        const electionScenarios = {
+            dinner: {
+                name: "The Dinner Party",
+                description: "4 people with cross-party friendships. Everyone voting their preference is optimal!",
+                people: [
+                    { id: 1, name: "Alice", preference: "A", prefWeight: 2, x: 120, y: 80 },
+                    { id: 2, name: "Bob", preference: "A", prefWeight: 2, x: 120, y: 180 },
+                    { id: 3, name: "Carol", preference: "B", prefWeight: 2, x: 280, y: 80 },
+                    { id: 4, name: "Dave", preference: "B", prefWeight: 2, x: 280, y: 180 }
+                ],
+                friendships: [
+                    { id: 1, person1: 1, person2: 3, weight: 3 },  // Alice-Carol
+                    { id: 2, person1: 2, person2: 4, weight: 3 }   // Bob-Dave
+                ]
+            },
+            influencer: {
+                name: "The Influencer",
+                description: "One A-supporter with many B-supporter friends. Social pressure may flip their vote!",
+                people: [
+                    { id: 1, name: "Influencer", preference: "A", prefWeight: 3, x: 200, y: 130 },
+                    { id: 2, name: "Fan1", preference: "B", prefWeight: 2, x: 80, y: 60 },
+                    { id: 3, name: "Fan2", preference: "B", prefWeight: 2, x: 320, y: 60 },
+                    { id: 4, name: "Fan3", preference: "B", prefWeight: 2, x: 80, y: 200 },
+                    { id: 5, name: "Fan4", preference: "B", prefWeight: 2, x: 320, y: 200 }
+                ],
+                friendships: [
+                    { id: 1, person1: 1, person2: 2, weight: 4 },
+                    { id: 2, person1: 1, person2: 3, weight: 4 },
+                    { id: 3, person1: 1, person2: 4, weight: 4 },
+                    { id: 4, person1: 1, person2: 5, weight: 4 }
+                ]
+            },
+            communities: {
+                name: "Two Communities",
+                description: "Two tight-knit groups with a bridge friendship. The cut follows community lines.",
+                people: [
+                    { id: 1, name: "A1", preference: "A", prefWeight: 3, x: 80, y: 70 },
+                    { id: 2, name: "A2", preference: "A", prefWeight: 3, x: 80, y: 190 },
+                    { id: 3, name: "A3", preference: "A", prefWeight: 3, x: 160, y: 130 },
+                    { id: 4, name: "B1", preference: "B", prefWeight: 3, x: 320, y: 70 },
+                    { id: 5, name: "B2", preference: "B", prefWeight: 3, x: 320, y: 190 },
+                    { id: 6, name: "B3", preference: "B", prefWeight: 3, x: 240, y: 130 }
+                ],
+                friendships: [
+                    { id: 1, person1: 1, person2: 2, weight: 5 },
+                    { id: 2, person1: 1, person2: 3, weight: 5 },
+                    { id: 3, person1: 2, person2: 3, weight: 5 },
+                    { id: 4, person1: 4, person2: 5, weight: 5 },
+                    { id: 5, person1: 4, person2: 6, weight: 5 },
+                    { id: 6, person1: 5, person2: 6, weight: 5 },
+                    { id: 7, person1: 3, person2: 6, weight: 2 }  // Bridge
+                ]
+            },
+            swing: {
+                name: "The Swing Voter",
+                description: "One person with weak preference is friends with both sides. They might switch!",
+                people: [
+                    { id: 1, name: "Strong A", preference: "A", prefWeight: 5, x: 80, y: 80 },
+                    { id: 2, name: "Strong B", preference: "B", prefWeight: 5, x: 320, y: 80 },
+                    { id: 3, name: "Swing", preference: "A", prefWeight: 1, x: 200, y: 130 },
+                    { id: 4, name: "Ally A", preference: "A", prefWeight: 3, x: 80, y: 180 },
+                    { id: 5, name: "Ally B", preference: "B", prefWeight: 3, x: 320, y: 180 }
+                ],
+                friendships: [
+                    { id: 1, person1: 1, person2: 3, weight: 2 },
+                    { id: 2, person1: 2, person2: 3, weight: 4 },
+                    { id: 3, person1: 1, person2: 4, weight: 3 },
+                    { id: 4, person1: 2, person2: 5, weight: 3 },
+                    { id: 5, person1: 3, person2: 5, weight: 3 }
+                ]
+            }
+        };
+
+        function loadElectionScenario() {
+            const select = document.getElementById('election-scenario');
+            const scenario = select.value;
+
+            if (scenario === 'custom') {
+                clearElectionNetwork();
+                return;
+            }
+
+            const data = electionScenarios[scenario];
+            if (!data) return;
+
+            electionData.people = JSON.parse(JSON.stringify(data.people));
+            electionData.friendships = JSON.parse(JSON.stringify(data.friendships));
+            electionData.nextPersonId = Math.max(...data.people.map(p => p.id)) + 1;
+            electionData.nextFriendshipId = data.friendships.length > 0 ?
+                Math.max(...data.friendships.map(f => f.id)) + 1 : 1;
+            electionData.selectedPerson = null;
+            electionData.connectingFrom = null;
+
+            renderElectionSocialNetwork();
+            updateElectionOutput(`Loaded: <strong>${data.name}</strong>. ${data.description}`);
+        }
+
+        function clearElectionNetwork() {
+            electionData.people = [];
+            electionData.friendships = [];
+            electionData.nextPersonId = 1;
+            electionData.nextFriendshipId = 1;
+            electionData.selectedPerson = null;
+            electionData.connectingFrom = null;
+            document.getElementById('election-scenario').value = 'custom';
+            renderElectionSocialNetwork();
+            updateElectionPropsPanel();
+            updateElectionOutput('Network cleared. Add people and connect friends to build your community.');
+        }
+
+        function addElectionPerson(preference) {
+            // Use viewBox coordinates (420 x 280)
+            // Random position within canvas with padding
+            const x = 60 + Math.random() * 300;  // 60 to 360
+            const y = 50 + Math.random() * 180;  // 50 to 230
+
+            const person = {
+                id: electionData.nextPersonId++,
+                name: `P${electionData.people.length + 1}`,
+                preference: preference,
+                prefWeight: 3,
+                x: x,
+                y: y
+            };
+
+            electionData.people.push(person);
+            document.getElementById('election-scenario').value = 'custom';
+            renderElectionSocialNetwork();
+            updateElectionOutput(`Added <strong>${person.name}</strong> (prefers ${preference}).`);
+        }
+
+        function toggleElectionMode(mode) {
+            electionData.mode = mode;
+            electionData.connectingFrom = null;
+
+            // Update button styles
+            ['select', 'connect', 'delete'].forEach(m => {
+                const btn = document.getElementById('election-mode-' + m);
+                if (btn) {
+                    btn.style.background = m === mode ? '#3B82F6' : '';
+                    btn.style.color = m === mode ? 'white' : '';
+                }
+            });
+
+            const modeText = {
+                select: 'Select mode — click a person to edit their properties.',
+                connect: 'Connect mode — click two people to add a friendship.',
+                delete: 'Delete mode — click a person or edge to remove it.'
+            };
+            updateElectionOutput(modeText[mode]);
+        }
+
+        function renderElectionSocialNetwork() {
+            const svg = document.getElementById('election-social-svg');
+            if (!svg) return;
+
+            // Positions are stored in viewBox coordinates (420 x 280)
+            let html = '';
+
+            // Draw friendships
+            electionData.friendships.forEach(f => {
+                const p1 = electionData.people.find(p => p.id === f.person1);
+                const p2 = electionData.people.find(p => p.id === f.person2);
+                if (!p1 || !p2) return;
+
+                const mx = (p1.x + p2.x) / 2;
+                const my = (p1.y + p2.y) / 2;
+
+                html += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}"
+                         stroke="#8B5CF6" stroke-width="${Math.min(f.weight, 8)}"
+                         style="cursor: pointer;" onclick="clickElectionFriendship(${f.id})"/>`;
+                html += `<text x="${mx}" y="${my - 8}" text-anchor="middle" font-size="11"
+                         fill="#6B21A8" font-weight="600" style="pointer-events: none;">${f.weight}</text>`;
+            });
+
+            // Draw connecting line if in connect mode
+            if (electionData.connectingFrom && electionData.mode === 'connect') {
+                const p = electionData.people.find(p => p.id === electionData.connectingFrom);
+                if (p) {
+                    html += `<line id="election-connect-line" x1="${p.x}" y1="${p.y}" x2="${p.x}" y2="${p.y}"
+                             stroke="#8B5CF6" stroke-width="2" stroke-dasharray="5,3" style="pointer-events: none;"/>`;
+                }
+            }
+
+            // Draw people
+            electionData.people.forEach(p => {
+                const isSelected = electionData.selectedPerson === p.id;
+                const isConnecting = electionData.connectingFrom === p.id;
+                const fillColor = p.preference === 'A' ? '#3B82F6' : '#EF4444';
+                const strokeColor = isSelected || isConnecting ? '#F59E0B' : '#1F2937';
+                const strokeWidth = isSelected || isConnecting ? 4 : 2;
+
+                html += `<circle cx="${p.x}" cy="${p.y}" r="${18 + p.prefWeight}"
+                         fill="${fillColor}" stroke="${strokeColor}" stroke-width="${strokeWidth}"
+                         style="cursor: pointer;" onclick="clickElectionPerson(${p.id})"
+                         onmousedown="startDragPerson(event, ${p.id})"/>`;
+                html += `<text x="${p.x}" y="${p.y + 4}" text-anchor="middle"
+                         font-size="11" font-weight="600" fill="white" style="pointer-events: none;">${p.name}</text>`;
+
+                // Preference weight indicator
+                html += `<text x="${p.x}" y="${p.y + 30 + p.prefWeight}" text-anchor="middle"
+                         font-size="9" fill="#666" style="pointer-events: none;">p=${p.prefWeight}</text>`;
+            });
+
+            svg.innerHTML = html;
+        }
+
+        function clickElectionPerson(id) {
+            const mode = electionData.mode;
+
+            if (mode === 'select') {
+                electionData.selectedPerson = id;
+                updateElectionPropsPanel();
+                renderElectionSocialNetwork();
+            } else if (mode === 'connect') {
+                if (!electionData.connectingFrom) {
+                    electionData.connectingFrom = id;
+                    renderElectionSocialNetwork();
+                    updateElectionOutput('Now click another person to connect them as friends.');
+                } else if (electionData.connectingFrom !== id) {
+                    // Check if friendship already exists
+                    const existing = electionData.friendships.find(f =>
+                        (f.person1 === electionData.connectingFrom && f.person2 === id) ||
+                        (f.person1 === id && f.person2 === electionData.connectingFrom)
+                    );
+                    if (!existing) {
+                        electionData.friendships.push({
+                            id: electionData.nextFriendshipId++,
+                            person1: electionData.connectingFrom,
+                            person2: id,
+                            weight: 3
+                        });
+                        document.getElementById('election-scenario').value = 'custom';
+                        updateElectionOutput('Friendship created!');
+                    } else {
+                        updateElectionOutput('These people are already friends.');
+                    }
+                    electionData.connectingFrom = null;
+                    renderElectionSocialNetwork();
+                } else {
+                    electionData.connectingFrom = null;
+                    renderElectionSocialNetwork();
+                }
+            } else if (mode === 'delete') {
+                electionData.people = electionData.people.filter(p => p.id !== id);
+                electionData.friendships = electionData.friendships.filter(f =>
+                    f.person1 !== id && f.person2 !== id
+                );
+                document.getElementById('election-scenario').value = 'custom';
+                renderElectionSocialNetwork();
+                updateElectionPropsPanel();
+                updateElectionOutput('Person deleted.');
+            }
+        }
+
+        function clickElectionFriendship(id) {
+            const mode = electionData.mode;
+
+            if (mode === 'select') {
+                const f = electionData.friendships.find(f => f.id === id);
+                if (f) {
+                    updateElectionPropsPanel(f);
+                }
+            } else if (mode === 'delete') {
+                electionData.friendships = electionData.friendships.filter(f => f.id !== id);
+                document.getElementById('election-scenario').value = 'custom';
+                renderElectionSocialNetwork();
+                updateElectionOutput('Friendship deleted.');
+            }
+        }
+
+        function updateElectionPropsPanel(friendship = null) {
+            const content = document.getElementById('election-props-content');
+            if (!content) return;
+
+            if (friendship) {
+                const p1 = electionData.people.find(p => p.id === friendship.person1);
+                const p2 = electionData.people.find(p => p.id === friendship.person2);
+                content.innerHTML = `
+                    <p style="margin-bottom: 8px;"><strong>Friendship</strong></p>
+                    <p style="margin-bottom: 8px;">${p1?.name || '?'} ↔ ${p2?.name || '?'}</p>
+                    <label style="display: block; margin-bottom: 5px;">Penalty Weight:</label>
+                    <input type="range" min="1" max="10" value="${friendship.weight}"
+                           onchange="updateFriendshipWeight(${friendship.id}, this.value)"
+                           style="width: 100%;">
+                    <span id="friendship-weight-display">${friendship.weight}</span>
+                `;
+                return;
+            }
+
+            const personId = electionData.selectedPerson;
+            if (!personId) {
+                content.innerHTML = '<p style="color: #999; font-style: italic;">Click a person or friendship to edit</p>';
+                return;
+            }
+
+            const person = electionData.people.find(p => p.id === personId);
+            if (!person) return;
+
+            const prefColor = person.preference === 'A' ? '#3B82F6' : '#EF4444';
+
+            content.innerHTML = `
+                <p style="margin-bottom: 10px;"><strong style="color: ${prefColor};">${person.name}</strong></p>
+                <label style="display: block; margin-bottom: 5px;">Name:</label>
+                <input type="text" value="${person.name}" maxlength="8"
+                       onchange="updatePersonName(${person.id}, this.value)"
+                       style="width: 100%; padding: 4px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                <label style="display: block; margin-bottom: 5px;">Preference:</label>
+                <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                    <button onclick="updatePersonPref(${person.id}, 'A')"
+                            style="flex: 1; padding: 5px; background: ${person.preference === 'A' ? '#3B82F6' : '#e0e0e0'};
+                                   color: ${person.preference === 'A' ? 'white' : '#666'}; border: none; border-radius: 4px; cursor: pointer;">A</button>
+                    <button onclick="updatePersonPref(${person.id}, 'B')"
+                            style="flex: 1; padding: 5px; background: ${person.preference === 'B' ? '#EF4444' : '#e0e0e0'};
+                                   color: ${person.preference === 'B' ? 'white' : '#666'}; border: none; border-radius: 4px; cursor: pointer;">B</button>
+                </div>
+                <label style="display: block; margin-bottom: 5px;">Preference Strength: <span id="pref-weight-display">${person.prefWeight}</span></label>
+                <input type="range" min="1" max="10" value="${person.prefWeight}"
+                       onchange="updatePersonPrefWeight(${person.id}, this.value)"
+                       style="width: 100%;">
+            `;
+        }
+
+        function updatePersonName(id, name) {
+            const person = electionData.people.find(p => p.id === id);
+            if (person) {
+                person.name = name.substring(0, 8);
+                document.getElementById('election-scenario').value = 'custom';
+                renderElectionSocialNetwork();
+            }
+        }
+
+        function updatePersonPref(id, pref) {
+            const person = electionData.people.find(p => p.id === id);
+            if (person) {
+                person.preference = pref;
+                document.getElementById('election-scenario').value = 'custom';
+                renderElectionSocialNetwork();
+                updateElectionPropsPanel();
+            }
+        }
+
+        function updatePersonPrefWeight(id, weight) {
+            const person = electionData.people.find(p => p.id === id);
+            if (person) {
+                person.prefWeight = parseInt(weight);
+                document.getElementById('election-scenario').value = 'custom';
+                document.getElementById('pref-weight-display').textContent = weight;
+                renderElectionSocialNetwork();
+            }
+        }
+
+        function updateFriendshipWeight(id, weight) {
+            const friendship = electionData.friendships.find(f => f.id === id);
+            if (friendship) {
+                friendship.weight = parseInt(weight);
+                document.getElementById('election-scenario').value = 'custom';
+                document.getElementById('friendship-weight-display').textContent = weight;
+                renderElectionSocialNetwork();
+            }
+        }
+
+        function updateElectionOutput(msg) {
+            const output = document.getElementById('election-social-output');
+            if (output) output.innerHTML = msg;
+        }
+
+        // Drag functionality for repositioning people
+        let draggingPerson = null;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Convert pixel coordinates to viewBox coordinates
+        function pixelToViewBox(svg, pixelX, pixelY) {
+            const rect = svg.getBoundingClientRect();
+            // ViewBox is 420 x 280
+            const viewBoxWidth = 420;
+            const viewBoxHeight = 280;
+            return {
+                x: (pixelX / rect.width) * viewBoxWidth,
+                y: (pixelY / rect.height) * viewBoxHeight
+            };
+        }
+
+        function startDragPerson(event, id) {
+            if (electionData.mode !== 'select') return;
+
+            draggingPerson = id;
+            const person = electionData.people.find(p => p.id === id);
+            const svg = document.getElementById('election-social-svg');
+            const rect = svg.getBoundingClientRect();
+
+            const viewBoxCoords = pixelToViewBox(svg, event.clientX - rect.left, event.clientY - rect.top);
+            dragOffset = { x: viewBoxCoords.x - person.x, y: viewBoxCoords.y - person.y };
+
+            document.addEventListener('mousemove', dragPerson);
+            document.addEventListener('mouseup', stopDragPerson);
+            event.preventDefault();
+        }
+
+        function dragPerson(event) {
+            if (!draggingPerson) return;
+
+            const person = electionData.people.find(p => p.id === draggingPerson);
+            const svg = document.getElementById('election-social-svg');
+            const rect = svg.getBoundingClientRect();
+
+            const viewBoxCoords = pixelToViewBox(svg, event.clientX - rect.left, event.clientY - rect.top);
+
+            // Clamp to viewBox bounds (420 x 280) with padding
+            person.x = Math.max(35, Math.min(385, viewBoxCoords.x - dragOffset.x));
+            person.y = Math.max(35, Math.min(245, viewBoxCoords.y - dragOffset.y));
+
+            document.getElementById('election-scenario').value = 'custom';
+            renderElectionSocialNetwork();
+        }
+
+        function stopDragPerson() {
+            draggingPerson = null;
+            document.removeEventListener('mousemove', dragPerson);
+            document.removeEventListener('mouseup', stopDragPerson);
+        }
+
+        // Build Flow Network
+        function buildElectionFlowNetwork() {
+            if (electionData.people.length < 2) {
+                updateElectionOutput('<span style="color: #c62828;">Add at least 2 people to build a network.</span>');
+                return;
+            }
+
+            // Navigate to flow network slide
+            Reveal.next();
+
+            // Render both views
+            setTimeout(() => {
+                renderElectionFlowNetwork();
+                renderElectionSocialMini();
+                document.getElementById('election-flow-output').innerHTML =
+                    'The flow network is ready. Click <strong>Run Max-Flow</strong> to find the optimal voting assignment.';
+            }, 100);
+        }
+
+        function renderElectionSocialMini() {
+            const svg = document.getElementById('election-social-mini');
+            if (!svg) return;
+
+            // Use fixed viewBox dimensions (250 x 180)
+            // Scale from social network coords (roughly 400x280) to mini view
+            const scaleX = 250 / 420;
+            const scaleY = 180 / 280;
+            const scale = Math.min(scaleX, scaleY) * 0.85; // Slightly smaller to fit with padding
+
+            let html = '';
+
+            // Draw friendships (scaled down)
+            electionData.friendships.forEach(f => {
+                const p1 = electionData.people.find(p => p.id === f.person1);
+                const p2 = electionData.people.find(p => p.id === f.person2);
+                if (!p1 || !p2) return;
+
+                html += `<line x1="${p1.x * scale + 20}" y1="${p1.y * scale + 10}" x2="${p2.x * scale + 20}" y2="${p2.y * scale + 10}"
+                         stroke="#8B5CF6" stroke-width="${Math.min(f.weight * 0.6, 5)}"/>`;
+            });
+
+            // Draw people (scaled down)
+            electionData.people.forEach(p => {
+                const fillColor = p.preference === 'A' ? '#3B82F6' : '#EF4444';
+                const r = (10 + p.prefWeight * 0.4) * scale + 4;
+
+                html += `<circle cx="${p.x * scale + 20}" cy="${p.y * scale + 10}" r="${r}"
+                         fill="${fillColor}" stroke="#1F2937" stroke-width="1.5"/>`;
+                html += `<text x="${p.x * scale + 20}" y="${p.y * scale + 13}" text-anchor="middle"
+                         font-size="8" font-weight="600" fill="white">${p.name.substring(0, 3)}</text>`;
+            });
+
+            svg.innerHTML = html;
+        }
+
+        function renderElectionFlowNetwork() {
+            const svg = document.getElementById('election-flow-svg');
+            if (!svg) return;
+
+            // Use fixed dimensions matching the viewBox (600 x 260)
+            const width = 600;
+            const height = 260;
+            const nodeRadius = 16;
+
+            // 4-column layout: s | A-voters | B-voters | t
+            const colS = 50;        // Source column
+            const colA = 190;       // A-preferring people column
+            const colB = 410;       // B-preferring people column
+            const colT = width - 50; // Sink column
+
+            const sPos = { x: colS, y: height / 2 };
+            const tPos = { x: colT, y: height / 2 };
+
+            // Separate people by preference
+            const aVoters = electionData.people.filter(p => p.preference === 'A');
+            const bVoters = electionData.people.filter(p => p.preference === 'B');
+
+            // Calculate positions for each group with comfortable spacing
+            const personPositions = {};
+
+            aVoters.forEach((p, i) => {
+                const y = 35 + (height - 70) * (i / Math.max(aVoters.length - 1, 1));
+                personPositions[p.id] = { x: colA, y: aVoters.length === 1 ? height / 2 : y };
+            });
+
+            bVoters.forEach((p, i) => {
+                const y = 35 + (height - 70) * (i / Math.max(bVoters.length - 1, 1));
+                personPositions[p.id] = { x: colB, y: bVoters.length === 1 ? height / 2 : y };
+            });
+
+            let html = `<defs>
+                <marker id="election-arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#555"/>
+                </marker>
+                <marker id="election-arrow-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#3B82F6"/>
+                </marker>
+                <marker id="election-arrow-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#EF4444"/>
+                </marker>
+                <marker id="election-arrow-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#8B5CF6"/>
+                </marker>
+            </defs>`;
+
+            // Source node
+            const stRadius = 18;
+            html += `<circle cx="${sPos.x}" cy="${sPos.y}" r="${stRadius}" fill="#a8d4f0" stroke="#1E40AF" stroke-width="2"/>`;
+            html += `<text x="${sPos.x}" y="${sPos.y + 5}" text-anchor="middle" font-size="13" font-weight="600" fill="#1E40AF">s</text>`;
+
+            // Sink node
+            html += `<circle cx="${tPos.x}" cy="${tPos.y}" r="${stRadius}" fill="#f5c4c0" stroke="#991B1B" stroke-width="2"/>`;
+            html += `<text x="${tPos.x}" y="${tPos.y + 5}" text-anchor="middle" font-size="13" font-weight="600" fill="#991B1B">t</text>`;
+
+            // Draw edges from source to A-preferring people (horizontal)
+            aVoters.forEach(p => {
+                const pos = personPositions[p.id];
+                html += `<line x1="${sPos.x + stRadius}" y1="${sPos.y}" x2="${pos.x - nodeRadius}" y2="${pos.y}"
+                         stroke="#3B82F6" stroke-width="1.5" marker-end="url(#election-arrow-blue)"/>`;
+                const mx = (sPos.x + pos.x) / 2;
+                const my = (sPos.y + pos.y) / 2 - 5;
+                html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="9" fill="#3B82F6" font-weight="600">${p.prefWeight}</text>`;
+            });
+
+            // Draw edges from B-preferring people to sink (horizontal)
+            bVoters.forEach(p => {
+                const pos = personPositions[p.id];
+                html += `<line x1="${pos.x + nodeRadius}" y1="${pos.y}" x2="${tPos.x - stRadius}" y2="${tPos.y}"
+                         stroke="#EF4444" stroke-width="1.5" marker-end="url(#election-arrow-red)"/>`;
+                const mx = (pos.x + tPos.x) / 2;
+                const my = (pos.y + tPos.y) / 2 - 5;
+                html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="9" fill="#EF4444" font-weight="600">${p.prefWeight}</text>`;
+            });
+
+            // Draw friendship edges (bidirectional) - these now span horizontally between columns
+            electionData.friendships.forEach(f => {
+                const p1 = electionData.people.find(p => p.id === f.person1);
+                const p2 = electionData.people.find(p => p.id === f.person2);
+                if (!p1 || !p2) return;
+
+                const pos1 = personPositions[p1.id];
+                const pos2 = personPositions[p2.id];
+                if (!pos1 || !pos2) return;
+
+                // Offset for bidirectional arrows
+                const dx = pos2.x - pos1.x;
+                const dy = pos2.y - pos1.y;
+                const len = Math.sqrt(dx*dx + dy*dy) || 1;
+                const ox = -dy / len * 3;
+                const oy = dx / len * 3;
+
+                // Calculate edge endpoints accounting for node radius
+                const ux = dx / len;
+                const uy = dy / len;
+
+                html += `<line x1="${pos1.x + nodeRadius * ux + ox}" y1="${pos1.y + nodeRadius * uy + oy}"
+                         x2="${pos2.x - nodeRadius * ux + ox}" y2="${pos2.y - nodeRadius * uy + oy}"
+                         stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#election-arrow-purple)"/>`;
+                html += `<line x1="${pos2.x - nodeRadius * ux - ox}" y1="${pos2.y - nodeRadius * uy - oy}"
+                         x2="${pos1.x + nodeRadius * ux - ox}" y2="${pos1.y + nodeRadius * uy - oy}"
+                         stroke="#8B5CF6" stroke-width="1.5" marker-end="url(#election-arrow-purple)"/>`;
+
+                const mx = (pos1.x + pos2.x) / 2;
+                const my = (pos1.y + pos2.y) / 2 - 8;
+                html += `<text x="${mx}" y="${my}" text-anchor="middle" font-size="9" fill="#6B21A8" font-weight="700">${f.weight}</text>`;
+            });
+
+            // Draw person nodes
+            electionData.people.forEach(p => {
+                const pos = personPositions[p.id];
+                if (!pos) return;
+                const fillColor = p.preference === 'A' ? '#DBEAFE' : '#FEE2E2';
+                const strokeColor = p.preference === 'A' ? '#3B82F6' : '#EF4444';
+
+                html += `<circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"/>`;
+                html += `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-size="9" font-weight="600" fill="#333">${p.name}</text>`;
+            });
+
+            svg.innerHTML = html;
+        }
+
+        function resetElectionToSocial() {
+            // Go back to social network builder
+            const currentSlide = Reveal.getIndices();
+            Reveal.slide(currentSlide.h, currentSlide.v - (currentSlide.v > 0 ? 1 : 0));
+        }
+
+        // Run Max-Flow algorithm for election
+        function runElectionMaxFlow() {
+            const result = computeElectionMaxFlow();
+            electionData.flowResult = result;
+
+            // Initialize user votes with optimal
+            electionData.userVotes = { ...result.votes };
+            electionData.whatIfMode = false;
+
+            // Navigate to results slide
+            Reveal.next();
+
+            setTimeout(() => {
+                renderElectionResults();
+            }, 100);
+        }
+
+        function computeElectionMaxFlow() {
+            const people = electionData.people;
+            const friendships = electionData.friendships;
+
+            // Build adjacency structure
+            const nodes = ['s', 't', ...people.map(p => 'p' + p.id)];
+            const capacity = {};
+            const flow = {};
+
+            nodes.forEach(u => {
+                capacity[u] = {};
+                flow[u] = {};
+                nodes.forEach(v => {
+                    capacity[u][v] = 0;
+                    flow[u][v] = 0;
+                });
+            });
+
+            // Add preference edges
+            people.forEach(p => {
+                const node = 'p' + p.id;
+                if (p.preference === 'A') {
+                    capacity['s'][node] = p.prefWeight;
+                } else {
+                    capacity[node]['t'] = p.prefWeight;
+                }
+            });
+
+            // Add friendship edges (bidirectional)
+            friendships.forEach(f => {
+                const n1 = 'p' + f.person1;
+                const n2 = 'p' + f.person2;
+                capacity[n1][n2] = f.weight;
+                capacity[n2][n1] = f.weight;
+            });
+
+            // BFS for augmenting paths
+            let maxFlowValue = 0;
+            while (true) {
+                const parent = { 's': null };
+                const queue = ['s'];
+                let found = false;
+
+                while (queue.length > 0 && !found) {
+                    const u = queue.shift();
+                    for (const v of nodes) {
+                        if (!(v in parent) && capacity[u][v] - flow[u][v] > 0) {
+                            parent[v] = u;
+                            if (v === 't') {
+                                found = true;
+                                break;
+                            }
+                            queue.push(v);
+                        }
+                    }
+                }
+
+                if (!found) break;
+
+                // Find bottleneck
+                let pathFlow = Infinity;
+                let v = 't';
+                while (v !== 's') {
+                    const u = parent[v];
+                    pathFlow = Math.min(pathFlow, capacity[u][v] - flow[u][v]);
+                    v = u;
+                }
+
+                // Update flow
+                v = 't';
+                while (v !== 's') {
+                    const u = parent[v];
+                    flow[u][v] += pathFlow;
+                    flow[v][u] -= pathFlow;
+                    v = u;
+                }
+
+                maxFlowValue += pathFlow;
+            }
+
+            // Find min-cut (reachable from s)
+            const reachable = { 's': true };
+            const queue = ['s'];
+            while (queue.length > 0) {
+                const u = queue.shift();
+                for (const v of nodes) {
+                    if (!reachable[v] && capacity[u][v] - flow[u][v] > 0) {
+                        reachable[v] = true;
+                        queue.push(v);
+                    }
+                }
+            }
+
+            // Determine votes from cut
+            const votes = {};
+            people.forEach(p => {
+                const node = 'p' + p.id;
+                votes[p.id] = reachable[node] ? 'A' : 'B';
+            });
+
+            // Calculate penalty breakdown
+            let prefPenalty = 0;
+            let friendPenalty = 0;
+            const prefPenalties = [];
+            const friendPenalties = [];
+
+            people.forEach(p => {
+                if (votes[p.id] !== p.preference) {
+                    prefPenalty += p.prefWeight;
+                    prefPenalties.push({ name: p.name, pref: p.preference, vote: votes[p.id], penalty: p.prefWeight });
+                }
+            });
+
+            friendships.forEach(f => {
+                if (votes[f.person1] !== votes[f.person2]) {
+                    friendPenalty += f.weight;
+                    const p1 = people.find(p => p.id === f.person1);
+                    const p2 = people.find(p => p.id === f.person2);
+                    friendPenalties.push({ n1: p1.name, n2: p2.name, penalty: f.weight });
+                }
+            });
+
+            return {
+                maxFlow: maxFlowValue,
+                votes: votes,
+                reachable: reachable,
+                prefPenalty: prefPenalty,
+                friendPenalty: friendPenalty,
+                totalPenalty: prefPenalty + friendPenalty,
+                prefPenalties: prefPenalties,
+                friendPenalties: friendPenalties
+            };
+        }
+
+        function renderElectionResults() {
+            const result = electionData.flowResult;
+            if (!result) return;
+
+            const votes = electionData.whatIfMode ? electionData.userVotes : result.votes;
+
+            // Count votes
+            let votesA = 0, votesB = 0;
+            electionData.people.forEach(p => {
+                if (votes[p.id] === 'A') votesA++;
+                else votesB++;
+            });
+
+            document.getElementById('election-votes-a').textContent = votesA;
+            document.getElementById('election-votes-b').textContent = votesB;
+
+            // Calculate penalties for current votes
+            let prefPenalty = 0, friendPenalty = 0;
+            const prefItems = [], friendItems = [];
+
+            electionData.people.forEach(p => {
+                if (votes[p.id] !== p.preference) {
+                    prefPenalty += p.prefWeight;
+                    prefItems.push(`${p.name} (prefers ${p.preference}) → votes ${votes[p.id]}: <strong>${p.prefWeight}</strong>`);
+                }
+            });
+
+            electionData.friendships.forEach(f => {
+                if (votes[f.person1] !== votes[f.person2]) {
+                    friendPenalty += f.weight;
+                    const p1 = electionData.people.find(p => p.id === f.person1);
+                    const p2 = electionData.people.find(p => p.id === f.person2);
+                    friendItems.push(`${p1.name} ↔ ${p2.name} vote differently: <strong>${f.weight}</strong>`);
+                }
+            });
+
+            const totalPenalty = prefPenalty + friendPenalty;
+
+            // Update penalty breakdown
+            let breakdownHtml = '';
+            if (prefItems.length > 0) {
+                breakdownHtml += `<div style="margin-bottom: 5px;"><em>Preference:</em></div>`;
+                breakdownHtml += prefItems.map(s => `<div style="margin-left: 10px; font-size: 0.85em;">${s}</div>`).join('');
+            }
+            if (friendItems.length > 0) {
+                breakdownHtml += `<div style="margin-top: 5px; margin-bottom: 5px;"><em>Friendship:</em></div>`;
+                breakdownHtml += friendItems.map(s => `<div style="margin-left: 10px; font-size: 0.85em;">${s}</div>`).join('');
+            }
+            if (breakdownHtml === '') {
+                breakdownHtml = '<p style="color: #059669;">No penalties! Everyone votes their preference and all friends agree.</p>';
+            }
+
+            document.getElementById('election-penalty-breakdown').innerHTML = breakdownHtml;
+            document.getElementById('election-total-penalty').textContent = totalPenalty;
+
+            // Update what-if panel if visible
+            if (electionData.whatIfMode) {
+                document.getElementById('election-user-penalty').textContent = totalPenalty;
+                document.getElementById('election-opt-penalty').textContent = result.totalPenalty;
+                const diff = totalPenalty - result.totalPenalty;
+                const diffSpan = document.getElementById('election-diff-penalty');
+                diffSpan.textContent = diff > 0 ? '+' + diff : diff;
+                diffSpan.style.color = diff > 0 ? '#DC2626' : '#059669';
+            }
+
+            // Render visualization
+            renderElectionResultSVG();
+
+            // Update output
+            const output = document.getElementById('election-result-output');
+            if (output) {
+                if (electionData.whatIfMode) {
+                    output.innerHTML = 'Click on people to toggle their votes. Compare your assignment with the optimal!';
+                } else {
+                    output.innerHTML = `<strong>Min-Cut Capacity = ${result.totalPenalty}</strong>. ` +
+                        (result.totalPenalty === 0 ? 'Perfect harmony — no penalties!' :
+                        `This is the minimum possible total penalty.`);
+                }
+            }
+        }
+
+        function renderElectionResultSVG() {
+            const svg = document.getElementById('election-result-svg');
+            if (!svg) return;
+
+            const result = electionData.flowResult;
+            const votes = electionData.whatIfMode ? electionData.userVotes : result.votes;
+
+            // Use fixed dimensions matching the viewBox (500 x 270)
+            const width = 500;
+            const height = 270;
+            const nodeRadius = 18;
+
+            // Separate people by vote (treat undefined/missing as 'B' to be safe)
+            const votingA = electionData.people.filter(p => votes[p.id] === 'A');
+            const votingB = electionData.people.filter(p => votes[p.id] !== 'A');
+
+            // Calculate positions with comfortable spacing
+            const positions = {};
+            const leftX = width * 0.25;
+            const rightX = width * 0.75;
+
+            votingA.forEach((p, i) => {
+                const y = 40 + (height - 80) * (i / Math.max(votingA.length - 1, 1));
+                positions[p.id] = { x: leftX, y: votingA.length === 1 ? height / 2 : y };
+            });
+
+            votingB.forEach((p, i) => {
+                const y = 40 + (height - 80) * (i / Math.max(votingB.length - 1, 1));
+                positions[p.id] = { x: rightX, y: votingB.length === 1 ? height / 2 : y };
+            });
+
+            let html = '';
+
+            // Draw cut line
+            html += `<line x1="${width / 2}" y1="10" x2="${width / 2}" y2="${height - 10}"
+                     stroke="#F59E0B" stroke-width="3" stroke-dasharray="8,4"/>`;
+            html += `<text x="${width / 2}" y="${height - 2}" text-anchor="middle" font-size="10" fill="#F59E0B" font-weight="600">MIN CUT</text>`;
+
+            // Labels
+            html += `<text x="${leftX}" y="18" text-anchor="middle" font-size="11" fill="#3B82F6" font-weight="600">Votes for A</text>`;
+            html += `<text x="${rightX}" y="18" text-anchor="middle" font-size="11" fill="#EF4444" font-weight="600">Votes for B</text>`;
+
+            // Draw friendship edges
+            electionData.friendships.forEach(f => {
+                const p1 = electionData.people.find(p => p.id === f.person1);
+                const p2 = electionData.people.find(p => p.id === f.person2);
+                if (!p1 || !p2) return;
+
+                const pos1 = positions[p1.id];
+                const pos2 = positions[p2.id];
+                if (!pos1 || !pos2) return;
+
+                const isCut = votes[f.person1] !== votes[f.person2];
+
+                html += `<line x1="${pos1.x}" y1="${pos1.y}" x2="${pos2.x}" y2="${pos2.y}"
+                         stroke="${isCut ? '#F59E0B' : '#8B5CF6'}" stroke-width="${isCut ? 3 : 2}"
+                         ${isCut ? 'stroke-dasharray="5,3"' : ''}/>`;
+
+                if (isCut) {
+                    const mx = (pos1.x + pos2.x) / 2;
+                    const my = (pos1.y + pos2.y) / 2;
+                    html += `<text x="${mx}" y="${my - 5}" text-anchor="middle" font-size="10" fill="#F59E0B" font-weight="700">${f.weight}</text>`;
+                }
+            });
+
+            // Draw people
+            electionData.people.forEach(p => {
+                const pos = positions[p.id];
+                if (!pos) return;
+
+                const vote = votes[p.id];
+                const votedAgainstPref = vote !== p.preference;
+
+                const fillColor = vote === 'A' ? '#3B82F6' : '#EF4444';
+                const strokeColor = votedAgainstPref ? '#F59E0B' : '#1F2937';
+                const strokeWidth = votedAgainstPref ? 3 : 2;
+
+                const clickHandler = electionData.whatIfMode ? `onclick="toggleElectionVote(${p.id})"` : '';
+                const cursor = electionData.whatIfMode ? 'cursor: pointer;' : '';
+
+                html += `<circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" fill="${fillColor}"
+                         stroke="${strokeColor}" stroke-width="${strokeWidth}" style="${cursor}" ${clickHandler}/>`;
+                html += `<text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-size="10"
+                         font-weight="600" fill="white" style="pointer-events: none;">${p.name}</text>`;
+
+                // Show preference indicator if voted against
+                if (votedAgainstPref) {
+                    const prefColor = p.preference === 'A' ? '#3B82F6' : '#EF4444';
+                    html += `<circle cx="${pos.x + 15}" cy="${pos.y - 15}" r="7" fill="${prefColor}" stroke="white" stroke-width="1.5"/>`;
+                    html += `<text x="${pos.x + 15}" y="${pos.y - 12}" text-anchor="middle" font-size="7" fill="white" font-weight="600">${p.preference}</text>`;
+                }
+            });
+
+            svg.innerHTML = html;
+        }
+
+        function toggleElectionWhatIf() {
+            electionData.whatIfMode = !electionData.whatIfMode;
+            const panel = document.getElementById('election-whatif-panel');
+
+            if (electionData.whatIfMode) {
+                panel.style.display = 'block';
+                electionData.userVotes = { ...electionData.flowResult.votes };
+            } else {
+                panel.style.display = 'none';
+            }
+
+            renderElectionResults();
+        }
+
+        function toggleElectionVote(personId) {
+            if (!electionData.whatIfMode) return;
+
+            electionData.userVotes[personId] = electionData.userVotes[personId] === 'A' ? 'B' : 'A';
+            renderElectionResults();
+        }
+
+        function resetElectionWhatIf() {
+            if (!electionData.flowResult) return;
+            electionData.userVotes = { ...electionData.flowResult.votes };
+            renderElectionResults();
+        }
+
+        function initElectionDemo() {
+            // Load default scenario
+            document.getElementById('election-scenario').value = 'dinner';
+            loadElectionScenario();
+            toggleElectionMode('select');
+        }
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             initIPLDemo();
             initFlowBuilder();
             initCertificateDemo();
+            initElectionDemo();
         });
 
         // Also init when Reveal is ready (for slide navigation)
@@ -2757,11 +4065,23 @@
             initIPLDemo();
             initFlowBuilder();
             initCertificateDemo();
+            initElectionDemo();
         });
 
         Reveal.on('slidechanged', function() {
             initIPLDemo();
             initFlowBuilder();
+            // Re-render election views if on those slides
+            if (document.getElementById('election-social-svg')) {
+                renderElectionSocialNetwork();
+            }
+            if (document.getElementById('election-flow-svg')) {
+                renderElectionFlowNetwork();
+                renderElectionSocialMini();
+            }
+            if (document.getElementById('election-result-svg') && electionData.flowResult) {
+                renderElectionResults();
+            }
         });
     </script>
 </body>
