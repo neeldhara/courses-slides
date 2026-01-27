@@ -1779,9 +1779,10 @@
                         <strong>Independent Set:</strong> Given a graph $G = (V, E)$ and a budget $k$, find a set $S \subseteq V$ of $k$ vertices such that no two vertices in $S$ are adjacent.
                     </div>
 
-                    <div style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-start;">
-                        <div style="flex: 0 0 280px;">
-                            <svg width="280" height="220" style="background: white; border: 1px solid #ccc;">
+                    <div class="fragment" data-fragment-index="1" style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-start;">
+                        <div style="flex: 0 0 280px; position: relative;">
+                            <!-- All blue version - fades out when solution shown -->
+                            <svg class="fragment fade-out" data-fragment-index="2" width="280" height="220" style="background: white; border: 1px solid #ccc;">
                                 <!-- Edges first (render under vertices): a-b, a-c, c-e, d-e, b-c -->
                                 <line x1="140" y1="58" x2="55" y2="95" stroke="#222" stroke-width="2"/>
                                 <line x1="140" y1="58" x2="225" y2="95" stroke="#222" stroke-width="2"/>
@@ -1789,7 +1790,32 @@
                                 <line x1="90" y1="180" x2="190" y2="180" stroke="#222" stroke-width="2"/>
                                 <line x1="55" y1="110" x2="225" y2="110" stroke="#222" stroke-width="2"/>
 
-                                <!-- Vertices (render on top of edges) -->
+                                <!-- Vertices (all blue) -->
+                                <circle cx="140" cy="35" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="140" y="41" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">a</text>
+
+                                <circle cx="55" cy="110" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="55" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">b</text>
+
+                                <circle cx="225" cy="110" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="225" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">c</text>
+
+                                <circle cx="90" cy="180" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="90" y="186" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">d</text>
+
+                                <circle cx="190" cy="180" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="190" y="186" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">e</text>
+                            </svg>
+                            <!-- Solution version with b,d green - fades in -->
+                            <svg class="fragment fade-in" data-fragment-index="2" width="280" height="220" style="background: white; border: 1px solid #ccc; position: absolute; top: 0; left: 0;">
+                                <!-- Edges first (render under vertices): a-b, a-c, c-e, d-e, b-c -->
+                                <line x1="140" y1="58" x2="55" y2="95" stroke="#222" stroke-width="2"/>
+                                <line x1="140" y1="58" x2="225" y2="95" stroke="#222" stroke-width="2"/>
+                                <line x1="225" y1="130" x2="190" y2="165" stroke="#222" stroke-width="2"/>
+                                <line x1="90" y1="180" x2="190" y2="180" stroke="#222" stroke-width="2"/>
+                                <line x1="55" y1="110" x2="225" y2="110" stroke="#222" stroke-width="2"/>
+
+                                <!-- Vertices (b and d green, others blue) -->
                                 <circle cx="140" cy="35" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
                                 <text x="140" y="41" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">a</text>
 
@@ -1807,9 +1833,9 @@
                             </svg>
                         </div>
                         <div style="flex: 1;">
-                            <div class="fragment" data-fragment-index="1">
+                            <div class="fragment" data-fragment-index="2">
                                 <p style="margin-bottom: 10px;">
-                                    <strong>Example:</strong> With budget $k = 2$, the vertices $\{b, d\}$ form an independent set (shown in green).
+                                    <strong>Example:</strong> With budget $k = 2$, the vertices $\{b, d\}$ form an independent set.
                                 </p>
                                 <ul style="font-size: 0.9em;">
                                     <li>$b$ and $d$ are <strong>not adjacent</strong> to each other</li>
@@ -1819,7 +1845,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="fragment" data-fragment-index="2" style="position: absolute; bottom: 40px; left: 35px; right: 35px;">
+                    <div class="fragment" data-fragment-index="3" style="position: absolute; bottom: 40px; left: 35px; right: 35px;">
                         <div class="success-box">
                             <strong>Goal:</strong> We will reduce 3SAT to Independent Set, proving that Independent Set is NP-hard.
                         </div>
@@ -1841,32 +1867,32 @@
                         <div style="display: flex; justify-content: center; margin-top: 20px;">
                             <svg id="variable-gadget-svg" width="700" height="200" style="background: white; border: 1px solid #ccc;">
                                 <!-- Variable w -->
-                                <circle cx="80" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="80" y="86" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">w</text>
-                                <circle cx="80" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="80" y="166" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">w̄</text>
                                 <line x1="80" y1="102" x2="80" y2="138" stroke="#222" stroke-width="2"/>
+                                <circle cx="80" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="60" y="68" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$w$</div></foreignObject>
+                                <circle cx="80" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="60" y="148" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$\bar{w}$</div></foreignObject>
 
                                 <!-- Variable x -->
-                                <circle cx="240" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="240" y="86" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">x</text>
-                                <circle cx="240" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="240" y="166" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">x̄</text>
                                 <line x1="240" y1="102" x2="240" y2="138" stroke="#222" stroke-width="2"/>
+                                <circle cx="240" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="220" y="68" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$x$</div></foreignObject>
+                                <circle cx="240" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="220" y="148" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$\bar{x}$</div></foreignObject>
 
                                 <!-- Variable y -->
-                                <circle cx="400" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="400" y="86" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">y</text>
-                                <circle cx="400" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="400" y="166" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">ȳ</text>
                                 <line x1="400" y1="102" x2="400" y2="138" stroke="#222" stroke-width="2"/>
+                                <circle cx="400" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="380" y="68" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$y$</div></foreignObject>
+                                <circle cx="400" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="380" y="148" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$\bar{y}$</div></foreignObject>
 
                                 <!-- Variable z -->
-                                <circle cx="560" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="560" y="86" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">z</text>
-                                <circle cx="560" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="560" y="166" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">z̄</text>
                                 <line x1="560" y1="102" x2="560" y2="138" stroke="#222" stroke-width="2"/>
+                                <circle cx="560" cy="80" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="540" y="68" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$z$</div></foreignObject>
+                                <circle cx="560" cy="160" r="22" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="540" y="148" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:16px;">$\bar{z}$</div></foreignObject>
 
                                 <!-- Labels -->
                                 <text x="640" y="85" font-family="Heliotrope" font-size="12" fill="#666">TRUE</text>
@@ -1898,20 +1924,18 @@
 
                                 <!-- Vertex x -->
                                 <circle cx="250" cy="50" r="26" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="250" y="56" text-anchor="middle" font-family="EB Garamond" font-size="20" fill="#222">x</text>
+                                <foreignObject x="230" y="36" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:18px;">$x$</div></foreignObject>
 
                                 <!-- Vertex w-bar -->
                                 <circle cx="100" cy="220" r="26" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="100" y="226" text-anchor="middle" font-family="EB Garamond" font-size="20" fill="#222">w̄</text>
+                                <foreignObject x="80" y="206" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:18px;">$\bar{w}$</div></foreignObject>
 
                                 <!-- Vertex z -->
                                 <circle cx="400" cy="220" r="26" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="400" y="226" text-anchor="middle" font-family="EB Garamond" font-size="20" fill="#222">z</text>
+                                <foreignObject x="380" y="206" width="40" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:18px;">$z$</div></foreignObject>
 
                                 <!-- Clause label -->
-                                <text x="250" y="265" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#666">
-                                    Clause: (x ∨ w̄ ∨ z)
-                                </text>
+                                <foreignObject x="150" y="250" width="200" height="30"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;color:#666;">Clause: $(x \vee \bar{w} \vee z)$</div></foreignObject>
                             </svg>
                         </div>
                         <p style="text-align: center; font-size: 0.85em; color: #666; margin-top: 10px;">
@@ -1934,68 +1958,59 @@
 
                         <div style="display: flex; justify-content: center; margin-top: 15px;">
                             <svg id="consistency-svg" width="750" height="340" style="background: white; border: 1px solid #ccc;">
+                                <!-- Edges first (render under vertices) -->
+                                <line x1="100" y1="70" x2="100" y2="90" stroke="#222" stroke-width="2"/>
+                                <line x1="280" y1="70" x2="280" y2="90" stroke="#222" stroke-width="2"/>
+                                <line x1="460" y1="70" x2="460" y2="90" stroke="#222" stroke-width="2"/>
+                                <line x1="640" y1="70" x2="640" y2="90" stroke="#222" stroke-width="2"/>
+                                <line x1="375" y1="210" x2="200" y2="300" stroke="#222" stroke-width="2"/>
+                                <line x1="375" y1="210" x2="550" y2="300" stroke="#222" stroke-width="2"/>
+                                <line x1="200" y1="300" x2="550" y2="300" stroke="#222" stroke-width="2"/>
+                                <!-- Consistency edges (dashed, red) -->
+                                <line x1="375" y1="188" x2="280" y2="130" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
+                                <line x1="200" y1="278" x2="100" y2="70" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
+                                <line x1="550" y1="278" x2="640" y2="130" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
+
                                 <!-- Variable gadgets at top -->
                                 <!-- Variable w -->
                                 <circle cx="100" cy="50" r="20" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="100" y="56" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">w</text>
+                                <foreignObject x="80" y="38" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$w$</div></foreignObject>
                                 <circle cx="100" cy="110" r="20" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="100" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">w̄</text>
-                                <line x1="100" y1="70" x2="100" y2="90" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="80" y="98" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$\bar{w}$</div></foreignObject>
 
                                 <!-- Variable x -->
                                 <circle cx="280" cy="50" r="20" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="280" y="56" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">x</text>
+                                <foreignObject x="260" y="38" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$x$</div></foreignObject>
                                 <circle cx="280" cy="110" r="20" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="280" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">x̄</text>
-                                <line x1="280" y1="70" x2="280" y2="90" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="260" y="98" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$\bar{x}$</div></foreignObject>
 
                                 <!-- Variable y -->
                                 <circle cx="460" cy="50" r="20" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="460" y="56" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">y</text>
+                                <foreignObject x="440" y="38" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$y$</div></foreignObject>
                                 <circle cx="460" cy="110" r="20" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="460" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">ȳ</text>
-                                <line x1="460" y1="70" x2="460" y2="90" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="440" y="98" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$\bar{y}$</div></foreignObject>
 
                                 <!-- Variable z -->
                                 <circle cx="640" cy="50" r="20" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="640" y="56" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">z</text>
+                                <foreignObject x="620" y="38" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$z$</div></foreignObject>
                                 <circle cx="640" cy="110" r="20" fill="#f5c4c0" stroke="#222" stroke-width="2"/>
-                                <text x="640" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">z̄</text>
-                                <line x1="640" y1="70" x2="640" y2="90" stroke="#222" stroke-width="2"/>
+                                <foreignObject x="620" y="98" width="40" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$\bar{z}$</div></foreignObject>
 
                                 <!-- Label for variable gadgets -->
                                 <text x="375" y="20" text-anchor="middle" font-family="Heliotrope" font-size="13" fill="#666">Variable Gadgets</text>
 
-                                <!-- Clause triangle at bottom -->
-                                <!-- Triangle edges -->
-                                <line x1="375" y1="210" x2="200" y2="300" stroke="#222" stroke-width="2"/>
-                                <line x1="375" y1="210" x2="550" y2="300" stroke="#222" stroke-width="2"/>
-                                <line x1="200" y1="300" x2="550" y2="300" stroke="#222" stroke-width="2"/>
-
-                                <!-- Vertex x in clause -->
+                                <!-- Clause triangle vertices -->
                                 <circle cx="375" cy="210" r="22" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
-                                <text x="375" y="216" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">x</text>
+                                <foreignObject x="355" y="197" width="40" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$x$</div></foreignObject>
 
-                                <!-- Vertex w-bar in clause -->
                                 <circle cx="200" cy="300" r="22" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
-                                <text x="200" y="306" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">w̄</text>
+                                <foreignObject x="180" y="287" width="40" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$\bar{w}$</div></foreignObject>
 
-                                <!-- Vertex z in clause -->
                                 <circle cx="550" cy="300" r="22" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
-                                <text x="550" y="306" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">z</text>
+                                <foreignObject x="530" y="287" width="40" height="28"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:14px;">$z$</div></foreignObject>
 
                                 <!-- Clause label -->
-                                <text x="375" y="335" text-anchor="middle" font-family="Heliotrope" font-size="13" fill="#666">Clause: (x ∨ w̄ ∨ z)</text>
-
-                                <!-- Consistency edges (dashed, red) -->
-                                <!-- x in clause to x-bar in variable gadget -->
-                                <line x1="375" y1="188" x2="280" y2="130" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
-
-                                <!-- w-bar in clause to w in variable gadget -->
-                                <line x1="200" y1="278" x2="100" y2="70" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
-
-                                <!-- z in clause to z-bar in variable gadget -->
-                                <line x1="550" y1="278" x2="640" y2="130" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
+                                <foreignObject x="275" y="320" width="200" height="25"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:12px;color:#666;">Clause: $(x \vee \bar{w} \vee z)$</div></foreignObject>
 
                                 <!-- Legend -->
                                 <line x1="20" y1="160" x2="50" y2="160" stroke="#c44" stroke-width="2" stroke-dasharray="5,3"/>
@@ -4631,13 +4646,13 @@
                 const posSelected = satSelectedVertices.has(posNodeId);
                 verticesHtml += `
                     <circle cx="${vx}" cy="${posY}" r="12" fill="${posSelected ? '#fbbf24' : '#a8d4f0'}" stroke="${posSelected ? '#d97706' : '#222'}" stroke-width="${posSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${posNodeId}')"/>
-                    <text x="${vx}" y="${posY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}</text>
+                    <foreignObject x="${vx - 16}" y="${posY - 10}" width="32" height="22" style="pointer-events: none;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:12px;">$${varName}$</div></foreignObject>
                 `;
 
                 const negSelected = satSelectedVertices.has(negNodeId);
                 verticesHtml += `
                     <circle cx="${vx}" cy="${negY}" r="12" fill="${negSelected ? '#fbbf24' : '#f5c4c0'}" stroke="${negSelected ? '#d97706' : '#222'}" stroke-width="${negSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${negNodeId}')"/>
-                    <text x="${vx}" y="${negY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}̄</text>
+                    <foreignObject x="${vx - 18}" y="${negY - 10}" width="36" height="22" style="pointer-events: none;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:12px;">$\\bar{${varName}}$</div></foreignObject>
                 `;
             });
 
@@ -4655,19 +4670,19 @@
                     if (li >= 3) return;
                     const pos = positions[li];
                     const nodeId = `c${ci}_${lit.negated ? '~' : ''}${lit.variable}`;
-                    const label = lit.negated ? `${lit.variable}̄` : lit.variable;
+                    const mathLabel = lit.negated ? `$\\bar{${lit.variable}}$` : `$${lit.variable}$`;
                     const baseFill = lit.negated ? '#f5c4c0' : '#a8d4f0';
                     const isSelected = satSelectedVertices.has(nodeId);
 
                     verticesHtml += `
                         <circle cx="${pos.x}" cy="${pos.y}" r="14" fill="${isSelected ? '#fbbf24' : baseFill}" stroke="${isSelected ? '#d97706' : '#222'}" stroke-width="${isSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${nodeId}')"/>
-                        <text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${label}</text>
+                        <foreignObject x="${pos.x - 18}" y="${pos.y - 10}" width="36" height="22" style="pointer-events: none;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:12px;">${mathLabel}</div></foreignObject>
                     `;
                 });
 
                 // Clause label
-                const clauseStr = '(' + clause.slice(0, 3).map(l => l.negated ? `${l.variable}̄` : l.variable).join(' ∨ ') + ')';
-                verticesHtml += `<text x="${cx}" y="${cy + triangleRadius + 22}" text-anchor="middle" font-family="Heliotrope" font-size="9" fill="#666">${clauseStr}</text>`;
+                const clauseMath = clause.slice(0, 3).map(l => l.negated ? `\\bar{${l.variable}}` : l.variable).join(' \\vee ');
+                verticesHtml += `<foreignObject x="${cx - 50}" y="${cy + triangleRadius + 12}" width="100" height="22" style="pointer-events: none;"><div xmlns="http://www.w3.org/1999/xhtml" style="display:flex;justify-content:center;align-items:center;height:100%;font-size:10px;color:#666;">$(${clauseMath})$</div></foreignObject>`;
             });
 
             // Label for variable gadgets
@@ -4689,6 +4704,9 @@
 
             // Combine: edges first, then vertices, then legend on top
             svg.innerHTML = edgesHtml + verticesHtml + legendHtml;
+
+            // Render math in the new SVG content
+            renderMath();
 
             // Store graph data for validation
             satGraphData = { n, k, edges, nodePositions };
