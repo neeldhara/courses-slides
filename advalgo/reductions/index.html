@@ -1779,32 +1779,31 @@
                         <strong>Independent Set:</strong> Given a graph $G = (V, E)$ and a budget $k$, find a set $S \subseteq V$ of $k$ vertices such that no two vertices in $S$ are adjacent.
                     </div>
 
-                    <div style="display: flex; gap: 30px; margin-top: 20px; align-items: flex-start;">
-                        <div style="flex: 1;">
-                            <svg width="320" height="240" style="background: white; border: 1px solid #ccc;">
-                                <!-- Example graph -->
-                                <!-- Vertices -->
-                                <circle cx="160" cy="40" r="24" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="160" y="46" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">a</text>
+                    <div style="display: flex; gap: 15px; margin-top: 20px; align-items: flex-start;">
+                        <div style="flex: 0 0 280px;">
+                            <svg width="280" height="220" style="background: white; border: 1px solid #ccc;">
+                                <!-- Edges first (render under vertices): a-b, a-c, c-e, d-e, b-c -->
+                                <line x1="140" y1="58" x2="55" y2="95" stroke="#222" stroke-width="2"/>
+                                <line x1="140" y1="58" x2="225" y2="95" stroke="#222" stroke-width="2"/>
+                                <line x1="225" y1="130" x2="190" y2="165" stroke="#222" stroke-width="2"/>
+                                <line x1="90" y1="180" x2="190" y2="180" stroke="#222" stroke-width="2"/>
+                                <line x1="55" y1="110" x2="225" y2="110" stroke="#222" stroke-width="2"/>
 
-                                <circle cx="60" cy="120" r="24" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
-                                <text x="60" y="126" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">b</text>
+                                <!-- Vertices (render on top of edges) -->
+                                <circle cx="140" cy="35" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="140" y="41" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">a</text>
 
-                                <circle cx="260" cy="120" r="24" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="260" y="126" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">c</text>
+                                <circle cx="55" cy="110" r="22" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
+                                <text x="55" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">b</text>
 
-                                <circle cx="100" cy="200" r="24" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
-                                <text x="100" y="206" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">d</text>
+                                <circle cx="225" cy="110" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="225" y="116" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">c</text>
 
-                                <circle cx="220" cy="200" r="24" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
-                                <text x="220" y="206" text-anchor="middle" font-family="EB Garamond" font-size="18" fill="#222">e</text>
+                                <circle cx="90" cy="180" r="22" fill="#b8e6c1" stroke="#222" stroke-width="2"/>
+                                <text x="90" y="186" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">d</text>
 
-                                <!-- Edges: a-b, a-c, c-e, d-e, b-c (no b-d edge so {b,d} is independent) -->
-                                <line x1="160" y1="64" x2="60" y2="96" stroke="#222" stroke-width="2"/>
-                                <line x1="160" y1="64" x2="260" y2="96" stroke="#222" stroke-width="2"/>
-                                <line x1="260" y1="144" x2="220" y2="176" stroke="#222" stroke-width="2"/>
-                                <line x1="100" y1="200" x2="220" y2="200" stroke="#222" stroke-width="2"/>
-                                <line x1="60" y1="120" x2="260" y2="120" stroke="#222" stroke-width="2"/>
+                                <circle cx="190" cy="180" r="22" fill="#a8d4f0" stroke="#222" stroke-width="2"/>
+                                <text x="190" y="186" text-anchor="middle" font-family="EB Garamond" font-size="16" fill="#222">e</text>
                             </svg>
                         </div>
                         <div style="flex: 1;">
@@ -4525,9 +4524,11 @@
             const varGadgetPositions = {};
             const edges = [];
 
-            let html = '';
+            // Separate HTML for edges and vertices (edges render first/underneath)
+            let edgesHtml = '';
+            let verticesHtml = '';
 
-            // Draw variable gadgets (matching) at the top
+            // First pass: Calculate all positions for variable gadgets
             variables.forEach((varName, vi) => {
                 const vx = (vi + 1) * varSpacing;
                 const posY = varGadgetY - 18;
@@ -4536,35 +4537,17 @@
                 const posNodeId = `var_${varName}`;
                 const negNodeId = `var_~${varName}`;
 
-                // Store positions
                 varGadgetPositions[varName] = { x: vx, y: posY, nodeId: posNodeId };
                 varGadgetPositions['~' + varName] = { x: vx, y: negY, nodeId: negNodeId };
                 nodePositions[posNodeId] = { x: vx, y: posY, type: 'var', varName, negated: false };
                 nodePositions[negNodeId] = { x: vx, y: negY, type: 'var', varName, negated: true };
 
-                // Matching edge
+                // Store matching edge for validation
                 edges.push({ from: posNodeId, to: negNodeId, type: 'matching' });
-                html += `<line x1="${vx}" y1="${posY + 12}" x2="${vx}" y2="${negY - 12}" stroke="#059669" stroke-width="2"/>`;
-
-                // Draw positive vertex (clickable)
-                const posSelected = satSelectedVertices.has(posNodeId);
-                html += `
-                    <circle cx="${vx}" cy="${posY}" r="12" fill="${posSelected ? '#fbbf24' : '#a8d4f0'}" stroke="${posSelected ? '#d97706' : '#222'}" stroke-width="${posSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${posNodeId}')"/>
-                    <text x="${vx}" y="${posY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}</text>
-                `;
-
-                // Draw negative vertex (clickable)
-                const negSelected = satSelectedVertices.has(negNodeId);
-                html += `
-                    <circle cx="${vx}" cy="${negY}" r="12" fill="${negSelected ? '#fbbf24' : '#f5c4c0'}" stroke="${negSelected ? '#d97706' : '#222'}" stroke-width="${negSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${negNodeId}')"/>
-                    <text x="${vx}" y="${negY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}̄</text>
-                `;
             });
 
-            // Label for variable gadgets
-            html += `<text x="${(svgWidth - 140) / 2}" y="12" text-anchor="middle" font-family="Heliotrope" font-size="10" fill="#666">Variable Gadgets</text>`;
-
-            // Draw clause triangles
+            // First pass: Calculate all positions for clause vertices
+            const clausePositionsMap = {};
             clauses.forEach((clause, ci) => {
                 const cx = (ci + 1) * clauseSpacing;
                 const cy = clauseY;
@@ -4575,13 +4558,15 @@
                     { x: cx + triangleRadius * 0.866, y: cy + triangleRadius * 0.5 }
                 ];
 
-                // Draw triangle edges
-                for (let i = 0; i < 3 && i < clause.length; i++) {
-                    const j = (i + 1) % Math.min(clause.length, 3);
-                    html += `<line x1="${positions[i].x}" y1="${positions[i].y}" x2="${positions[j].x}" y2="${positions[j].y}" stroke="#222" stroke-width="1.5"/>`;
-                }
+                clause.forEach((lit, li) => {
+                    if (li >= 3) return;
+                    const pos = positions[li];
+                    const nodeId = `c${ci}_${lit.negated ? '~' : ''}${lit.variable}`;
+                    nodePositions[nodeId] = { ...pos, lit, type: 'clause', clauseIdx: ci };
+                    clausePositionsMap[nodeId] = pos;
+                });
 
-                // Store triangle edges
+                // Store triangle edges for validation
                 for (let i = 0; i < clause.length && i < 3; i++) {
                     for (let j = i + 1; j < clause.length && j < 3; j++) {
                         const id1 = `c${ci}_${clause[i].negated ? '~' : ''}${clause[i].variable}`;
@@ -4589,40 +4574,104 @@
                         edges.push({ from: id1, to: id2, type: 'clause' });
                     }
                 }
+            });
 
-                // Draw vertices
+            // Now draw all EDGES first (so they render underneath)
+            // Matching edges
+            variables.forEach((varName, vi) => {
+                const vx = (vi + 1) * varSpacing;
+                const posY = varGadgetY - 18;
+                const negY = varGadgetY + 18;
+                edgesHtml += `<line x1="${vx}" y1="${posY + 12}" x2="${vx}" y2="${negY - 12}" stroke="#059669" stroke-width="2"/>`;
+            });
+
+            // Triangle edges
+            clauses.forEach((clause, ci) => {
+                const cx = (ci + 1) * clauseSpacing;
+                const cy = clauseY;
+                const positions = [
+                    { x: cx, y: cy - triangleRadius },
+                    { x: cx - triangleRadius * 0.866, y: cy + triangleRadius * 0.5 },
+                    { x: cx + triangleRadius * 0.866, y: cy + triangleRadius * 0.5 }
+                ];
+                for (let i = 0; i < 3 && i < clause.length; i++) {
+                    const j = (i + 1) % Math.min(clause.length, 3);
+                    edgesHtml += `<line x1="${positions[i].x}" y1="${positions[i].y}" x2="${positions[j].x}" y2="${positions[j].y}" stroke="#222" stroke-width="1.5"/>`;
+                }
+            });
+
+            // Consistency edges
+            clauses.forEach((clause, ci) => {
+                clause.forEach((lit, li) => {
+                    if (li >= 3) return;
+                    const nodeId = `c${ci}_${lit.negated ? '~' : ''}${lit.variable}`;
+                    const pos = nodePositions[nodeId];
+                    const targetKey = lit.negated ? lit.variable : '~' + lit.variable;
+                    const targetData = varGadgetPositions[targetKey];
+                    if (targetData && pos) {
+                        edges.push({ from: nodeId, to: targetData.nodeId, type: 'consistency' });
+                        edgesHtml += `<line x1="${pos.x}" y1="${pos.y - 14}" x2="${targetData.x}" y2="${targetData.y + 12}" stroke="#c44" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.4"/>`;
+                    }
+                });
+            });
+
+            // Now draw all VERTICES (on top of edges)
+            // Variable gadget vertices
+            variables.forEach((varName, vi) => {
+                const vx = (vi + 1) * varSpacing;
+                const posY = varGadgetY - 18;
+                const negY = varGadgetY + 18;
+                const posNodeId = `var_${varName}`;
+                const negNodeId = `var_~${varName}`;
+
+                const posSelected = satSelectedVertices.has(posNodeId);
+                verticesHtml += `
+                    <circle cx="${vx}" cy="${posY}" r="12" fill="${posSelected ? '#fbbf24' : '#a8d4f0'}" stroke="${posSelected ? '#d97706' : '#222'}" stroke-width="${posSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${posNodeId}')"/>
+                    <text x="${vx}" y="${posY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}</text>
+                `;
+
+                const negSelected = satSelectedVertices.has(negNodeId);
+                verticesHtml += `
+                    <circle cx="${vx}" cy="${negY}" r="12" fill="${negSelected ? '#fbbf24' : '#f5c4c0'}" stroke="${negSelected ? '#d97706' : '#222'}" stroke-width="${negSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${negNodeId}')"/>
+                    <text x="${vx}" y="${negY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}̄</text>
+                `;
+            });
+
+            // Clause vertices
+            clauses.forEach((clause, ci) => {
+                const cx = (ci + 1) * clauseSpacing;
+                const cy = clauseY;
+                const positions = [
+                    { x: cx, y: cy - triangleRadius },
+                    { x: cx - triangleRadius * 0.866, y: cy + triangleRadius * 0.5 },
+                    { x: cx + triangleRadius * 0.866, y: cy + triangleRadius * 0.5 }
+                ];
+
                 clause.forEach((lit, li) => {
                     if (li >= 3) return;
                     const pos = positions[li];
                     const nodeId = `c${ci}_${lit.negated ? '~' : ''}${lit.variable}`;
-                    nodePositions[nodeId] = { ...pos, lit, type: 'clause', clauseIdx: ci };
-
                     const label = lit.negated ? `${lit.variable}̄` : lit.variable;
                     const baseFill = lit.negated ? '#f5c4c0' : '#a8d4f0';
                     const isSelected = satSelectedVertices.has(nodeId);
 
-                    html += `
+                    verticesHtml += `
                         <circle cx="${pos.x}" cy="${pos.y}" r="14" fill="${isSelected ? '#fbbf24' : baseFill}" stroke="${isSelected ? '#d97706' : '#222'}" stroke-width="${isSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${nodeId}')"/>
                         <text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${label}</text>
                     `;
-
-                    // Consistency edge to variable gadget
-                    const targetKey = lit.negated ? lit.variable : '~' + lit.variable;
-                    const targetData = varGadgetPositions[targetKey];
-                    if (targetData) {
-                        edges.push({ from: nodeId, to: targetData.nodeId, type: 'consistency' });
-                        html += `<line x1="${pos.x}" y1="${pos.y - 14}" x2="${targetData.x}" y2="${targetData.y + 12}" stroke="#c44" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.4"/>`;
-                    }
                 });
 
                 // Clause label
                 const clauseStr = '(' + clause.slice(0, 3).map(l => l.negated ? `${l.variable}̄` : l.variable).join(' ∨ ') + ')';
-                html += `<text x="${cx}" y="${cy + triangleRadius + 22}" text-anchor="middle" font-family="Heliotrope" font-size="9" fill="#666">${clauseStr}</text>`;
+                verticesHtml += `<text x="${cx}" y="${cy + triangleRadius + 22}" text-anchor="middle" font-family="Heliotrope" font-size="9" fill="#666">${clauseStr}</text>`;
             });
+
+            // Label for variable gadgets
+            verticesHtml += `<text x="${(svgWidth - 140) / 2}" y="12" text-anchor="middle" font-family="Heliotrope" font-size="10" fill="#666">Variable Gadgets</text>`;
 
             // Legend (four lines, top right)
             const legendX = svgWidth - 130;
-            html += `
+            let legendHtml = `
                 <rect x="${legendX}" y="5" width="125" height="80" fill="white" stroke="#ccc" rx="3"/>
                 <circle cx="${legendX + 12}" cy="20" r="6" fill="#a8d4f0" stroke="#222"/>
                 <text x="${legendX + 22}" y="23" font-size="9" fill="#333">Positive literal</text>
@@ -4634,7 +4683,8 @@
                 <text x="${legendX + 22}" y="71" font-size="9" fill="#333">Consistency edge</text>
             `;
 
-            svg.innerHTML = html;
+            // Combine: edges first, then vertices, then legend on top
+            svg.innerHTML = edgesHtml + verticesHtml + legendHtml;
 
             // Store graph data for validation
             satGraphData = { n, k, edges, nodePositions };
