@@ -2009,11 +2009,11 @@
                 <section>
                     <h2>The Complete Reduction</h2>
                     <div class="theorem-box">
-                        <strong>3SAT $\leq_P$ Independent Set:</strong> Given a 3CNF formula $\Phi$ with $k$ clauses:
+                        <strong>3SAT $\leq_P$ Independent Set:</strong> Given a 3CNF formula $\Phi$ with $n$ variables and $k$ clauses:
                         <ul style="margin-top: 8px; margin-bottom: 0;">
-                            <li>Create the clause triangles (3k vertices total)</li>
-                            <li>Add consistency edges between literals and their negations</li>
-                            <li>$\Phi$ is satisfiable $\Leftrightarrow$ $G$ has an independent set of size $k$</li>
+                            <li>Create variable gadgets ($2n$ vertices) and clause triangles ($3k$ vertices)</li>
+                            <li>Add consistency edges between clause literals and their negations in variable gadgets</li>
+                            <li>$\Phi$ is satisfiable $\Leftrightarrow$ $G$ has an independent set of size $n + k$</li>
                         </ul>
                     </div>
 
@@ -2021,16 +2021,16 @@
                         <div class="success-box" style="flex: 1;">
                             <strong>$\Rightarrow$</strong> If $\Phi$ is satisfiable:
                             <ul style="margin: 5px 0 0 0; font-size: 0.9em;">
-                                <li>Each clause has a true literal</li>
-                                <li>Pick that vertex from each triangle</li>
+                                <li>Pick one literal per variable gadget (n vertices)</li>
+                                <li>Pick one true literal per clause (k vertices)</li>
                                 <li>Consistency edges don't conflict!</li>
                             </ul>
                         </div>
                         <div class="success-box" style="flex: 1;">
-                            <strong>$\Leftarrow$</strong> If $G$ has IS of size $k$:
+                            <strong>$\Leftarrow$</strong> If $G$ has IS of size $n + k$:
                             <ul style="margin: 5px 0 0 0; font-size: 0.9em;">
-                                <li>Exactly one vertex per triangle</li>
-                                <li>Set that literal to TRUE</li>
+                                <li>One vertex per variable gadget (n total)</li>
+                                <li>One vertex per clause triangle (k total)</li>
                                 <li>Consistency ensures valid assignment!</li>
                             </ul>
                         </div>
@@ -2040,24 +2040,25 @@
                 <!-- Interactive SAT to Independent Set Demo -->
                 <section>
                     <h2>Interactive: SAT to Independent Set</h2>
-                    <div class="demo-container" style="max-width: 98%; overflow: hidden;">
+                    <div class="demo-container" style="max-width: 95%; overflow: hidden; box-sizing: border-box;">
                         <div class="demo-header">
                             <span class="demo-title">Build the Reduction Graph</span>
                             <div class="demo-controls">
-                                <input type="text" id="sat-formula-input" placeholder="(x,y,z)(~x,w,~z)(y,~w,z)" style="width: 250px; font-family: monospace;">
+                                <input type="text" id="sat-formula-input" placeholder="(x,y,z)(~x,w,~z)" style="width: 220px; font-family: monospace;">
                                 <button class="btn btn-primary" onclick="buildSATGraph()">Build Graph</button>
-                                <button class="btn" onclick="loadExampleFormula()">Load Example</button>
+                                <button class="btn" onclick="loadExampleFormula()">Example</button>
+                                <button class="btn btn-success" onclick="validateSATSelection()">Validate IS</button>
                                 <button class="btn btn-secondary" onclick="clearSATDemo()">Clear</button>
                             </div>
                         </div>
-                        <p style="font-size: 0.72em; color: #666; margin: 4px 0;">
-                            <strong>Format:</strong> Clauses in parentheses, literals comma-separated. Use <code>~</code> for negation.
-                            Example: <code>(x,y,z)(~x,w,~z)</code> = $(x \vee y \vee z) \wedge (\bar{x} \vee w \vee \bar{z})$
+                        <p style="font-size: 0.7em; color: #666; margin: 3px 0;">
+                            <strong>Format:</strong> <code>(x,y,z)(~x,w,~z)</code> = $(x \vee y \vee z) \wedge (\bar{x} \vee w \vee \bar{z})$.
+                            <strong>Click vertices</strong> to select/deselect for your independent set.
                         </p>
-                        <div class="demo-canvas" style="display: flex; min-height: 380px; overflow-x: auto;">
-                            <svg id="sat-to-is-svg" width="100%" height="380" style="flex: 1; min-width: 700px;"></svg>
+                        <div class="demo-canvas" style="display: flex; min-height: 360px; overflow-x: auto;">
+                            <svg id="sat-to-is-svg" width="100%" height="360" style="flex: 1; min-width: 650px;"></svg>
                         </div>
-                        <div class="demo-output" id="sat-demo-output" style="font-size: 0.82em;">
+                        <div class="demo-output" id="sat-demo-output" style="font-size: 0.8em;">
                             Enter a 3CNF formula above and click "Build Graph" to see the reduction.
                         </div>
                     </div>
@@ -4417,8 +4418,14 @@
             currentExampleIdx = (currentExampleIdx + 1) % satExamples.length;
         }
 
+        // Track selected vertices for independent set
+        let satSelectedVertices = new Set();
+        let satGraphData = null;
+
         function clearSATDemo() {
             satData = { clauses: [], variables: new Set() };
+            satSelectedVertices = new Set();
+            satGraphData = null;
             document.getElementById('sat-formula-input').value = '';
             document.getElementById('sat-to-is-svg').innerHTML = '';
             document.getElementById('sat-demo-output').innerHTML = 'Enter a 3CNF formula above and click "Build Graph" to see the reduction.';
@@ -4438,7 +4445,56 @@
             }
 
             satData = parsed;
+            satSelectedVertices = new Set();
             renderSATGraph();
+        }
+
+        function toggleSATVertex(nodeId) {
+            if (satSelectedVertices.has(nodeId)) {
+                satSelectedVertices.delete(nodeId);
+            } else {
+                satSelectedVertices.add(nodeId);
+            }
+            renderSATGraph();
+        }
+
+        function validateSATSelection() {
+            if (!satGraphData) {
+                document.getElementById('sat-demo-output').innerHTML = '<span style="color: #c44;">Please build a graph first.</span>';
+                return;
+            }
+
+            const selected = Array.from(satSelectedVertices);
+            const targetSize = satGraphData.n + satGraphData.k;
+
+            // Check if it's an independent set (no two selected vertices are adjacent)
+            let isIndependent = true;
+            let conflictEdge = null;
+
+            for (let i = 0; i < selected.length && isIndependent; i++) {
+                for (let j = i + 1; j < selected.length && isIndependent; j++) {
+                    const v1 = selected[i];
+                    const v2 = selected[j];
+                    // Check if edge exists
+                    if (satGraphData.edges.some(e => (e.from === v1 && e.to === v2) || (e.from === v2 && e.to === v1))) {
+                        isIndependent = false;
+                        conflictEdge = [v1, v2];
+                    }
+                }
+            }
+
+            const outputEl = document.getElementById('sat-demo-output');
+            if (selected.length === 0) {
+                outputEl.innerHTML = '<span style="color: #666;">Click on vertices to select them, then click "Validate IS" to check.</span>';
+            } else if (!isIndependent) {
+                outputEl.innerHTML = `<span style="color: #c44;"><strong>Not an independent set!</strong> Vertices <strong>${conflictEdge[0]}</strong> and <strong>${conflictEdge[1]}</strong> are adjacent.</span>`;
+            } else if (selected.length < targetSize) {
+                outputEl.innerHTML = `<span style="color: #e67700;"><strong>Valid independent set of size ${selected.length}</strong>, but target is <strong>${targetSize}</strong>. Need ${targetSize - selected.length} more vertices.</span>`;
+            } else if (selected.length === targetSize) {
+                outputEl.innerHTML = `<span style="color: #059669;"><strong>Correct!</strong> You found an independent set of size <strong>${targetSize}</strong> = ${satGraphData.n} (variables) + ${satGraphData.k} (clauses). The formula is satisfiable!</span>`;
+            } else {
+                outputEl.innerHTML = `<span style="color: #059669;"><strong>Valid independent set of size ${selected.length}!</strong> (Target was ${targetSize})</span>`;
+            }
         }
 
         function renderSATGraph() {
@@ -4449,71 +4505,89 @@
             const variables = satData.variables;
             const k = clauses.length;
             const n = variables.length;
+            const targetBudget = n + k;
 
             // Calculate dimensions
-            const svgWidth = Math.max(750, Math.min(1000, 180 * Math.max(k, n)));
-            const svgHeight = 380;
+            const svgWidth = Math.max(650, Math.min(950, 160 * Math.max(k, n)));
+            const svgHeight = 360;
             svg.setAttribute('width', svgWidth);
             svg.setAttribute('height', svgHeight);
 
             // Position calculations
-            const varGadgetY = 60;
-            const varSpacing = svgWidth / (n + 1);
-            const clauseY = 280;
+            const varGadgetY = 55;
+            const varSpacing = (svgWidth - 140) / (n + 1);
+            const clauseY = 265;
             const clauseSpacing = svgWidth / (k + 1);
-            const triangleRadius = 45;
+            const triangleRadius = 42;
 
-            // Store node positions for edges
+            // Store node positions and edges for validation
             const nodePositions = {};
             const varGadgetPositions = {};
+            const edges = [];
 
             let html = '';
 
             // Draw variable gadgets (matching) at the top
             variables.forEach((varName, vi) => {
                 const vx = (vi + 1) * varSpacing;
-                const posY = varGadgetY - 20;
-                const negY = varGadgetY + 20;
+                const posY = varGadgetY - 18;
+                const negY = varGadgetY + 18;
+
+                const posNodeId = `var_${varName}`;
+                const negNodeId = `var_~${varName}`;
 
                 // Store positions
-                varGadgetPositions[varName] = { x: vx, y: posY };
-                varGadgetPositions['~' + varName] = { x: vx, y: negY };
+                varGadgetPositions[varName] = { x: vx, y: posY, nodeId: posNodeId };
+                varGadgetPositions['~' + varName] = { x: vx, y: negY, nodeId: negNodeId };
+                nodePositions[posNodeId] = { x: vx, y: posY, type: 'var', varName, negated: false };
+                nodePositions[negNodeId] = { x: vx, y: negY, type: 'var', varName, negated: true };
 
-                // Draw matching edge (variable gadget edge)
-                html += `<line x1="${vx}" y1="${posY + 14}" x2="${vx}" y2="${negY - 14}" stroke="#059669" stroke-width="2"/>`;
+                // Matching edge
+                edges.push({ from: posNodeId, to: negNodeId, type: 'matching' });
+                html += `<line x1="${vx}" y1="${posY + 12}" x2="${vx}" y2="${negY - 12}" stroke="#059669" stroke-width="2"/>`;
 
-                // Draw positive vertex
+                // Draw positive vertex (clickable)
+                const posSelected = satSelectedVertices.has(posNodeId);
                 html += `
-                    <circle cx="${vx}" cy="${posY}" r="14" fill="#a8d4f0" stroke="#222" stroke-width="1.5"/>
-                    <text x="${vx}" y="${posY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="13" fill="#222">${varName}</text>
+                    <circle cx="${vx}" cy="${posY}" r="12" fill="${posSelected ? '#fbbf24' : '#a8d4f0'}" stroke="${posSelected ? '#d97706' : '#222'}" stroke-width="${posSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${posNodeId}')"/>
+                    <text x="${vx}" y="${posY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}</text>
                 `;
 
-                // Draw negative vertex
+                // Draw negative vertex (clickable)
+                const negSelected = satSelectedVertices.has(negNodeId);
                 html += `
-                    <circle cx="${vx}" cy="${negY}" r="14" fill="#f5c4c0" stroke="#222" stroke-width="1.5"/>
-                    <text x="${vx}" y="${negY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="13" fill="#222">${varName}̄</text>
+                    <circle cx="${vx}" cy="${negY}" r="12" fill="${negSelected ? '#fbbf24' : '#f5c4c0'}" stroke="${negSelected ? '#d97706' : '#222'}" stroke-width="${negSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${negNodeId}')"/>
+                    <text x="${vx}" y="${negY + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${varName}̄</text>
                 `;
             });
 
             // Label for variable gadgets
-            html += `<text x="${svgWidth / 2}" y="15" text-anchor="middle" font-family="Heliotrope" font-size="11" fill="#666">Variable Gadgets (Matching)</text>`;
+            html += `<text x="${(svgWidth - 140) / 2}" y="12" text-anchor="middle" font-family="Heliotrope" font-size="10" fill="#666">Variable Gadgets</text>`;
 
             // Draw clause triangles
             clauses.forEach((clause, ci) => {
                 const cx = (ci + 1) * clauseSpacing;
                 const cy = clauseY;
 
-                // Triangle vertices (3 literals per clause)
                 const positions = [
-                    { x: cx, y: cy - triangleRadius },           // top
-                    { x: cx - triangleRadius * 0.866, y: cy + triangleRadius * 0.5 }, // bottom left
-                    { x: cx + triangleRadius * 0.866, y: cy + triangleRadius * 0.5 }  // bottom right
+                    { x: cx, y: cy - triangleRadius },
+                    { x: cx - triangleRadius * 0.866, y: cy + triangleRadius * 0.5 },
+                    { x: cx + triangleRadius * 0.866, y: cy + triangleRadius * 0.5 }
                 ];
 
-                // Draw triangle edges (clause gadget)
+                // Draw triangle edges
                 for (let i = 0; i < 3 && i < clause.length; i++) {
                     const j = (i + 1) % Math.min(clause.length, 3);
                     html += `<line x1="${positions[i].x}" y1="${positions[i].y}" x2="${positions[j].x}" y2="${positions[j].y}" stroke="#222" stroke-width="1.5"/>`;
+                }
+
+                // Store triangle edges
+                for (let i = 0; i < clause.length && i < 3; i++) {
+                    for (let j = i + 1; j < clause.length && j < 3; j++) {
+                        const id1 = `c${ci}_${clause[i].negated ? '~' : ''}${clause[i].variable}`;
+                        const id2 = `c${ci}_${clause[j].negated ? '~' : ''}${clause[j].variable}`;
+                        edges.push({ from: id1, to: id2, type: 'clause' });
+                    }
                 }
 
                 // Draw vertices
@@ -4521,59 +4595,59 @@
                     if (li >= 3) return;
                     const pos = positions[li];
                     const nodeId = `c${ci}_${lit.negated ? '~' : ''}${lit.variable}`;
-                    nodePositions[nodeId] = { ...pos, lit };
+                    nodePositions[nodeId] = { ...pos, lit, type: 'clause', clauseIdx: ci };
 
                     const label = lit.negated ? `${lit.variable}̄` : lit.variable;
-                    const fill = lit.negated ? '#f5c4c0' : '#a8d4f0';
+                    const baseFill = lit.negated ? '#f5c4c0' : '#a8d4f0';
+                    const isSelected = satSelectedVertices.has(nodeId);
 
                     html += `
-                        <circle cx="${pos.x}" cy="${pos.y}" r="16" fill="${fill}" stroke="#222" stroke-width="1.5"/>
-                        <text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-family="EB Garamond" font-size="12" fill="#222">${label}</text>
+                        <circle cx="${pos.x}" cy="${pos.y}" r="14" fill="${isSelected ? '#fbbf24' : baseFill}" stroke="${isSelected ? '#d97706' : '#222'}" stroke-width="${isSelected ? 3 : 1.5}" style="cursor: pointer;" onclick="toggleSATVertex('${nodeId}')"/>
+                        <text x="${pos.x}" y="${pos.y + 4}" text-anchor="middle" font-family="EB Garamond" font-size="11" fill="#222" style="pointer-events: none;">${label}</text>
                     `;
+
+                    // Consistency edge to variable gadget
+                    const targetKey = lit.negated ? lit.variable : '~' + lit.variable;
+                    const targetData = varGadgetPositions[targetKey];
+                    if (targetData) {
+                        edges.push({ from: nodeId, to: targetData.nodeId, type: 'consistency' });
+                        html += `<line x1="${pos.x}" y1="${pos.y - 14}" x2="${targetData.x}" y2="${targetData.y + 12}" stroke="#c44" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.4"/>`;
+                    }
                 });
 
                 // Clause label
                 const clauseStr = '(' + clause.slice(0, 3).map(l => l.negated ? `${l.variable}̄` : l.variable).join(' ∨ ') + ')';
-                html += `<text x="${cx}" y="${cy + triangleRadius + 25}" text-anchor="middle" font-family="Heliotrope" font-size="10" fill="#666">${clauseStr}</text>`;
+                html += `<text x="${cx}" y="${cy + triangleRadius + 22}" text-anchor="middle" font-family="Heliotrope" font-size="9" fill="#666">${clauseStr}</text>`;
             });
 
-            // Draw consistency edges (from clause literals to their negations in variable gadgets)
-            for (const nodeId in nodePositions) {
-                const nodeData = nodePositions[nodeId];
-                const lit = nodeData.lit;
-                // Connect to the OPPOSITE in variable gadget
-                const targetKey = lit.negated ? lit.variable : '~' + lit.variable;
-                const targetPos = varGadgetPositions[targetKey];
-                if (targetPos) {
-                    html += `<line x1="${nodeData.x}" y1="${nodeData.y - 16}" x2="${targetPos.x}" y2="${targetPos.y + 14}" stroke="#c44" stroke-width="1.5" stroke-dasharray="4,2" opacity="0.5"/>`;
-                }
-            }
-
-            // Legend (three separate lines, properly contained)
+            // Legend (four lines, top right)
+            const legendX = svgWidth - 130;
             html += `
-                <rect x="10" y="${svgHeight - 85}" width="145" height="75" fill="white" stroke="#ccc" rx="3"/>
-                <circle cx="25" cy="${svgHeight - 65}" r="7" fill="#a8d4f0" stroke="#222"/>
-                <text x="38" y="${svgHeight - 62}" font-size="10" fill="#333">Positive literal</text>
-                <circle cx="25" cy="${svgHeight - 45}" r="7" fill="#f5c4c0" stroke="#222"/>
-                <text x="38" y="${svgHeight - 42}" font-size="10" fill="#333">Negated literal</text>
-                <line x1="18" y1="${svgHeight - 25}" x2="38" y2="${svgHeight - 25}" stroke="#059669" stroke-width="2"/>
-                <text x="45" y="${svgHeight - 22}" font-size="10" fill="#333">Matching edge</text>
-                <line x1="90" y1="${svgHeight - 65}" x2="110" y2="${svgHeight - 65}" stroke="#c44" stroke-width="1.5" stroke-dasharray="4,2"/>
-                <text x="115" y="${svgHeight - 62}" font-size="10" fill="#333">Consistency</text>
+                <rect x="${legendX}" y="5" width="125" height="80" fill="white" stroke="#ccc" rx="3"/>
+                <circle cx="${legendX + 12}" cy="20" r="6" fill="#a8d4f0" stroke="#222"/>
+                <text x="${legendX + 22}" y="23" font-size="9" fill="#333">Positive literal</text>
+                <circle cx="${legendX + 12}" cy="36" r="6" fill="#f5c4c0" stroke="#222"/>
+                <text x="${legendX + 22}" y="39" font-size="9" fill="#333">Negated literal</text>
+                <line x1="${legendX + 6}" y1="52" x2="${legendX + 18}" y2="52" stroke="#059669" stroke-width="2"/>
+                <text x="${legendX + 22}" y="55" font-size="9" fill="#333">Matching edge</text>
+                <line x1="${legendX + 6}" y1="68" x2="${legendX + 18}" y2="68" stroke="#c44" stroke-width="1.5" stroke-dasharray="4,2"/>
+                <text x="${legendX + 22}" y="71" font-size="9" fill="#333">Consistency edge</text>
             `;
 
             svg.innerHTML = html;
 
-            // Update output with budget emphasis
-            const totalVertices = clauses.reduce((sum, c) => sum + Math.min(c.length, 3), 0) + (2 * n);
+            // Store graph data for validation
+            satGraphData = { n, k, edges, nodePositions };
+
+            // Update output
+            const totalVertices = (2 * n) + clauses.reduce((sum, c) => sum + Math.min(c.length, 3), 0);
+            const selectedCount = satSelectedVertices.size;
             document.getElementById('sat-demo-output').innerHTML = `
                 <strong>Reduction complete!</strong>
-                Formula has <strong>${k} clauses</strong> and <strong>${n} variables</strong>.
-                Graph has <strong>${totalVertices} vertices</strong> (${2 * n} in variable gadgets + ${totalVertices - 2 * n} in clause triangles).
-                <br>
-                <span style="color: #059669; font-weight: 600;">
-                Budget k = ${k}</span> <span style="color: #666;">— The formula is satisfiable ⟺ the graph has an independent set of size <strong>${k}</strong>.
-                </span>
+                Formula: <strong>${k} clauses</strong>, <strong>${n} variables</strong>.
+                Graph: <strong>${totalVertices} vertices</strong>.
+                <span style="color: #059669; font-weight: 600;">Target IS size = ${targetBudget}</span> (${n} vars + ${k} clauses).
+                ${selectedCount > 0 ? `<br><span style="color: #d97706;">Selected: <strong>${selectedCount}</strong> vertices. Click "Validate IS" to check.</span>` : ''}
             `;
         }
     </script>
