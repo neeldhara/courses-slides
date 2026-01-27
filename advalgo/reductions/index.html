@@ -1807,17 +1807,21 @@
                             </svg>
                         </div>
                         <div style="flex: 1;">
-                            <div class="theorem-box" style="margin-bottom: 15px;">
-                                <strong>Example:</strong> With budget $k = 2$, the vertices $\{b, d\}$ form an independent set (shown in green).
+                            <div class="fragment" data-fragment-index="1">
+                                <p style="margin-bottom: 10px;">
+                                    <strong>Example:</strong> With budget $k = 2$, the vertices $\{b, d\}$ form an independent set (shown in green).
+                                </p>
+                                <ul style="font-size: 0.9em;">
+                                    <li>$b$ and $d$ are <strong>not adjacent</strong> to each other</li>
+                                    <li>We cannot add $a$, $c$, or $e$ without creating an edge within our set</li>
+                                    <li>This is a <strong>maximum</strong> independent set for this graph</li>
+                                </ul>
                             </div>
-                            <ul style="font-size: 0.9em;">
-                                <li>$b$ and $d$ are <strong>not adjacent</strong> to each other</li>
-                                <li>We cannot add $a$, $c$, or $e$ without creating an edge within our set</li>
-                                <li>This is a <strong>maximum</strong> independent set for this graph</li>
-                            </ul>
-                            <div class="success-box" style="margin-top: 15px;">
-                                <strong>Goal:</strong> We will reduce 3SAT to Independent Set, proving that Independent Set is NP-hard.
-                            </div>
+                        </div>
+                    </div>
+                    <div class="fragment" data-fragment-index="2" style="position: absolute; bottom: 40px; left: 35px; right: 35px;">
+                        <div class="success-box">
+                            <strong>Goal:</strong> We will reduce 3SAT to Independent Set, proving that Independent Set is NP-hard.
                         </div>
                     </div>
                 </section>
@@ -1826,12 +1830,12 @@
                 <section>
                     <h2>The Variable Gadget</h2>
                     <div class="definition-box" style="margin-bottom: 20px;">
-                        <strong>Question:</strong> We need a <em>variable gadget</em> &mdash; something that tells us whether a variable is set to TRUE or FALSE. How do we encode this using Independent Set?
+                        We need a <em>variable gadget</em> &mdash; something that tells us whether a variable is set to TRUE or FALSE. How do we encode this using Independent Set?
                     </div>
 
                     <div class="fragment" data-fragment-index="1">
                         <div class="theorem-box">
-                            <strong>Answer:</strong> For each variable $x$, create two vertices: $x$ and $\bar{x}$. Connect them with an edge. Any independent set can pick <strong>at most one</strong> of these!
+                            For each variable $x$, create two vertices: $x$ and $\bar{x}$. Connect them with an edge. Any independent set can pick <strong>at most one</strong> of these!
                         </div>
 
                         <div style="display: flex; justify-content: center; margin-top: 20px;">
@@ -1879,12 +1883,12 @@
                 <section>
                     <h2>The Clause Gadget</h2>
                     <div class="definition-box" style="margin-bottom: 20px;">
-                        <strong>Question:</strong> We need a <em>clause gadget</em> &mdash; something that tells us which literal in a clause was satisfied by the assignment. How do we encode this using Independent Set?
+                        We need a <em>clause gadget</em> &mdash; something that tells us which literal in a clause was satisfied by the assignment. How do we encode this using Independent Set?
                     </div>
 
                     <div class="fragment" data-fragment-index="1">
                         <div class="theorem-box">
-                            <strong>Answer:</strong> For each clause, create a <strong>triangle</strong> connecting its three literals. Any independent set can pick <strong>at most one</strong> vertex from a triangle!
+                            For each clause, create a <strong>triangle</strong> connecting its three literals. Any independent set can pick <strong>at most one</strong> vertex from a triangle!
                         </div>
 
                         <div style="display: flex; justify-content: center; margin-top: 20px;">
@@ -1920,12 +1924,12 @@
                 <section>
                     <h2>Enforcing Consistency</h2>
                     <div class="definition-box" style="margin-bottom: 20px;">
-                        <strong>Question:</strong> If a clause claims it is satisfied because $x$ is TRUE, we should not be allowed to set $x$ to FALSE elsewhere. How do we enforce <em>consistency</em>?
+                        If a clause claims it is satisfied because $x$ is TRUE, we should not be allowed to set $x$ to FALSE elsewhere. How do we enforce <em>consistency</em>?
                     </div>
 
                     <div class="fragment" data-fragment-index="1">
                         <div class="theorem-box">
-                            <strong>Answer:</strong> Connect each literal vertex in a clause triangle to its <strong>negation</strong> in the variable gadget!
+                            Connect each literal vertex in a clause triangle to its <strong>negation</strong> in the variable gadget!
                         </div>
 
                         <div style="display: flex; justify-content: center; margin-top: 15px;">
