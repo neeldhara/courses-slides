@@ -131,6 +131,14 @@
             color: var(--text);
         }
 
+        /* Prevent content overflow at slide edges */
+        .reveal .slides section > p,
+        .reveal .slides section > div:not(.demo-container):not(.player-controls),
+        .reveal .slides section > ul,
+        .reveal .slides section > ol {
+            max-width: 95%;
+        }
+
         /* Ensure fragments are visible */
         .reveal .slides .fragment,
         .reveal .slides .fragment * {
