@@ -1,0 +1,3513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randomized Algorithms</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Overlock:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Heliotrope font */
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_italic.woff2') format('woff2');
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../../assets/fonts/heliotrope_3_bold_italic.woff2') format('woff2');
+            font-weight: bold;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
+
+    <!-- RevealJS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+    <style>
+        /* ============================================
+           CLEAN MINIMALIST STYLES - gwern.net inspired
+           ============================================ */
+
+        :root, .reveal {
+            /* Base palette */
+            --bg-main: #f5f5f5;
+            --bg-slide: #ffffff;
+            --text: #222222;
+            --text-primary: #222222;
+            --text-secondary: #666666;
+            --text-light: #666666;
+            --border: #cccccc;
+            --border-dark: #888888;
+            --border-light: #dddddd;
+            --border-medium: #aaaaaa;
+            --error: #c44;
+            --r-main-color: #222222;
+            --r-heading-color: #222222;
+            --r-link-color: #222222;
+            --r-selection-color: #222222;
+
+            /* 7 distinct pastel accent colors */
+            --pastel-blue: #a8d4f0;
+            --pastel-green: #b8e6c1;
+            --pastel-coral: #f5c4c0;
+            --pastel-lavender: #d4c4e8;
+            --pastel-gold: #f5e6a3;
+            --pastel-mint: #a8e6d5;
+            --pastel-peach: #f5d4b8;
+        }
+
+        /* Base reveal overrides */
+        .reveal-viewport {
+            background: var(--bg-main);
+        }
+
+        .reveal {
+            font-family: 'Heliotrope', Georgia, serif;
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .reveal .slides {
+            text-align: left;
+        }
+
+        /* Slide container with double border - consistent sizing */
+        .reveal .slides > section {
+            background: var(--bg-slide);
+            border: 3px double var(--border);
+            padding: 55px 35px 30px 35px;
+            box-sizing: border-box;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden;
+        }
+
+        /* Nested sections (vertical slides) */
+        .reveal .slides section > section {
+            border: none;
+            padding: 40px 0 0 0 !important;
+            background: transparent;
+            width: 100% !important;
+            height: 100% !important;
+            overflow: hidden;
+        }
+
+        /* Ensure all text is dark by default */
+        .reveal .slides section {
+            color: var(--text) !important;
+        }
+        .reveal .slides section p,
+        .reveal .slides section span,
+        .reveal .slides section li,
+        .reveal .slides section strong,
+        .reveal .slides section em,
+        .reveal .slides section div {
+            color: var(--text);
+        }
+
+        /* Ensure fragments are visible */
+        .reveal .slides .fragment,
+        .reveal .slides .fragment * {
+            color: var(--text) !important;
+        }
+
+        /* Exceptions for elements with dark backgrounds */
+        .reveal .slides .btn-primary,
+        .reveal .slides .nav-btn:not(.back),
+        .reveal .slides table th {
+            color: white !important;
+        }
+
+        /* Typography */
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: -0.01em;
+        }
+
+        .reveal h1 {
+            font-size: 1.7em;
+            margin-bottom: 0.3em;
+        }
+
+        .reveal h2 {
+            font-size: 1.25em;
+            margin-bottom: 0.25em;
+            padding-bottom: 0.15em;
+            border-bottom: 1px solid var(--border-dark);
+            display: inline-block;
+        }
+
+        .reveal h3 {
+            font-size: 0.95em;
+            margin-bottom: 0.2em;
+            font-style: italic;
+            color: var(--text-light);
+        }
+
+        .reveal p {
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 0.5em;
+        }
+
+        .reveal ul, .reveal ol {
+            color: var(--text);
+            margin-left: 1em;
+        }
+
+        .reveal li {
+            color: var(--text);
+            margin-bottom: 0.3em;
+            line-height: 1.45;
+        }
+
+        .reveal strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .reveal em {
+            color: var(--text-light);
+        }
+
+        /* Simple framed boxes */
+        .definition-box, .theorem-box, .algorithm-box, .success-box, .goal-box {
+            background: var(--bg-slide);
+            border: 1px solid var(--border-dark);
+            padding: 10px 14px;
+            margin: 10px 0;
+            max-width: 960px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .definition-box {
+            border-left: 3px solid var(--pastel-blue);
+        }
+
+        .theorem-box {
+            border-left: 3px solid var(--pastel-green);
+        }
+
+        .algorithm-box {
+            border-left: 3px solid var(--pastel-lavender);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            background: #fafafa;
+            overflow-x: auto;
+        }
+
+        .success-box {
+            border-left: 3px solid var(--pastel-mint);
+        }
+
+        .goal-box {
+            border-left: 3px solid #9b8bb8;
+        }
+
+        .algorithm-box .keyword {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Demo containers */
+        .demo-container {
+            background: #fafafa;
+            border: 1px solid var(--border);
+            padding: 10px;
+            margin: 10px 0;
+            max-width: 960px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .demo-header {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .demo-header-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-title {
+            font-family: 'Overlock', sans-serif;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.9em;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .demo-controls label {
+            font-size: 0.75em;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .demo-controls input {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 4px 6px;
+            font-size: 0.8em;
+            width: 50px;
+        }
+
+        .demo-controls input:focus {
+            outline: none;
+            border-color: var(--border-dark);
+        }
+
+        .tree-input {
+            width: 36px !important;
+            padding: 4px !important;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .demo-canvas {
+            background: white;
+            border: 1px solid var(--border);
+            margin: 8px 0;
+            min-height: 280px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .demo-output {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: var(--text);
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Buttons */
+        .btn {
+            background: white;
+            border: 1px solid var(--border-dark);
+            padding: 4px 10px;
+            cursor: pointer;
+            font-size: 0.7em;
+            font-weight: 600;
+            font-family: 'Heliotrope', sans-serif;
+            color: var(--text);
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            background: #f0f0f0;
+        }
+
+        .btn-primary {
+            background: var(--text);
+            color: white;
+            border-color: var(--text);
+        }
+
+        .btn-primary:hover {
+            background: #444444;
+        }
+
+        .btn-success {
+            background: var(--pastel-green);
+            border-color: #8bc99b;
+            color: var(--text);
+        }
+
+        .btn-warning {
+            background: var(--pastel-gold);
+            border-color: #d4c47a;
+            color: var(--text);
+        }
+
+        .btn-secondary {
+            background: #eeeeee;
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        /* Player control buttons */
+        .player-controls {
+            display: inline-flex;
+            gap: 2px;
+            background: #f0f0f0;
+            border: 1px solid var(--border-dark);
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        .player-btn {
+            background: white;
+            border: none;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            color: var(--text);
+            transition: background 0.15s;
+            min-width: 28px;
+        }
+
+        .player-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .player-btn:active {
+            background: #d8d8d8;
+        }
+
+        .player-btn:first-child {
+            border-radius: 3px 0 0 3px;
+        }
+
+        .player-btn:last-child {
+            border-radius: 0 3px 3px 0;
+        }
+
+        .player-btn:disabled {
+            color: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* Navigation buttons */
+        .nav-btn {
+            display: inline-block;
+            padding: 5px 12px;
+            background: var(--text);
+            color: white;
+            text-decoration: none;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: #444444;
+        }
+
+        .nav-btn.back {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border-dark);
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        /* Title slide */
+        .title-slide {
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 1.5em;
+        }
+
+        /* Section title slide */
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .section-title h1 {
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        /* Tables */
+        .reveal table {
+            color: var(--text);
+        }
+
+        .reveal table th {
+            background: var(--text);
+            color: white;
+            padding: 8px;
+        }
+
+        .reveal table td {
+            color: var(--text);
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* Feedback messages */
+        .feedback {
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-size: 0.85em;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .feedback-success {
+            background: #f0fff0;
+            border-color: var(--pastel-green);
+            color: var(--text);
+        }
+
+        .feedback-error {
+            background: #fff5f5;
+            border-color: var(--pastel-coral);
+            color: var(--text);
+        }
+
+        .feedback-info {
+            background: #f5faff;
+            border-color: var(--pastel-blue);
+            color: var(--text);
+        }
+
+        /* Small text helpers */
+        .small { font-size: 0.85em; }
+        .tiny { font-size: 0.75em; }
+
+        /* Highlight for key terms */
+        .highlight {
+            background: var(--pastel-gold);
+            padding: 1px 4px;
+        }
+
+        /* Slide number */
+        .reveal .slide-number {
+            background: transparent;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        /* Progress bar */
+        .reveal .progress {
+            height: 3px;
+            background: var(--border);
+        }
+
+        .reveal .progress span {
+            background: var(--text);
+        }
+
+        /* KaTeX math */
+        .reveal .katex {
+            color: var(--text);
+        }
+
+        /* Custom styles for this deck */
+        .comparison-pair {
+            display: inline-block;
+            padding: 2px 6px;
+            margin: 2px;
+            border: 1px solid var(--border);
+            background: white;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+        }
+
+        .comparison-pair.compared {
+            background: var(--pastel-coral);
+            border-color: #d9a9a5;
+        }
+
+        .comparison-pair.not-compared {
+            background: var(--pastel-mint);
+            border-color: #8bc9b8;
+        }
+
+        .array-element {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            margin: 2px;
+            border: 2px solid var(--border-dark);
+            background: white;
+            font-weight: 600;
+        }
+
+        .array-element.pivot {
+            background: var(--pastel-gold);
+            border-color: #c9b870;
+        }
+
+        .array-element.left {
+            background: var(--pastel-blue);
+        }
+
+        .array-element.right {
+            background: var(--pastel-peach);
+        }
+
+        .array-element.sorted {
+            background: var(--pastel-green);
+        }
+
+        .partition-arrow {
+            font-size: 1.5em;
+            margin: 0 8px;
+            color: var(--text-light);
+        }
+
+        /* Graph styles for Karger */
+        .graph-node {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .graph-node:hover circle {
+            stroke-width: 3;
+        }
+
+        .graph-edge {
+            stroke: var(--text);
+            stroke-width: 2;
+            cursor: pointer;
+        }
+
+        .graph-edge:hover {
+            stroke-width: 4;
+        }
+
+        .graph-edge.contracted {
+            stroke: var(--pastel-coral);
+            stroke-width: 3;
+        }
+
+        .graph-edge.cut {
+            stroke: var(--pastel-green);
+            stroke-width: 4;
+            stroke-dasharray: 8,4;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <!-- ===== TITLE ===== -->
+            <section class="title-slide">
+                <h1>Randomized Algorithms</h1>
+                <p class="subtitle">The Power of Random Choices</p>
+
+                <div style="margin-top: 320px; text-align:left; font-size: 0.75em;">
+                    <p>Inspired by <a href="https://www.youtube.com/watch?v=RH_wrKwE85Q" style="color: seagreen;">Prabhakar Raghavan's KARPfest80 talk</a>.</p>
+                    <p>Slides made in collaboration with Claude.</p>
+                </div>
+            </section>
+
+            <!-- ===== SECTION 1: INTRODUCTION ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Introduction</h1>
+                </section>
+
+                <!-- What are Randomized Algorithms -->
+                <section>
+                    <h2>What is a Randomized Algorithm?</h2>
+                    <div class="definition-box">
+                        <p>A <strong>randomized algorithm</strong> is an algorithm that makes random choices during its execution.</p>
+                        <p class="fragment">The algorithm has access to a source of random bits (coin flips) that influence its behavior.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">For the <em>same input</em>, different runs may:</p>
+                    <ul>
+                        <li class="fragment">Take different amounts of time</li>
+                        <li class="fragment">Produce different outputs</li>
+                        <li class="fragment">Or both!</li>
+                    </ul>
+                </section>
+
+                <!-- Why Randomness -->
+                <section>
+                    <h2>Why Use Randomness?</h2>
+                    <div class="goal-box">
+                        <p><strong>Three compelling reasons:</strong></p>
+                    </div>
+                    <ol>
+                        <li class="fragment"><strong>Simplicity</strong> — Randomized algorithms are often dramatically simpler than their deterministic counterparts</li>
+                        <li class="fragment"><strong>Speed</strong> — For many problems, the fastest known algorithm is randomized</li>
+                        <li class="fragment"><strong>Fooling adversaries</strong> — Randomness can defeat worst-case inputs that an adversary might construct</li>
+                    </ol>
+                    <p class="fragment" style="margin-top: 1em; font-style: italic; color: var(--text-light);">
+                        "Randomizing the behavior of an algorithm can often significantly reduce its expected running time for any input." — Richard Karp
+                    </p>
+                </section>
+
+                <!-- Las Vegas vs Monte Carlo -->
+                <section>
+                    <h2>Two Flavors of Randomized Algorithms</h2>
+                    <div style="display: flex; gap: 20px; margin-top: 1em;">
+                        <div class="definition-box" style="flex: 1;">
+                            <p><strong>Las Vegas</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>Always produces the <em>correct</em> answer</li>
+                                <li>Running time is random</li>
+                                <li>Example: Randomized QuickSort</li>
+                            </ul>
+                        </div>
+                        <div class="definition-box" style="flex: 1;">
+                            <p><strong>Monte Carlo</strong></p>
+                            <ul style="font-size: 0.9em;">
+                                <li>May produce an <em>incorrect</em> answer</li>
+                                <li>Running time is bounded</li>
+                                <li>Example: Primality testing</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="fragment" style="margin-top: 1.5em;">
+                        Today we'll see one of each: QuickSort (Las Vegas) and Min-Cut (Monte Carlo).
+                    </p>
+                </section>
+
+                <!-- Probability Basics: Expectation -->
+                <section>
+                    <h2>Probability Refresher: Expectation</h2>
+                    <div class="definition-box">
+                        <p>The <strong>expected value</strong> of a random variable \(X\) is:</p>
+                        <p style="text-align: center; margin: 0.5em 0;">
+                            \(\mathbb{E}[X] = \sum_x x \cdot \Pr[X = x]\)
+                        </p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;"><strong>Example:</strong> Fair die roll</p>
+                    <p class="fragment" style="margin-left: 1em;">
+                        \(\mathbb{E}[X] = 1 \cdot \frac{1}{6} + 2 \cdot \frac{1}{6} + \cdots + 6 \cdot \frac{1}{6} = 3.5\)
+                    </p>
+                    <p class="fragment" style="margin-top: 1em;">
+                        For randomized algorithms, we often analyze the <strong>expected running time</strong> — the average over all random choices the algorithm might make.
+                    </p>
+                </section>
+
+                <!-- Linearity of Expectation -->
+                <section>
+                    <h2>The Magic: Linearity of Expectation</h2>
+                    <div class="theorem-box">
+                        <p><strong>Theorem (Linearity of Expectation):</strong></p>
+                        <p style="text-align: center; margin: 0.5em 0;">
+                            \(\mathbb{E}[X_1 + X_2 + \cdots + X_n] = \mathbb{E}[X_1] + \mathbb{E}[X_2] + \cdots + \mathbb{E}[X_n]\)
+                        </p>
+                    </div>
+                    <div class="success-box fragment">
+                        <p><strong>Key insight:</strong> This holds <em>even if the variables are dependent!</em></p>
+                        <p>No independence assumption required.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        This simple fact is <em>surprisingly powerful</em>. It lets us break complex random variables into simple pieces.
+                    </p>
+                </section>
+
+                <!-- Indicator Random Variables -->
+                <section>
+                    <h2>Indicator Random Variables</h2>
+                    <div class="definition-box">
+                        <p>An <strong>indicator random variable</strong> for event \(A\) is:</p>
+                        <p style="text-align: center; margin: 0.5em 0;">
+                            \(X_A = \begin{cases} 1 & \text{if } A \text{ occurs} \\ 0 & \text{otherwise} \end{cases}\)
+                        </p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;"><strong>Key property:</strong></p>
+                    <p class="fragment" style="text-align: center; font-size: 1.1em;">
+                        \(\mathbb{E}[X_A] = \Pr[A]\)
+                    </p>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Strategy:</strong> To count something, write it as a sum of indicators, then use linearity!
+                    </p>
+                    <p class="fragment" style="margin-top: 0.5em; font-size: 0.9em; color: var(--text-light);">
+                        This technique appears throughout Dick Karp's work and is "surprisingly powerful" — Raghavan
+                    </p>
+                </section>
+
+                <!-- Interactive: Coin Flip Expectation -->
+                <section>
+                    <h2>Try It: Counting Heads</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Linearity of Expectation Demo</span>
+                            <div class="demo-controls">
+                                <label>Flips:</label>
+                                <input type="number" id="num-flips" value="10" min="1" max="100">
+                                <button class="btn btn-primary" onclick="runCoinExperiment()">Flip Coins</button>
+                                <button class="btn btn-secondary" onclick="resetCoinExperiment()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="coin-canvas" style="min-height: 180px; padding: 15px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start;">
+                            <p style="color: var(--text-light); width: 100%; text-align: center; margin-top: 60px;">Click "Flip Coins" to start</p>
+                        </div>
+                        <div class="demo-output" id="coin-output">
+                            <p><strong>Expected heads:</strong> \(\mathbb{E}[\text{heads}] = n \cdot \frac{1}{2}\) by linearity (each coin contributes \(\frac{1}{2}\) in expectation)</p>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 2: RANDOMIZED QUICKSORT ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Randomized QuickSort</h1>
+                </section>
+
+                <!-- The Algorithm -->
+                <section>
+                    <h2>The Algorithm</h2>
+                    <div class="algorithm-box">
+                        <p><span class="keyword">procedure</span> QuickSort(S):</p>
+                        <p class="fragment" style="margin-left: 2em;"><span class="keyword">if</span> |S| ≤ 1: <span class="keyword">return</span> S</p>
+                        <p class="fragment" style="margin-left: 2em;">Pick a <strong>random</strong> element p from S as pivot</p>
+                        <p class="fragment" style="margin-left: 2em;">L ← elements of S smaller than p</p>
+                        <p class="fragment" style="margin-left: 2em;">R ← elements of S larger than p</p>
+                        <p class="fragment" style="margin-left: 2em;"><span class="keyword">return</span> QuickSort(L) + [p] + QuickSort(R)</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        The randomness is in pivot selection. Everything else is deterministic.
+                    </p>
+                </section>
+
+                <!-- Lomuto Partition Detail -->
+                <section>
+                    <h2>The Partition Step (Lomuto Scheme)</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <div class="demo-header-row">
+                                <span class="demo-title">In-Place Partition</span>
+                            </div>
+                            <div class="demo-controls" style="margin-top: 6px;">
+                                <label>n: <input type="number" id="lomuto-n" value="8" min="3" max="12" style="width: 50px;"></label>
+                                <button class="btn btn-primary" onclick="startLomutoDemo()">New</button>
+                                <div class="player-controls">
+                                    <button class="player-btn" onclick="lomutoToStart()" title="Reset">⏮</button>
+                                    <button class="player-btn" onclick="lomutoStepBack()" title="Step Back">◀</button>
+                                    <button class="player-btn" onclick="stepLomuto()" title="Step Forward">▶</button>
+                                    <button class="player-btn" onclick="lomutoToEnd()" title="Run to End">⏭</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="lomuto-canvas" style="min-height: 200px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 80px;">Click "New" to generate an array</p>
+                        </div>
+                        <div class="demo-output" id="lomuto-output">
+                            <p><strong>Lomuto partition:</strong> Pivot is always the <em>last</em> element. We scan left-to-right, swapping smaller elements to the front.</p>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75em; margin-top: 10px; color: var(--text-light);">
+                        <strong>i</strong> = boundary (elements before i are ≤ pivot) &nbsp;|&nbsp; <strong>j</strong> = scanner &nbsp;|&nbsp; <span style="background: var(--pastel-gold); padding: 1px 4px;">pivot</span>
+                    </div>
+                </section>
+
+                <!-- Hoare Partition Detail -->
+                <section>
+                    <h2>The Partition Step (Hoare Scheme)</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <div class="demo-header-row">
+                                <span class="demo-title">Hoare's Original Partition</span>
+                            </div>
+                            <div class="demo-controls" style="margin-top: 6px;">
+                                <label>n: <input type="number" id="hoare-n" value="8" min="3" max="12" style="width: 50px;"></label>
+                                <button class="btn btn-primary" onclick="startHoareDemo()">New</button>
+                                <div class="player-controls">
+                                    <button class="player-btn" onclick="hoareToStart()" title="Reset">⏮</button>
+                                    <button class="player-btn" onclick="hoareStepBack()" title="Step Back">◀</button>
+                                    <button class="player-btn" onclick="stepHoare()" title="Step Forward">▶</button>
+                                    <button class="player-btn" onclick="hoareToEnd()" title="Run to End">⏭</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="hoare-canvas" style="min-height: 200px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 80px;">Click "New" to generate an array</p>
+                        </div>
+                        <div class="demo-output" id="hoare-output">
+                            <p><strong>Hoare partition:</strong> Two pointers start at opposite ends, move toward each other, and swap inversions.</p>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75em; margin-top: 10px; color: var(--text-light);">
+                        <span style="color: #2563eb;"><strong>i</strong></span> moves right (stops at ≥ pivot) &nbsp;|&nbsp;
+                        <span style="color: #9333ea;"><strong>j</strong></span> moves left (stops at ≤ pivot) &nbsp;|&nbsp;
+                        Both move simultaneously when possible &nbsp;|&nbsp;
+                        <span style="background: var(--pastel-gold); padding: 1px 4px;">pivot</span> = first element
+                    </div>
+                </section>
+
+                <!-- Best Case Recursion Tree -->
+                <section>
+                    <h2>Best Case: Median Pivot</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Enter 8 elements (or randomize)</span>
+                            <div class="demo-controls">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <input type="number" id="best-input-0" class="tree-input" value="5" min="1" max="99">
+                                    <input type="number" id="best-input-1" class="tree-input" value="2" min="1" max="99">
+                                    <input type="number" id="best-input-2" class="tree-input" value="8" min="1" max="99">
+                                    <input type="number" id="best-input-3" class="tree-input" value="1" min="1" max="99">
+                                    <input type="number" id="best-input-4" class="tree-input" value="9" min="1" max="99">
+                                    <input type="number" id="best-input-5" class="tree-input" value="3" min="1" max="99">
+                                    <input type="number" id="best-input-6" class="tree-input" value="7" min="1" max="99">
+                                    <input type="number" id="best-input-7" class="tree-input" value="4" min="1" max="99">
+                                </div>
+                                <button class="btn btn-secondary" onclick="randomizeBestCase()">Random</button>
+                                <button class="btn btn-primary" onclick="startBestCaseTree()">Go</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="best-tree-canvas" style="min-height: 320px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 140px;">Enter values and click "Go" to see the recursion tree</p>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 8px;">
+                            <div class="player-controls">
+                                <button class="player-btn" onclick="bestTreeToStart()" title="Reset">⏮</button>
+                                <button class="player-btn" onclick="bestTreeStepBack()" title="Step Back">◀</button>
+                                <button class="player-btn" onclick="stepBestTree()" title="Step Forward">▶</button>
+                                <button class="player-btn" onclick="bestTreeToEnd()" title="Run to End">⏭</button>
+                            </div>
+                        </div>
+                        <div class="demo-output" id="best-tree-output">
+                            <p><strong>Best case:</strong> When pivot is always the median, each partition splits the array in half → <strong>O(n log n)</strong> depth.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Worst Case Recursion Tree -->
+                <section>
+                    <h2>Worst Case: Minimum Pivot</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Enter 5 elements (or randomize)</span>
+                            <div class="demo-controls">
+                                <div style="display: flex; gap: 4px; align-items: center;">
+                                    <input type="number" id="worst-input-0" class="tree-input" value="3" min="1" max="99">
+                                    <input type="number" id="worst-input-1" class="tree-input" value="1" min="1" max="99">
+                                    <input type="number" id="worst-input-2" class="tree-input" value="4" min="1" max="99">
+                                    <input type="number" id="worst-input-3" class="tree-input" value="5" min="1" max="99">
+                                    <input type="number" id="worst-input-4" class="tree-input" value="2" min="1" max="99">
+                                </div>
+                                <button class="btn btn-secondary" onclick="randomizeWorstCase()">Random</button>
+                                <button class="btn btn-primary" onclick="startWorstCaseTree()">Go</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="worst-tree-canvas" style="min-height: 320px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 140px;">Enter values and click "Go" to see the recursion tree</p>
+                        </div>
+                        <div style="display: flex; justify-content: center; margin-top: 8px;">
+                            <div class="player-controls">
+                                <button class="player-btn" onclick="worstTreeToStart()" title="Reset">⏮</button>
+                                <button class="player-btn" onclick="worstTreeStepBack()" title="Step Back">◀</button>
+                                <button class="player-btn" onclick="stepWorstTree()" title="Step Forward">▶</button>
+                                <button class="player-btn" onclick="worstTreeToEnd()" title="Run to End">⏭</button>
+                            </div>
+                        </div>
+                        <div class="demo-output" id="worst-tree-output">
+                            <p><strong>Worst case:</strong> When pivot is always the minimum, we get maximally unbalanced splits → <strong>O(n²)</strong> comparisons.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- The Key Insight -->
+                <section>
+                    <h2>The Key Insight</h2>
+                    <div class="success-box">
+                        <p><strong>Observation:</strong> Once you split elements by a pivot, elements in the "smaller" set <em>never interact</em> with elements in the "larger" set ever again.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em; font-size: 1.1em; text-align: center;">
+                        <em>They are parted forever.</em>
+                    </p>
+                    <p class="fragment" style="margin-top: 1em;">
+                        This means: whether \(i\) and \(j\) are compared depends <em>only</em> on which element in \(\{i, i{+}1, \ldots, j\}\) is chosen as pivot first.
+                    </p>
+                </section>
+
+                <!-- Visualizing the Partition -->
+                <section>
+                    <h2>Visualizing: Parted Forever</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Watch elements get separated</span>
+                            <div class="demo-controls">
+                                <label>n: <input type="number" id="combined-n" value="8" min="3" max="12" style="width: 50px;"></label>
+                                <button class="btn btn-primary" onclick="startCombinedDemo()">New</button>
+                                <div class="player-controls">
+                                    <button class="player-btn" onclick="combinedToStart()" title="Reset">⏮</button>
+                                    <button class="player-btn" onclick="combinedStepBack()" title="Step Back">◀</button>
+                                    <button class="player-btn" onclick="stepCombined()" title="Step Forward">▶</button>
+                                    <button class="player-btn" onclick="combinedToEnd()" title="Run to End">⏭</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="combined-main-canvas" style="min-height: 100px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 40px;">Click "New" to generate elements</p>
+                        </div>
+                        <div style="border-top: 1px dashed var(--border); margin: 8px 0; position: relative;">
+                            <span style="position: absolute; top: -10px; left: 10px; background: #fafafa; padding: 0 8px; font-size: 0.75em; color: var(--text-light);">Rough Space: Lomuto Partition</span>
+                        </div>
+                        <div class="demo-canvas" id="combined-rough-canvas" style="min-height: 140px; background: #f9f9f9;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 50px; font-size: 0.9em;">Partition details will appear here</p>
+                        </div>
+                        <div class="demo-output" id="combined-output">
+                            Watch how elements get permanently separated after each pivot selection.
+                        </div>
+                    </div>
+                </section>
+
+                <!-- The Analysis Setup -->
+                <section>
+                    <h2>Analyzing Comparisons</h2>
+                    <p>Assume we're sorting the integers \(1, 2, \ldots, n\) (WLOG).</p>
+                    <div class="definition-box fragment">
+                        <p>Let \(X_{ij}\) be an indicator variable:</p>
+                        <p style="text-align: center; margin: 0.5em 0;">
+                            \(X_{ij} = \begin{cases} 1 & \text{if } i \text{ and } j \text{ are compared} \\ 0 & \text{otherwise} \end{cases}\)
+                        </p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Total comparisons:</strong> \(\displaystyle\sum_{i < j} X_{ij}\)
+                    </p>
+                    <p class="fragment" style="margin-top: 0.5em;">
+                        <strong>Expected comparisons:</strong> \(\displaystyle\mathbb{E}\left[\sum_{i < j} X_{ij}\right] = \sum_{i < j} \mathbb{E}[X_{ij}] = \sum_{i < j} \Pr[i \text{ compared to } j]\)
+                    </p>
+                </section>
+
+                <!-- The Probability Calculation -->
+                <section>
+                    <h2>When Are \(i\) and \(j\) Compared?</h2>
+                    <p>Consider elements \(i < j\). The elements between them are \(i, i+1, \ldots, j\).</p>
+                    <div class="theorem-box fragment">
+                        <p><strong>Key observation:</strong> \(i\) and \(j\) are compared if and only if one of them is chosen as a pivot <em>before</em> any element strictly between them.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        Why? If some \(k\) with \(i < k < j\) is chosen first, then \(i\) goes to the left partition and \(j\) goes to the right. They're parted forever!
+                    </p>
+                    <div class="success-box fragment">
+                        <p>Of the \(j - i + 1\) elements \(\{i, i+1, \ldots, j\}\), exactly <strong>2</strong> choices cause a comparison.</p>
+                        <p style="text-align: center; font-size: 1.1em; margin-top: 0.5em;">
+                            \(\Pr[X_{ij} = 1] = \dfrac{2}{j - i + 1}\)
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Summing Up -->
+                <section>
+                    <h2>The Final Calculation</h2>
+                    <p>Expected number of comparisons:</p>
+                    <p style="text-align: center; font-size: 1.1em;">
+                        \(\displaystyle\sum_{i=1}^{n-1} \sum_{j=i+1}^{n} \frac{2}{j - i + 1}\)
+                    </p>
+                    <p class="fragment" style="margin-top: 1em;">Substituting \(k = j - i\):</p>
+                    <p class="fragment" style="text-align: center; font-size: 1.1em;">
+                        \(\displaystyle\sum_{i=1}^{n-1} \sum_{k=1}^{n-i} \frac{2}{k + 1} \leq \sum_{i=1}^{n-1} \sum_{k=1}^{n} \frac{2}{k} = 2(n-1) \cdot H_n\)
+                    </p>
+                    <div class="success-box fragment">
+                        <p style="text-align: center; font-size: 1.2em;">
+                            <strong>Expected comparisons</strong> \(\leq 2n \ln n \approx 1.38 \, n \log_2 n\)
+                        </p>
+                    </div>
+                    <p class="fragment" style="margin-top: 0.5em; font-style: italic; color: var(--text-light);">
+                        Note: This is an <strong>equality</strong> (up to the harmonic bound), not a sloppy upper bound!
+                    </p>
+                </section>
+
+                <!-- Interactive: Comparison Counter -->
+                <section>
+                    <h2>Try It: Count Comparisons</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">QuickSort Comparison Counter</span>
+                            <div class="demo-controls">
+                                <label>n:</label>
+                                <input type="number" id="qs-n" value="8" min="3" max="20">
+                                <button class="btn btn-primary" onclick="runQuickSortDemo()">New</button>
+                                <div class="player-controls">
+                                    <button class="player-btn" onclick="qsToStart()" title="Reset">⏮</button>
+                                    <button class="player-btn" onclick="qsStepBack()" title="Step Back">◀</button>
+                                    <button class="player-btn" onclick="stepQuickSort()" title="Step Forward">▶</button>
+                                    <button class="player-btn" onclick="qsToEnd()" title="Run to End">⏭</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="qs-canvas" style="min-height: 250px; padding: 15px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 100px;">Click "Run QuickSort" to start</p>
+                        </div>
+                        <div class="demo-output" id="qs-output">
+                            <p><strong>Prediction:</strong> For n elements, expected comparisons ≈ 1.38 n log₂ n</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Which Pairs Get Compared -->
+                <section>
+                    <h2>Explore: Which Pairs Get Compared?</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Comparison Matrix</span>
+                            <div class="demo-controls">
+                                <label>n:</label>
+                                <input type="number" id="matrix-n" value="6" min="3" max="10">
+                                <button class="btn btn-primary" onclick="runComparisonMatrix()">Run</button>
+                                <button class="btn btn-warning" onclick="runManyTrials()">100 Trials</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="matrix-canvas" style="min-height: 280px; padding: 15px; display: flex; gap: 20px;">
+                            <p style="color: var(--text-light); width: 100%; text-align: center; margin-top: 100px;">Click "Run" to see which pairs get compared in one run</p>
+                        </div>
+                        <div class="demo-output" id="matrix-output">
+                            <p>Each cell (i,j) shows if elements i and j were compared. Theory predicts: \(\Pr[\text{compared}] = \frac{2}{j-i+1}\)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Summary -->
+                <section>
+                    <h2>The Elegance</h2>
+                    <div class="success-box">
+                        <p><strong>What made this analysis beautiful?</strong></p>
+                        <ol>
+                            <li class="fragment">Identify the right indicator variables (\(X_{ij}\))</li>
+                            <li class="fragment">Use linearity of expectation to decompose</li>
+                            <li class="fragment">Compute each probability from first principles</li>
+                            <li class="fragment">No complicated recurrences, no messy constants</li>
+                        </ol>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em; font-style: italic;">
+                        "The beguiling power of indicator variables and linearity of expectation. That's all there is to it." — Raghavan on Karp's analysis
+                    </p>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 3: KARGER'S MIN CUT ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Karger's Min Cut</h1>
+                </section>
+
+                <!-- The Problem -->
+                <section>
+                    <h2>The Minimum Cut Problem</h2>
+                    <div class="definition-box">
+                        <p><strong>Input:</strong> An undirected multigraph \(G = (V, E)\)</p>
+                        <p><strong>Goal:</strong> Find the smallest set of edges whose removal disconnects the graph</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        Equivalently: partition \(V\) into two non-empty sets \(S\) and \(\bar{S}\) to minimize the number of edges crossing the partition.
+                    </p>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Applications:</strong> Network reliability, image segmentation, clustering
+                    </p>
+                </section>
+
+                <!-- The Contraction Algorithm -->
+                <section>
+                    <h2>Karger's Contraction Algorithm</h2>
+                    <div class="algorithm-box">
+                        <p><span class="keyword">procedure</span> Contract(G):</p>
+                        <p style="margin-left: 2em;"><span class="keyword">while</span> G has more than 2 vertices:</p>
+                        <p style="margin-left: 4em;">Pick a <strong>random</strong> edge (u, v)</p>
+                        <p style="margin-left: 4em;">Contract u and v into a single vertex</p>
+                        <p style="margin-left: 4em;">(Keep parallel edges, remove self-loops)</p>
+                        <p style="margin-left: 2em;"><span class="keyword">return</span> edges between the final 2 vertices</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        The output is a cut (but not necessarily the minimum cut).
+                    </p>
+                </section>
+
+                <!-- Contraction Visualization -->
+                <section>
+                    <h2>Edge Contraction</h2>
+                    <svg width="900" height="280" viewBox="0 0 900 280" style="font-family: 'Heliotrope', Georgia, serif;">
+                        <!-- Before contraction -->
+                        <text x="150" y="30" text-anchor="middle" font-size="16" fill="#222" font-weight="600">Before</text>
+
+                        <circle cx="80" cy="140" r="20" fill="white" stroke="#222" stroke-width="2"/>
+                        <text x="80" y="145" text-anchor="middle" font-size="14" fill="#222">u</text>
+
+                        <circle cx="220" cy="140" r="20" fill="white" stroke="#222" stroke-width="2"/>
+                        <text x="220" y="145" text-anchor="middle" font-size="14" fill="#222">v</text>
+
+                        <circle cx="150" cy="60" r="20" fill="white" stroke="#222" stroke-width="2"/>
+                        <text x="150" y="65" text-anchor="middle" font-size="14" fill="#222">a</text>
+
+                        <circle cx="150" cy="220" r="20" fill="white" stroke="#222" stroke-width="2"/>
+                        <text x="150" y="225" text-anchor="middle" font-size="14" fill="#222">b</text>
+
+                        <!-- Edges before -->
+                        <line x1="100" y1="140" x2="200" y2="140" stroke="#c44" stroke-width="3"/>
+                        <line x1="95" y1="125" x2="135" y2="75" stroke="#222" stroke-width="2"/>
+                        <line x1="205" y1="125" x2="165" y2="75" stroke="#222" stroke-width="2"/>
+                        <line x1="95" y1="155" x2="135" y2="205" stroke="#222" stroke-width="2"/>
+                        <line x1="205" y1="155" x2="165" y2="205" stroke="#222" stroke-width="2"/>
+
+                        <!-- Arrow -->
+                        <text x="350" y="145" font-size="40" fill="#666">→</text>
+                        <text x="350" y="180" text-anchor="middle" font-size="12" fill="#666">contract (u,v)</text>
+
+                        <!-- After contraction -->
+                        <text x="600" y="30" text-anchor="middle" font-size="16" fill="#222" font-weight="600">After</text>
+
+                        <circle cx="600" cy="140" r="25" fill="var(--pastel-gold)" stroke="#222" stroke-width="2"/>
+                        <text x="600" y="145" text-anchor="middle" font-size="12" fill="#222">u,v</text>
+
+                        <circle cx="600" cy="60" r="20" fill="white" stroke="#222" stroke-width="2"/>
+                        <text x="600" y="65" text-anchor="middle" font-size="14" fill="#222">a</text>
+
+                        <circle cx="600" cy="220" r="20" fill="white" stroke="#222" stroke-width="2"/>
+                        <text x="600" y="225" text-anchor="middle" font-size="14" fill="#222">b</text>
+
+                        <!-- Edges after (parallel edges!) -->
+                        <line x1="585" y1="118" x2="585" y2="80" stroke="#222" stroke-width="2"/>
+                        <line x1="615" y1="118" x2="615" y2="80" stroke="#222" stroke-width="2"/>
+                        <line x1="585" y1="162" x2="585" y2="200" stroke="#222" stroke-width="2"/>
+                        <line x1="615" y1="162" x2="615" y2="200" stroke="#222" stroke-width="2"/>
+
+                        <text x="650" y="100" font-size="11" fill="#666">2 parallel edges</text>
+                    </svg>
+                    <p class="fragment" style="margin-top: 0.5em;">
+                        Contracting an edge merges two vertices. All other edges are preserved (creating parallel edges).
+                    </p>
+                </section>
+
+                <!-- Interactive Graph Editor -->
+                <section>
+                    <h2>Try It: Build Your Own Graph</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <div class="demo-header-row">
+                                <span class="demo-title">Interactive Min Cut</span>
+                            </div>
+                            <div class="demo-controls" style="margin-top: 6px;">
+                                <button class="btn btn-secondary" onclick="clearGraph()">Clear</button>
+                                <button class="btn" onclick="loadSampleGraph()">Sample</button>
+                                <div class="player-controls">
+                                    <button class="player-btn" onclick="kargerToStart()" title="Reset">⏮</button>
+                                    <button class="player-btn" onclick="kargerStepBack()" title="Step Back">◀</button>
+                                    <button class="player-btn" onclick="stepKarger()" title="Step Forward">▶</button>
+                                    <button class="player-btn" onclick="runKarger()" title="Run to End">⏭</button>
+                                </div>
+                                <button class="btn btn-warning" onclick="runKargerMany()">20x</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="karger-canvas" style="min-height: 290px; position: relative; cursor: crosshair;">
+                            <svg id="karger-svg" width="100%" height="290" style="position: absolute; top: 0; left: 0;"></svg>
+                            <p id="karger-hint" style="color: var(--text-light); text-align: center; padding-top: 120px; pointer-events: none;">
+                                Click to add vertices. Drag between vertices to add edges. Or click "Sample Graph".
+                            </p>
+                        </div>
+                        <div class="demo-output" id="karger-output">
+                            <p><strong>Instructions:</strong> Build a graph, then run Karger's algorithm to find a cut.</p>
+                        </div>
+                    </div>
+                    <div class="bottom-nav">
+                        <a href="#/3/1">← Back to Algorithm</a>
+                    </div>
+                </section>
+
+                <!-- The Analysis -->
+                <section>
+                    <h2>Analysis: Success Probability</h2>
+                    <p>Let \(C\) be a min cut with \(k\) edges. What's the probability we find it?</p>
+                    <div class="theorem-box fragment">
+                        <p><strong>Key observation:</strong> The algorithm succeeds if and only if it never contracts an edge of \(C\).</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Claim:</strong> The graph has at least \(\frac{nk}{2}\) edges.
+                    </p>
+                    <p class="fragment" style="margin-left: 1em; font-size: 0.9em;">
+                        <em>Proof:</em> Every vertex has degree ≥ k (otherwise removing its edges gives a smaller cut).
+                        So total degree ≥ nk, meaning ≥ nk/2 edges.
+                    </p>
+                </section>
+
+                <!-- The Analysis Continued -->
+                <section>
+                    <h2>Analysis: The Calculation</h2>
+                    <p>Probability of not contracting a min-cut edge in step 1:</p>
+                    <p style="text-align: center;">\(\Pr[\text{survive step 1}] \geq 1 - \frac{k}{nk/2} = 1 - \frac{2}{n}\)</p>
+
+                    <p class="fragment" style="margin-top: 1em;">After step 1, we have \(n-1\) vertices. Probability of surviving step 2:</p>
+                    <p class="fragment" style="text-align: center;">\(\Pr[\text{survive step 2} \mid \text{survived step 1}] \geq 1 - \frac{2}{n-1}\)</p>
+
+                    <p class="fragment" style="margin-top: 1em;">Continuing...</p>
+                    <p class="fragment" style="text-align: center;">
+                        \(\Pr[\text{success}] \geq \prod_{i=0}^{n-3} \left(1 - \frac{2}{n-i}\right) = \prod_{i=0}^{n-3} \frac{n-i-2}{n-i}\)
+                    </p>
+                </section>
+
+                <!-- The Final Bound -->
+                <section>
+                    <h2>Analysis: The Result</h2>
+                    <p>The product telescopes:</p>
+                    <p style="text-align: center; font-size: 1.1em;">
+                        \(\frac{n-2}{n} \cdot \frac{n-3}{n-1} \cdot \frac{n-4}{n-2} \cdots \frac{2}{4} \cdot \frac{1}{3} = \frac{2}{n(n-1)}\)
+                    </p>
+
+                    <div class="success-box fragment" style="margin-top: 1.5em;">
+                        <p style="text-align: center; font-size: 1.1em;">
+                            \(\Pr[\text{find min cut}] \geq \frac{2}{n(n-1)} \approx \frac{2}{n^2}\)
+                        </p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 1em;">
+                        This seems terrible! But we can <strong>amplify</strong> by repetition.
+                    </p>
+                    <p class="fragment">
+                        Run the algorithm \(n^2 \ln n\) times. Probability of <em>never</em> finding the min cut:
+                    </p>
+                    <p class="fragment" style="text-align: center;">
+                        \(\left(1 - \frac{2}{n^2}\right)^{n^2 \ln n} \approx e^{-2 \ln n} = \frac{1}{n^2}\)
+                    </p>
+                </section>
+
+                <!-- Summary -->
+                <section>
+                    <h2>Karger's Algorithm: Summary</h2>
+                    <div class="success-box">
+                        <p><strong>Total running time:</strong> \(O(n^4 \log n)\) to find min cut with high probability</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Improvements:</strong>
+                    </p>
+                    <ul>
+                        <li class="fragment">Karger-Stein: \(O(n^2 \log^3 n)\) using recursive contraction</li>
+                        <li class="fragment">Currently fastest randomized: \(O(m \log^3 n)\)</li>
+                    </ul>
+                    <p class="fragment" style="margin-top: 1em; font-style: italic; color: var(--text-light);">
+                        The algorithm is remarkably simple, yet the analysis reveals deep structure.
+                    </p>
+                </section>
+            </section>
+
+            <!-- ===== CONCLUSION ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Summary</h1>
+                </section>
+
+                <section>
+                    <h2>What We Learned</h2>
+                    <div style="display: flex; gap: 15px;">
+                        <div class="definition-box" style="flex: 1;">
+                            <p><strong>QuickSort</strong></p>
+                            <ul style="font-size: 0.85em;">
+                                <li>Las Vegas algorithm</li>
+                                <li>Expected O(n log n)</li>
+                                <li>Indicator variables + linearity</li>
+                                <li>Elegant, exact analysis</li>
+                            </ul>
+                        </div>
+                        <div class="definition-box" style="flex: 1;">
+                            <p><strong>Min Cut</strong></p>
+                            <ul style="font-size: 0.85em;">
+                                <li>Monte Carlo algorithm</li>
+                                <li>Success prob ≥ 2/n²</li>
+                                <li>Amplification by repetition</li>
+                                <li>Simple algorithm, subtle analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="success-box fragment" style="margin-top: 1.5em;">
+                        <p><strong>Common themes:</strong></p>
+                        <ul>
+                            <li>Random choices simplify algorithms dramatically</li>
+                            <li>Analysis uses elementary probability (no advanced tools needed)</li>
+                            <li>The key is identifying the right events to analyze</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Further Reading</h2>
+                    <ul>
+                        <li>Motwani & Raghavan, <em>Randomized Algorithms</em> (1995)</li>
+                        <li>Mitzenmacher & Upfal, <em>Probability and Computing</em></li>
+                        <li><a href="https://www.youtube.com/watch?v=RH_wrKwE85Q" style="color: seagreen;">Raghavan's KARPfest80 talk</a></li>
+                        <li>Karp, "An Introduction to Randomized Algorithms" (1991)</li>
+                    </ul>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- RevealJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+
+    <!-- KaTeX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+    <script>
+        // Initialize Reveal.js
+        Reveal.initialize({
+            hash: true,
+            slideNumber: 'c/t',
+            progress: true,
+            center: false,
+            transition: 'none',
+            width: 1100,
+            height: 700,
+            margin: 0.04
+        });
+
+        // Render KaTeX
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\(', right: '\\)', display: false},
+                    {left: '$', right: '$', display: false}
+                ]
+            });
+        });
+
+        // =============================================
+        // COIN FLIP DEMO
+        // =============================================
+        let coinResults = [];
+
+        function runCoinExperiment() {
+            const n = parseInt(document.getElementById('num-flips').value) || 10;
+            const canvas = document.getElementById('coin-canvas');
+            const output = document.getElementById('coin-output');
+
+            coinResults = [];
+            let heads = 0;
+
+            canvas.innerHTML = '';
+
+            for (let i = 0; i < n; i++) {
+                const isHeads = Math.random() < 0.5;
+                coinResults.push(isHeads);
+                if (isHeads) heads++;
+
+                const coin = document.createElement('div');
+                coin.style.cssText = `
+                    width: 32px; height: 32px; border-radius: 50%;
+                    display: flex; align-items: center; justify-content: center;
+                    font-weight: 600; font-size: 14px;
+                    background: ${isHeads ? 'var(--pastel-gold)' : 'var(--pastel-blue)'};
+                    border: 2px solid ${isHeads ? '#c9b870' : '#7ab8d4'};
+                `;
+                coin.textContent = isHeads ? 'H' : 'T';
+                canvas.appendChild(coin);
+            }
+
+            output.innerHTML = `
+                <p><strong>Results:</strong> ${heads} heads out of ${n} flips</p>
+                <p><strong>Expected:</strong> ${n} × ½ = ${n/2}</p>
+                <p><strong>Deviation:</strong> ${heads - n/2} (${((heads/n - 0.5) * 100).toFixed(1)}%)</p>
+            `;
+        }
+
+        function resetCoinExperiment() {
+            document.getElementById('coin-canvas').innerHTML = '<p style="color: var(--text-light); width: 100%; text-align: center; margin-top: 60px;">Click "Flip Coins" to start</p>';
+            document.getElementById('coin-output').innerHTML = '<p><strong>Expected heads:</strong> E[heads] = n × ½ by linearity</p>';
+        }
+
+        // =============================================
+        // LOMUTO PARTITION DEMO
+        // =============================================
+        let lomutoState = null;
+        let lomutoHistory = [];
+
+        function startLomutoDemo() {
+            const n = parseInt(document.getElementById('lomuto-n').value) || 8;
+            const arr = Array.from({length: n}, (_, i) => i + 1);
+            // Shuffle
+            for (let k = arr.length - 1; k > 0; k--) {
+                const j = Math.floor(Math.random() * (k + 1));
+                [arr[k], arr[j]] = [arr[j], arr[k]];
+            }
+
+            lomutoState = {
+                array: arr,
+                original: [...arr],
+                pivot: arr[n - 1],
+                pivotIdx: n - 1,
+                i: 0,        // boundary pointer
+                j: 0,        // scanner pointer
+                phase: 'start', // start, scanning, swapping, done, final
+                message: '',
+                comparisons: 0
+            };
+
+            lomutoHistory = [JSON.parse(JSON.stringify(lomutoState))];
+            renderLomuto();
+            document.getElementById('lomuto-output').innerHTML = `
+                <p><strong>Pivot:</strong> ${lomutoState.pivot} (last element). <strong>i</strong> = 0, <strong>j</strong> = 0. Click ▶ to start scanning.</p>
+            `;
+        }
+
+        function stepLomuto() {
+            if (!lomutoState) {
+                startLomutoDemo();
+                return;
+            }
+
+            if (lomutoState.phase === 'done') {
+                return; // Already finished
+            }
+
+            const { array, pivot, i, j, pivotIdx } = lomutoState;
+
+            if (lomutoState.phase === 'start') {
+                lomutoState.phase = 'scanning';
+            }
+
+            if (lomutoState.phase === 'scanning') {
+                if (j < pivotIdx) {
+                    lomutoState.comparisons++;
+                    if (array[j] <= pivot) {
+                        // Need to swap A[i] with A[j]
+                        if (i !== j) {
+                            lomutoState.phase = 'swapping';
+                            lomutoState.message = `A[${j}]=${array[j]} ≤ pivot=${pivot}. Swap A[${i}]=${array[i]} with A[${j}]=${array[j]}.`;
+                        } else {
+                            // i === j, no actual swap needed, just increment both
+                            lomutoState.i++;
+                            lomutoState.j++;
+                            lomutoState.message = `A[${j}]=${array[j]} ≤ pivot=${pivot}. i=j, so just advance both. i=${lomutoState.i}, j=${lomutoState.j}.`;
+                        }
+                    } else {
+                        // array[j] > pivot, just advance j
+                        lomutoState.j++;
+                        lomutoState.message = `A[${j}]=${array[j]} > pivot=${pivot}. Don't swap, just advance j to ${lomutoState.j}.`;
+                    }
+                } else {
+                    // j reached pivotIdx, time to place pivot
+                    lomutoState.phase = 'placing';
+                    lomutoState.message = `Scanning complete. Now swap pivot into position ${i}.`;
+                }
+            } else if (lomutoState.phase === 'swapping') {
+                // Perform the swap
+                [lomutoState.array[lomutoState.i], lomutoState.array[lomutoState.j]] =
+                    [lomutoState.array[lomutoState.j], lomutoState.array[lomutoState.i]];
+                lomutoState.i++;
+                lomutoState.j++;
+                lomutoState.phase = 'scanning';
+                lomutoState.message = `Swapped! Now i=${lomutoState.i}, j=${lomutoState.j}. Continue scanning.`;
+            } else if (lomutoState.phase === 'placing') {
+                // Swap pivot into place
+                [lomutoState.array[lomutoState.i], lomutoState.array[lomutoState.pivotIdx]] =
+                    [lomutoState.array[lomutoState.pivotIdx], lomutoState.array[lomutoState.i]];
+                lomutoState.finalPivotPos = lomutoState.i;
+                lomutoState.phase = 'done';
+                lomutoState.message = `Done! Pivot ${pivot} is now at index ${lomutoState.i}. Elements left of it are ≤ pivot, elements right are > pivot.`;
+            }
+
+            lomutoHistory.push(JSON.parse(JSON.stringify(lomutoState)));
+            renderLomuto();
+            document.getElementById('lomuto-output').innerHTML = `<p>${lomutoState.message}</p>`;
+        }
+
+        function renderLomuto() {
+            const canvas = document.getElementById('lomuto-canvas');
+            if (!lomutoState) {
+                canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 80px;">Click "New" to generate an array</p>';
+                return;
+            }
+
+            const { array, pivot, pivotIdx, i, j, phase, finalPivotPos } = lomutoState;
+            const boxW = 44, gap = 8, startX = 40;
+
+            let svg = `<svg width="100%" height="200" viewBox="0 0 500 200" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // Draw array elements
+            array.forEach((val, idx) => {
+                const x = startX + idx * (boxW + gap);
+                const y = 70;
+
+                // Determine fill color
+                let fill = '#ffffff';
+                let strokeColor = '#888';
+                let strokeWidth = 2;
+
+                if (phase === 'done') {
+                    if (idx < finalPivotPos) {
+                        fill = 'var(--pastel-blue)'; // Left partition
+                    } else if (idx === finalPivotPos) {
+                        fill = 'var(--pastel-green)'; // Pivot in final position
+                        strokeColor = '#6b9e78';
+                        strokeWidth = 3;
+                    } else {
+                        fill = 'var(--pastel-peach)'; // Right partition
+                    }
+                } else {
+                    if (idx === pivotIdx) {
+                        fill = 'var(--pastel-gold)';
+                        strokeColor = '#c9b870';
+                    } else if (idx < i) {
+                        fill = 'var(--pastel-blue)'; // Already partitioned to left
+                    } else if (phase === 'swapping' && (idx === i || idx === j)) {
+                        fill = 'var(--pastel-coral)'; // About to swap
+                        strokeWidth = 3;
+                    }
+                }
+
+                svg += `<rect x="${x}" y="${y}" width="${boxW}" height="${boxW}" fill="${fill}" stroke="${strokeColor}" stroke-width="${strokeWidth}" rx="4"/>`;
+                svg += `<text x="${x + boxW/2}" y="${y + boxW/2 + 6}" text-anchor="middle" font-size="16" font-weight="600" fill="#222">${val}</text>`;
+
+                // Index labels below
+                svg += `<text x="${x + boxW/2}" y="${y + boxW + 18}" text-anchor="middle" font-size="11" fill="#888">${idx}</text>`;
+            });
+
+            // Draw i pointer (if not done)
+            if (phase !== 'done') {
+                const iX = startX + i * (boxW + gap) + boxW/2;
+                svg += `<text x="${iX}" y="55" text-anchor="middle" font-size="14" font-weight="bold" fill="#2563eb">i</text>`;
+                svg += `<path d="M${iX},58 L${iX},68" stroke="#2563eb" stroke-width="2" marker-end="url(#arrowBlue)"/>`;
+            }
+
+            // Draw j pointer (if scanning)
+            if (phase !== 'done' && phase !== 'placing' && j < pivotIdx) {
+                const jX = startX + j * (boxW + gap) + boxW/2;
+                svg += `<text x="${jX}" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#9333ea">j</text>`;
+                svg += `<path d="M${jX},172 L${jX},${70 + boxW + 22}" stroke="#9333ea" stroke-width="2" marker-end="url(#arrowPurple)"/>`;
+            }
+
+            // Arrow markers
+            svg += `
+                <defs>
+                    <marker id="arrowBlue" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                        <path d="M0,0 L6,3 L0,6 Z" fill="#2563eb"/>
+                    </marker>
+                    <marker id="arrowPurple" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                        <path d="M0,6 L6,3 L0,0 Z" fill="#9333ea"/>
+                    </marker>
+                </defs>
+            `;
+
+            // Legend
+            if (phase === 'done') {
+                svg += `<text x="10" y="190" font-size="11" fill="#666">`;
+                svg += `<tspan fill="var(--pastel-blue)">■</tspan> ≤ pivot `;
+                svg += `<tspan fill="var(--pastel-green)">■</tspan> Pivot (final position) `;
+                svg += `<tspan fill="var(--pastel-peach)">■</tspan> > pivot`;
+                svg += `</text>`;
+            }
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function lomutoToStart() {
+            if (!lomutoState || lomutoHistory.length === 0) return;
+            lomutoState = JSON.parse(JSON.stringify(lomutoHistory[0]));
+            lomutoHistory = [lomutoHistory[0]];
+            renderLomuto();
+            document.getElementById('lomuto-output').innerHTML = `
+                <p><strong>Pivot:</strong> ${lomutoState.pivot} (last element). <strong>i</strong> = 0, <strong>j</strong> = 0. Click ▶ to start scanning.</p>
+            `;
+        }
+
+        function lomutoStepBack() {
+            if (!lomutoState || lomutoHistory.length <= 1) return;
+            lomutoHistory.pop();
+            lomutoState = JSON.parse(JSON.stringify(lomutoHistory[lomutoHistory.length - 1]));
+            renderLomuto();
+            const msg = lomutoState.message || `<strong>Pivot:</strong> ${lomutoState.pivot}. <strong>i</strong> = ${lomutoState.i}, <strong>j</strong> = ${lomutoState.j}.`;
+            document.getElementById('lomuto-output').innerHTML = `<p>${msg}</p>`;
+        }
+
+        function lomutoToEnd() {
+            if (!lomutoState) {
+                startLomutoDemo();
+            }
+            while (lomutoState.phase !== 'done') {
+                stepLomuto();
+            }
+        }
+
+        // =============================================
+        // HOARE PARTITION DEMO
+        // =============================================
+        let hoareState = null;
+        let hoareHistory = [];
+
+        function startHoareDemo() {
+            const n = parseInt(document.getElementById('hoare-n').value) || 8;
+            const arr = Array.from({length: n}, (_, i) => i + 1);
+            // Shuffle
+            for (let k = arr.length - 1; k > 0; k--) {
+                const m = Math.floor(Math.random() * (k + 1));
+                [arr[k], arr[m]] = [arr[m], arr[k]];
+            }
+
+            hoareState = {
+                array: arr,
+                original: [...arr],
+                lo: 0,
+                hi: n - 1,
+                pivot: arr[0],  // First element as pivot
+                pivotIdx: 0,
+                i: 0,           // Will start at lo
+                j: n - 1,       // Will start at hi
+                phase: 'start', // start, scan, check, swap, done
+                message: '',
+                swapCount: 0
+            };
+
+            hoareHistory = [JSON.parse(JSON.stringify(hoareState))];
+            renderHoare();
+            document.getElementById('hoare-output').innerHTML = `
+                <p><strong>Pivot:</strong> ${hoareState.pivot} (first element). Pointers will move inward from both ends.</p>
+            `;
+        }
+
+        function stepHoare() {
+            if (!hoareState) {
+                startHoareDemo();
+                return;
+            }
+
+            if (hoareState.phase === 'done') {
+                return;
+            }
+
+            const { array, pivot, lo, hi } = hoareState;
+
+            if (hoareState.phase === 'start') {
+                hoareState.i = lo;
+                hoareState.j = hi;
+                hoareState.phase = 'scan';
+                hoareState.message = `Starting: i=${hoareState.i}, j=${hoareState.j}. Will move pointers inward.`;
+            } else if (hoareState.phase === 'scan') {
+                // First check if pointers have crossed
+                if (hoareState.i > hoareState.j) {
+                    hoareState.phase = 'done';
+                    hoareState.partitionPoint = hoareState.j;
+                    hoareState.message = `Pointers crossed (i=${hoareState.i} > j=${hoareState.j}). Partition complete!`;
+                    hoareHistory.push(JSON.parse(JSON.stringify(hoareState)));
+                    renderHoare();
+                    document.getElementById('hoare-output').innerHTML = `<p>${hoareState.message}</p>`;
+                    return;
+                }
+
+                // Check if both pointers can move simultaneously
+                const iCanMove = hoareState.array[hoareState.i] < hoareState.pivot;
+                const jCanMove = hoareState.array[hoareState.j] > hoareState.pivot;
+
+                if (iCanMove && jCanMove) {
+                    // Both can move - move simultaneously
+                    hoareState.i++;
+                    hoareState.j--;
+                    hoareState.message = `A[${hoareState.i-1}] < pivot AND A[${hoareState.j+1}] > pivot. Move both: i→${hoareState.i}, j→${hoareState.j}.`;
+                } else if (iCanMove) {
+                    // Only i can move
+                    hoareState.i++;
+                    hoareState.message = `A[${hoareState.i-1}] < pivot=${hoareState.pivot}. Move i→${hoareState.i}. j stopped at A[${hoareState.j}]=${hoareState.array[hoareState.j]}.`;
+                } else if (jCanMove) {
+                    // Only j can move
+                    hoareState.j--;
+                    hoareState.message = `A[${hoareState.j+1}] > pivot=${hoareState.pivot}. Move j→${hoareState.j}. i stopped at A[${hoareState.i}]=${hoareState.array[hoareState.i]}.`;
+                } else {
+                    // Neither can move - both stopped
+                    hoareState.phase = 'check';
+                    hoareState.message = `Both stopped: A[${hoareState.i}]=${hoareState.array[hoareState.i]} ≥ pivot, A[${hoareState.j}]=${hoareState.array[hoareState.j]} ≤ pivot. Check crossing.`;
+                }
+            } else if (hoareState.phase === 'check') {
+                if (hoareState.i >= hoareState.j) {
+                    // Pointers crossed - we're done
+                    hoareState.phase = 'done';
+                    hoareState.partitionPoint = hoareState.j;
+                    hoareState.message = `Pointers crossed (i=${hoareState.i} ≥ j=${hoareState.j}). Partition complete! Split at index ${hoareState.j}. Left: indices 0-${hoareState.j}, Right: indices ${hoareState.j+1}-${hi}.`;
+                } else {
+                    // Found an inversion - need to swap
+                    hoareState.phase = 'swap';
+                    hoareState.message = `Inversion found: A[${hoareState.i}]=${hoareState.array[hoareState.i]} and A[${hoareState.j}]=${hoareState.array[hoareState.j]}. These are in wrong order. Swap them!`;
+                }
+            } else if (hoareState.phase === 'swap') {
+                // Perform the swap
+                [hoareState.array[hoareState.i], hoareState.array[hoareState.j]] =
+                    [hoareState.array[hoareState.j], hoareState.array[hoareState.i]];
+                hoareState.swapCount++;
+                hoareState.message = `Swapped! A[${hoareState.i}]=${hoareState.array[hoareState.i]}, A[${hoareState.j}]=${hoareState.array[hoareState.j]}. Continue scanning.`;
+                // After swap, advance both pointers and continue scanning
+                hoareState.i++;
+                hoareState.j--;
+                hoareState.phase = 'scan';
+            }
+
+            hoareHistory.push(JSON.parse(JSON.stringify(hoareState)));
+            renderHoare();
+            document.getElementById('hoare-output').innerHTML = `<p>${hoareState.message}</p>`;
+        }
+
+        function renderHoare() {
+            const canvas = document.getElementById('hoare-canvas');
+            if (!hoareState) {
+                canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 80px;">Click "New" to generate an array</p>';
+                return;
+            }
+
+            const { array, pivot, pivotIdx, i, j, phase, partitionPoint, lo, hi } = hoareState;
+            const boxW = 44, gap = 8, startX = 40;
+
+            let svg = `<svg width="100%" height="200" viewBox="0 0 500 200" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // Draw array elements
+            array.forEach((val, idx) => {
+                const x = startX + idx * (boxW + gap);
+                const y = 70;
+
+                // Determine fill color
+                let fill = '#ffffff';
+                let strokeColor = '#888';
+                let strokeWidth = 2;
+
+                if (phase === 'done') {
+                    if (idx <= partitionPoint) {
+                        fill = 'var(--pastel-blue)'; // Left partition
+                    } else {
+                        fill = 'var(--pastel-peach)'; // Right partition
+                    }
+                    // Always highlight the pivot value distinctly
+                    if (val === pivot) {
+                        fill = 'var(--pastel-gold)';
+                        strokeColor = '#c9b870';
+                        strokeWidth = 3;
+                    }
+                } else {
+                    // Highlight pivot value
+                    if (val === pivot) {
+                        fill = 'var(--pastel-gold)';
+                        strokeColor = '#c9b870';
+                    }
+                    // Highlight elements at i and j positions
+                    if (phase === 'swap' || phase === 'check') {
+                        if (idx === i && i >= lo) {
+                            fill = 'var(--pastel-coral)';
+                            strokeWidth = 3;
+                        }
+                        if (idx === j && j <= hi) {
+                            fill = 'var(--pastel-coral)';
+                            strokeWidth = 3;
+                        }
+                    }
+                    // Show already-scanned regions lightly
+                    if (phase !== 'start' && i >= lo && idx < i && val !== pivot) {
+                        fill = fill === '#ffffff' ? 'var(--pastel-blue)' : fill;
+                    }
+                    if (phase !== 'start' && j <= hi && idx > j && val !== pivot) {
+                        fill = fill === '#ffffff' ? 'var(--pastel-peach)' : fill;
+                    }
+                }
+
+                svg += `<rect x="${x}" y="${y}" width="${boxW}" height="${boxW}" fill="${fill}" stroke="${strokeColor}" stroke-width="${strokeWidth}" rx="4"/>`;
+                svg += `<text x="${x + boxW/2}" y="${y + boxW/2 + 6}" text-anchor="middle" font-size="16" font-weight="600" fill="#222">${val}</text>`;
+
+                // Index labels below
+                svg += `<text x="${x + boxW/2}" y="${y + boxW + 18}" text-anchor="middle" font-size="11" fill="#888">${idx}</text>`;
+            });
+
+            // Draw i pointer (from above)
+            if (phase !== 'done' && i >= lo && i <= hi) {
+                const iX = startX + i * (boxW + gap) + boxW/2;
+                svg += `<text x="${iX}" y="50" text-anchor="middle" font-size="14" font-weight="bold" fill="#2563eb">i</text>`;
+                svg += `<line x1="${iX}" y1="54" x2="${iX}" y2="66" stroke="#2563eb" stroke-width="2"/>`;
+                svg += `<polygon points="${iX-5},66 ${iX+5},66 ${iX},72" fill="#2563eb"/>`;
+            }
+
+            // Draw j pointer (from below)
+            if (phase !== 'done' && j >= lo && j <= hi) {
+                const jX = startX + j * (boxW + gap) + boxW/2;
+                svg += `<text x="${jX}" y="175" text-anchor="middle" font-size="14" font-weight="bold" fill="#9333ea">j</text>`;
+                svg += `<line x1="${jX}" y1="170" x2="${jX}" y2="140" stroke="#9333ea" stroke-width="2"/>`;
+                svg += `<polygon points="${jX-5},140 ${jX+5},140 ${jX},134" fill="#9333ea"/>`;
+            }
+
+            // Show partition point when done
+            if (phase === 'done') {
+                const splitX = startX + partitionPoint * (boxW + gap) + boxW + gap/2;
+                svg += `<line x1="${splitX}" y1="60" x2="${splitX}" y2="145" stroke="#059669" stroke-width="3" stroke-dasharray="4,4"/>`;
+                svg += `<text x="${splitX}" y="158" text-anchor="middle" font-size="11" fill="#059669" font-weight="bold">split</text>`;
+            }
+
+            // Legend when done
+            if (phase === 'done') {
+                svg += `<text x="10" y="190" font-size="11" fill="#666">`;
+                svg += `<tspan fill="var(--pastel-blue)">■</tspan> ≤ pivot `;
+                svg += `<tspan fill="var(--pastel-peach)">■</tspan> ≥ pivot `;
+                svg += `| Swaps: ${hoareState.swapCount}`;
+                svg += `</text>`;
+            }
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function hoareToStart() {
+            if (!hoareState || hoareHistory.length === 0) return;
+            hoareState = JSON.parse(JSON.stringify(hoareHistory[0]));
+            hoareHistory = [hoareHistory[0]];
+            renderHoare();
+            document.getElementById('hoare-output').innerHTML = `
+                <p><strong>Pivot:</strong> ${hoareState.pivot} (first element). Pointers will move inward from both ends.</p>
+            `;
+        }
+
+        function hoareStepBack() {
+            if (!hoareState || hoareHistory.length <= 1) return;
+            hoareHistory.pop();
+            hoareState = JSON.parse(JSON.stringify(hoareHistory[hoareHistory.length - 1]));
+            renderHoare();
+            const msg = hoareState.message || `<strong>Pivot:</strong> ${hoareState.pivot}. Ready to start.`;
+            document.getElementById('hoare-output').innerHTML = `<p>${msg}</p>`;
+        }
+
+        function hoareToEnd() {
+            if (!hoareState) {
+                startHoareDemo();
+            }
+            while (hoareState.phase !== 'done') {
+                stepHoare();
+            }
+        }
+
+        // =============================================
+        // BEST CASE RECURSION TREE (MEDIAN PIVOT)
+        // =============================================
+        let bestTreeState = null;
+        let bestTreeHistory = [];
+
+        function randomizeBestCase() {
+            for (let i = 0; i < 8; i++) {
+                document.getElementById(`best-input-${i}`).value = Math.floor(Math.random() * 99) + 1;
+            }
+        }
+
+        function startBestCaseTree() {
+            const arr = [];
+            for (let i = 0; i < 8; i++) {
+                arr.push(parseInt(document.getElementById(`best-input-${i}`).value) || (i + 1));
+            }
+
+            // Build the recursion tree using median pivot
+            const tree = buildMedianTree(arr, 0, 0);
+
+            bestTreeState = {
+                tree: tree,
+                visibleNodes: [],
+                allNodes: flattenTree(tree),
+                currentStep: 0
+            };
+
+            bestTreeHistory = [JSON.parse(JSON.stringify(bestTreeState))];
+            renderBestTree();
+            document.getElementById('best-tree-output').innerHTML = `<p>Array: [${arr.join(', ')}]. Click ▶ to step through the recursion.</p>`;
+        }
+
+        function buildMedianTree(arr, depth, position) {
+            if (arr.length === 0) return null;
+            if (arr.length === 1) {
+                return { array: arr, pivot: null, left: null, right: null, depth, position, isSingle: true };
+            }
+
+            // Sort to find median
+            const sorted = [...arr].sort((a, b) => a - b);
+            const medianIdx = Math.floor(sorted.length / 2);
+            const pivot = sorted[medianIdx];
+
+            // Partition around median
+            const left = arr.filter(x => x < pivot);
+            const right = arr.filter(x => x > pivot);
+
+            const node = {
+                array: arr,
+                pivot: pivot,
+                depth: depth,
+                position: position,
+                left: buildMedianTree(left, depth + 1, position * 2),
+                right: buildMedianTree(right, depth + 1, position * 2 + 1),
+                isSingle: false
+            };
+
+            return node;
+        }
+
+        function flattenTree(node, result = []) {
+            if (!node) return result;
+            result.push(node);
+            flattenTree(node.left, result);
+            flattenTree(node.right, result);
+            return result;
+        }
+
+        function stepBestTree() {
+            if (!bestTreeState) {
+                startBestCaseTree();
+                return;
+            }
+
+            if (bestTreeState.currentStep >= bestTreeState.allNodes.length) {
+                return; // All nodes shown
+            }
+
+            bestTreeState.visibleNodes.push(bestTreeState.allNodes[bestTreeState.currentStep]);
+            bestTreeState.currentStep++;
+
+            bestTreeHistory.push(JSON.parse(JSON.stringify(bestTreeState)));
+            renderBestTree();
+
+            const node = bestTreeState.visibleNodes[bestTreeState.visibleNodes.length - 1];
+            if (node.isSingle) {
+                document.getElementById('best-tree-output').innerHTML = `<p>Base case: [${node.array[0]}] - single element, already sorted.</p>`;
+            } else {
+                document.getElementById('best-tree-output').innerHTML = `<p>Partition [${node.array.join(', ')}] with median pivot = <strong>${node.pivot}</strong>.</p>`;
+            }
+        }
+
+        function renderBestTree() {
+            const canvas = document.getElementById('best-tree-canvas');
+            if (!bestTreeState || bestTreeState.visibleNodes.length === 0) {
+                canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 140px;">Click ▶ to step through the recursion</p>';
+                return;
+            }
+
+            const width = 700, height = 300;
+            let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // Calculate positions
+            const maxDepth = Math.max(...bestTreeState.visibleNodes.map(n => n.depth));
+            const levelHeight = height / (maxDepth + 2);
+
+            // Helper to check if a node at given depth/position is visible
+            const isNodeVisible = (depth, position) => {
+                return bestTreeState.visibleNodes.some(n => n.depth === depth && n.position === position);
+            };
+
+            // Draw edges first
+            bestTreeState.visibleNodes.forEach(node => {
+                const nodeX = getNodeX(node, width);
+                const nodeY = (node.depth + 0.5) * levelHeight;
+
+                if (node.left) {
+                    const leftVisible = isNodeVisible(node.left.depth, node.left.position);
+                    if (leftVisible) {
+                        const childX = getNodeX(node.left, width);
+                        const childY = (node.left.depth + 0.5) * levelHeight;
+                        svg += `<line x1="${nodeX}" y1="${nodeY + 15}" x2="${childX}" y2="${childY - 15}" stroke="#ccc" stroke-width="2"/>`;
+                    }
+                }
+                if (node.right) {
+                    const rightVisible = isNodeVisible(node.right.depth, node.right.position);
+                    if (rightVisible) {
+                        const childX = getNodeX(node.right, width);
+                        const childY = (node.right.depth + 0.5) * levelHeight;
+                        svg += `<line x1="${nodeX}" y1="${nodeY + 15}" x2="${childX}" y2="${childY - 15}" stroke="#ccc" stroke-width="2"/>`;
+                    }
+                }
+            });
+
+            // Draw nodes
+            bestTreeState.visibleNodes.forEach((node, idx) => {
+                const x = getNodeX(node, width);
+                const y = (node.depth + 0.5) * levelHeight;
+                const isLatest = idx === bestTreeState.visibleNodes.length - 1;
+
+                const fill = node.isSingle ? 'var(--pastel-green)' : isLatest ? 'var(--pastel-gold)' : 'var(--pastel-blue)';
+                const stroke = isLatest ? '#c9b870' : node.isSingle ? '#8bc99b' : '#7eb8d8';
+
+                const label = node.array.length <= 4 ? node.array.join(',') : node.array.slice(0, 3).join(',') + '...';
+                const boxW = Math.max(40, label.length * 8 + 10);
+
+                svg += `<rect x="${x - boxW/2}" y="${y - 14}" width="${boxW}" height="28" fill="${fill}" stroke="${stroke}" stroke-width="2" rx="4"/>`;
+                svg += `<text x="${x}" y="${y + 5}" text-anchor="middle" font-size="11" font-weight="600" fill="#222">${label}</text>`;
+
+                // Show pivot indicator in light indian red box
+                if (!node.isSingle && node.pivot !== null) {
+                    const pivotText = `${node.pivot}`;
+                    const pivotBoxW = pivotText.length * 7 + 8;
+                    svg += `<rect x="${x - pivotBoxW/2}" y="${y + 18}" width="${pivotBoxW}" height="16" fill="#F4CCCC" stroke="#CD5C5C" stroke-width="1" rx="3"/>`;
+                    svg += `<text x="${x}" y="${y + 29}" text-anchor="middle" font-size="10" font-weight="600" fill="#8B0000">${pivotText}</text>`;
+                }
+            });
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function getNodeX(node, width) {
+            const depth = node.depth;
+            const nodesAtDepth = Math.pow(2, depth);
+            const spacing = width / (nodesAtDepth + 1);
+            return spacing * (node.position + 1);
+        }
+
+        function bestTreeToStart() {
+            if (!bestTreeState || bestTreeHistory.length === 0) return;
+            bestTreeState = JSON.parse(JSON.stringify(bestTreeHistory[0]));
+            bestTreeState.visibleNodes = [];
+            bestTreeState.currentStep = 0;
+            bestTreeHistory = [JSON.parse(JSON.stringify(bestTreeState))];
+            renderBestTree();
+            document.getElementById('best-tree-output').innerHTML = `<p>Reset. Click ▶ to step through the recursion.</p>`;
+        }
+
+        function bestTreeStepBack() {
+            if (!bestTreeState || bestTreeHistory.length <= 1) return;
+            bestTreeHistory.pop();
+            bestTreeState = JSON.parse(JSON.stringify(bestTreeHistory[bestTreeHistory.length - 1]));
+            renderBestTree();
+            if (bestTreeState.visibleNodes.length > 0) {
+                const node = bestTreeState.visibleNodes[bestTreeState.visibleNodes.length - 1];
+                document.getElementById('best-tree-output').innerHTML = `<p>Partition [${node.array.join(', ')}]${node.pivot ? ` with pivot = ${node.pivot}` : ''}.</p>`;
+            } else {
+                document.getElementById('best-tree-output').innerHTML = `<p>Click ▶ to step through the recursion.</p>`;
+            }
+        }
+
+        function bestTreeToEnd() {
+            if (!bestTreeState) {
+                startBestCaseTree();
+            }
+            while (bestTreeState.currentStep < bestTreeState.allNodes.length) {
+                stepBestTree();
+            }
+        }
+
+        // =============================================
+        // WORST CASE RECURSION TREE (MINIMUM PIVOT)
+        // =============================================
+        let worstTreeState = null;
+        let worstTreeHistory = [];
+
+        function randomizeWorstCase() {
+            for (let i = 0; i < 5; i++) {
+                document.getElementById(`worst-input-${i}`).value = Math.floor(Math.random() * 99) + 1;
+            }
+        }
+
+        function startWorstCaseTree() {
+            const arr = [];
+            for (let i = 0; i < 5; i++) {
+                arr.push(parseInt(document.getElementById(`worst-input-${i}`).value) || (i + 1));
+            }
+
+            // Build the recursion tree using minimum pivot
+            const tree = buildMinTree(arr, 0, 0);
+
+            worstTreeState = {
+                tree: tree,
+                visibleNodes: [],
+                allNodes: flattenTreeWorst(tree),
+                currentStep: 0
+            };
+
+            worstTreeHistory = [JSON.parse(JSON.stringify(worstTreeState))];
+            renderWorstTree();
+            document.getElementById('worst-tree-output').innerHTML = `<p>Array: [${arr.join(', ')}]. Click ▶ to step through the recursion.</p>`;
+        }
+
+        function buildMinTree(arr, depth, xOffset) {
+            if (arr.length === 0) return null;
+            if (arr.length === 1) {
+                return { array: arr, pivot: null, left: null, right: null, depth, xOffset, isSingle: true };
+            }
+
+            // Find minimum as pivot (worst case)
+            const pivot = Math.min(...arr);
+
+            // Partition: left is empty, right is everything except min
+            const right = arr.filter(x => x > pivot);
+
+            const node = {
+                array: arr,
+                pivot: pivot,
+                depth: depth,
+                xOffset: xOffset,
+                left: null, // Always empty in worst case
+                right: buildMinTree(right, depth + 1, xOffset),
+                isSingle: false
+            };
+
+            return node;
+        }
+
+        function flattenTreeWorst(node, result = []) {
+            if (!node) return result;
+            result.push(node);
+            flattenTreeWorst(node.left, result);
+            flattenTreeWorst(node.right, result);
+            return result;
+        }
+
+        function stepWorstTree() {
+            if (!worstTreeState) {
+                startWorstCaseTree();
+                return;
+            }
+
+            if (worstTreeState.currentStep >= worstTreeState.allNodes.length) {
+                return; // All nodes shown
+            }
+
+            worstTreeState.visibleNodes.push(worstTreeState.allNodes[worstTreeState.currentStep]);
+            worstTreeState.currentStep++;
+
+            worstTreeHistory.push(JSON.parse(JSON.stringify(worstTreeState)));
+            renderWorstTree();
+
+            const node = worstTreeState.visibleNodes[worstTreeState.visibleNodes.length - 1];
+            if (node.isSingle) {
+                document.getElementById('worst-tree-output').innerHTML = `<p>Base case: [${node.array[0]}] - single element, already sorted.</p>`;
+            } else {
+                document.getElementById('worst-tree-output').innerHTML = `<p>Partition [${node.array.join(', ')}] with minimum pivot = <strong>${node.pivot}</strong>. Left partition is empty!</p>`;
+            }
+        }
+
+        function renderWorstTree() {
+            const canvas = document.getElementById('worst-tree-canvas');
+            if (!worstTreeState || worstTreeState.visibleNodes.length === 0) {
+                canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 140px;">Click ▶ to step through the recursion</p>';
+                return;
+            }
+
+            const width = 500, height = 300;
+            let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // For worst case, draw as a linear chain going down-right
+            const nodeSpacingY = 50;
+            const nodeSpacingX = 70;
+            const startX = 50;
+            const startY = 30;
+
+            // Draw edges first (connect consecutive nodes where child depth = parent depth + 1)
+            worstTreeState.visibleNodes.forEach((node, idx) => {
+                if (idx < worstTreeState.visibleNodes.length - 1 && !node.isSingle) {
+                    const nextNode = worstTreeState.visibleNodes[idx + 1];
+                    if (nextNode.depth === node.depth + 1) {
+                        const x1 = startX + node.depth * nodeSpacingX;
+                        const y1 = startY + node.depth * nodeSpacingY + 15;
+                        const x2 = startX + nextNode.depth * nodeSpacingX;
+                        const y2 = startY + nextNode.depth * nodeSpacingY - 15;
+                        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ccc" stroke-width="2"/>`;
+                    }
+                }
+            });
+
+            // Draw nodes
+            worstTreeState.visibleNodes.forEach((node, idx) => {
+                const x = startX + node.depth * nodeSpacingX;
+                const y = startY + node.depth * nodeSpacingY;
+                const isLatest = idx === worstTreeState.visibleNodes.length - 1;
+
+                const fill = node.isSingle ? 'var(--pastel-green)' : isLatest ? 'var(--pastel-coral)' : 'var(--pastel-peach)';
+                const stroke = isLatest ? '#e6a5a0' : node.isSingle ? '#8bc99b' : '#d4a89a';
+
+                const label = node.array.join(',');
+                const boxW = Math.max(40, label.length * 8 + 10);
+
+                svg += `<rect x="${x - boxW/2}" y="${y - 14}" width="${boxW}" height="28" fill="${fill}" stroke="${stroke}" stroke-width="2" rx="4"/>`;
+                svg += `<text x="${x}" y="${y + 5}" text-anchor="middle" font-size="11" font-weight="600" fill="#222">${label}</text>`;
+
+                // Show pivot indicator in light indian red box
+                if (!node.isSingle && node.pivot !== null) {
+                    const pivotText = `${node.pivot}`;
+                    const pivotBoxW = pivotText.length * 7 + 8;
+                    svg += `<rect x="${x - pivotBoxW/2}" y="${y + 18}" width="${pivotBoxW}" height="16" fill="#F4CCCC" stroke="#CD5C5C" stroke-width="1" rx="3"/>`;
+                    svg += `<text x="${x}" y="${y + 29}" text-anchor="middle" font-size="10" font-weight="600" fill="#8B0000">${pivotText}</text>`;
+                }
+            });
+
+            // Show depth annotation
+            const totalDepth = worstTreeState.visibleNodes.length;
+            if (totalDepth > 1) {
+                const lastNode = worstTreeState.visibleNodes[worstTreeState.visibleNodes.length - 1];
+                const x = startX + lastNode.depth * nodeSpacingX + 60;
+                svg += `<text x="${x}" y="${height/2}" font-size="12" fill="#888" transform="rotate(90 ${x} ${height/2})">depth = n-1</text>`;
+            }
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function worstTreeToStart() {
+            if (!worstTreeState || worstTreeHistory.length === 0) return;
+            worstTreeState = JSON.parse(JSON.stringify(worstTreeHistory[0]));
+            worstTreeState.visibleNodes = [];
+            worstTreeState.currentStep = 0;
+            worstTreeHistory = [JSON.parse(JSON.stringify(worstTreeState))];
+            renderWorstTree();
+            document.getElementById('worst-tree-output').innerHTML = `<p>Reset. Click ▶ to step through the recursion.</p>`;
+        }
+
+        function worstTreeStepBack() {
+            if (!worstTreeState || worstTreeHistory.length <= 1) return;
+            worstTreeHistory.pop();
+            worstTreeState = JSON.parse(JSON.stringify(worstTreeHistory[worstTreeHistory.length - 1]));
+            renderWorstTree();
+            if (worstTreeState.visibleNodes.length > 0) {
+                const node = worstTreeState.visibleNodes[worstTreeState.visibleNodes.length - 1];
+                document.getElementById('worst-tree-output').innerHTML = `<p>Partition [${node.array.join(', ')}]${node.pivot ? ` with min pivot = ${node.pivot}` : ''}.</p>`;
+            } else {
+                document.getElementById('worst-tree-output').innerHTML = `<p>Click ▶ to step through the recursion.</p>`;
+            }
+        }
+
+        function worstTreeToEnd() {
+            if (!worstTreeState) {
+                startWorstCaseTree();
+            }
+            while (worstTreeState.currentStep < worstTreeState.allNodes.length) {
+                stepWorstTree();
+            }
+        }
+
+        // =============================================
+        // COMBINED PARTITION DEMO WITH LOMUTO ROUGH SPACE
+        // =============================================
+        let combinedState = null;
+        let combinedHistory = [];
+
+        function startCombinedDemo() {
+            const n = parseInt(document.getElementById('combined-n').value) || 8;
+            const arr = Array.from({length: n}, (_, i) => i + 1);
+            // Shuffle
+            for (let k = arr.length - 1; k > 0; k--) {
+                const m = Math.floor(Math.random() * (k + 1));
+                [arr[k], arr[m]] = [arr[m], arr[k]];
+            }
+
+            const boxW = 40, gap = 6, startX = 30;
+            const elements = arr.map((val, i) => ({
+                value: val,
+                x: startX + i * (boxW + gap),
+                state: 'unsorted'
+            }));
+
+            combinedState = {
+                elements: elements,
+                groups: [[...Array(n).keys()]],
+                boxW: boxW,
+                gap: gap,
+                step: 0,
+                // Lomuto partition state for rough space
+                lomuto: null,
+                currentGroupIdx: -1,
+                // Phases: idle, select-pivot, swap-pivot, partitioning, apply, done
+                mode: 'idle',
+                pivotElementIdx: -1 // Original index of chosen pivot in current group
+            };
+
+            combinedHistory = [JSON.parse(JSON.stringify(combinedState))];
+            renderCombinedMain();
+            renderCombinedRough();
+            document.getElementById('combined-output').innerHTML = 'Click ▶ to select a group and pick a random pivot.';
+        }
+
+        function stepCombined() {
+            if (!combinedState) {
+                startCombinedDemo();
+                return;
+            }
+
+            if (combinedState.mode === 'done') return;
+
+            if (combinedState.mode === 'idle') {
+                // Find next group to partition
+                let groupIdx = -1;
+                for (let i = 0; i < combinedState.groups.length; i++) {
+                    if (combinedState.groups[i].length > 1) {
+                        groupIdx = i;
+                        break;
+                    }
+                }
+
+                if (groupIdx === -1) {
+                    combinedState.mode = 'done';
+                    combinedState.elements.forEach(e => e.state = 'sorted');
+                    renderCombinedMain();
+                    document.getElementById('combined-rough-canvas').innerHTML = '<p style="color: #059669; text-align: center; margin-top: 50px;"><strong>All done!</strong> Every element is in its own partition.</p>';
+                    document.getElementById('combined-output').innerHTML = '<p style="color: #059669;"><strong>Sorting complete!</strong> Elements will never meet across partition boundaries again.</p>';
+                    return;
+                }
+
+                // Select this group and pick a random pivot
+                combinedState.currentGroupIdx = groupIdx;
+                const group = combinedState.groups[groupIdx];
+
+                // Pick random pivot within the group
+                const randomIdx = Math.floor(Math.random() * group.length);
+                combinedState.pivotElementIdx = randomIdx;
+
+                // Highlight group in main and mark pivot
+                group.forEach((idx, i) => {
+                    combinedState.elements[idx].state = i === randomIdx ? 'pivot' : 'active';
+                });
+
+                combinedState.mode = 'select-pivot';
+                combinedHistory.push(JSON.parse(JSON.stringify(combinedState)));
+                renderCombinedMain();
+                renderCombinedRough();
+
+                const pivotVal = combinedState.elements[group[randomIdx]].value;
+                document.getElementById('combined-output').innerHTML = `<p><strong>Selected pivot:</strong> ${pivotVal} (highlighted in gold). Click ▶ to swap it to the last position.</p>`;
+
+            } else if (combinedState.mode === 'select-pivot') {
+                // Swap pivot with last element in group
+                const group = combinedState.groups[combinedState.currentGroupIdx];
+                const pivotIdx = combinedState.pivotElementIdx;
+                const lastIdx = group.length - 1;
+
+                if (pivotIdx !== lastIdx) {
+                    // Swap in elements array values
+                    const pivotElemIdx = group[pivotIdx];
+                    const lastElemIdx = group[lastIdx];
+                    const tempVal = combinedState.elements[pivotElemIdx].value;
+                    combinedState.elements[pivotElemIdx].value = combinedState.elements[lastElemIdx].value;
+                    combinedState.elements[lastElemIdx].value = tempVal;
+
+                    // Update states
+                    combinedState.elements[pivotElemIdx].state = 'active';
+                    combinedState.elements[lastElemIdx].state = 'pivot';
+                }
+
+                combinedState.pivotElementIdx = lastIdx;
+                combinedState.mode = 'swap-pivot';
+                combinedHistory.push(JSON.parse(JSON.stringify(combinedState)));
+                renderCombinedMain();
+                renderCombinedRough();
+
+                const pivotVal = combinedState.elements[group[lastIdx]].value;
+                document.getElementById('combined-output').innerHTML = `<p><strong>Pivot swapped to last position.</strong> Pivot = ${pivotVal}. Click ▶ to start Lomuto partition.</p>`;
+
+            } else if (combinedState.mode === 'swap-pivot') {
+                // Initialize Lomuto partition in rough space
+                const group = combinedState.groups[combinedState.currentGroupIdx];
+                const subarray = group.map(idx => combinedState.elements[idx].value);
+                const n = subarray.length;
+
+                combinedState.lomuto = {
+                    array: [...subarray],
+                    originalIndices: [...group],
+                    pivot: subarray[n - 1],
+                    pivotIdx: n - 1,
+                    i: 0,
+                    j: 0,
+                    phase: 'start',
+                    message: '',
+                    swapCount: 0
+                };
+
+                combinedState.mode = 'partitioning';
+                combinedHistory.push(JSON.parse(JSON.stringify(combinedState)));
+                renderCombinedMain();
+                renderCombinedRough();
+                document.getElementById('combined-output').innerHTML = `<p>Starting Lomuto partition. <strong>i</strong>=0, <strong>j</strong>=0. Pivot = ${combinedState.lomuto.pivot}. Click ▶ to step.</p>`;
+
+            } else if (combinedState.mode === 'partitioning') {
+                stepLomutoInRough();
+            } else if (combinedState.mode === 'apply') {
+                applyLomutoPartition();
+            }
+        }
+
+        function stepLomutoInRough() {
+            const L = combinedState.lomuto;
+            if (!L) return;
+
+            if (L.phase === 'start') {
+                L.phase = 'scanning';
+            }
+
+            if (L.phase === 'scanning') {
+                if (L.j < L.pivotIdx) {
+                    if (L.array[L.j] <= L.pivot) {
+                        if (L.i !== L.j) {
+                            L.phase = 'swapping';
+                            L.message = `A[${L.j}]=${L.array[L.j]} ≤ pivot=${L.pivot}. Swap A[${L.i}]=${L.array[L.i]} with A[${L.j}]=${L.array[L.j]}.`;
+                        } else {
+                            L.i++;
+                            L.j++;
+                            L.message = `A[${L.j-1}]=${L.array[L.j-1]} ≤ pivot. i=j, advance both. i=${L.i}, j=${L.j}.`;
+                        }
+                    } else {
+                        L.j++;
+                        L.message = `A[${L.j-1}]=${L.array[L.j-1]} > pivot=${L.pivot}. Advance j to ${L.j}.`;
+                    }
+                } else {
+                    L.phase = 'placing';
+                    L.message = `Scanning complete. Now place pivot at position ${L.i}.`;
+                }
+            } else if (L.phase === 'swapping') {
+                [L.array[L.i], L.array[L.j]] = [L.array[L.j], L.array[L.i]];
+                L.swapCount++;
+                L.i++;
+                L.j++;
+                L.phase = 'scanning';
+                L.message = `Swapped! i=${L.i}, j=${L.j}. Continue scanning.`;
+            } else if (L.phase === 'placing') {
+                [L.array[L.i], L.array[L.pivotIdx]] = [L.array[L.pivotIdx], L.array[L.i]];
+                L.finalPivotPos = L.i;
+                L.phase = 'complete';
+                L.message = `Done! Pivot ${L.pivot} at index ${L.i}. Left: ≤pivot, Right: >pivot.`;
+                combinedState.mode = 'apply';
+            }
+
+            combinedHistory.push(JSON.parse(JSON.stringify(combinedState)));
+            renderCombinedRough();
+            renderCombinedMain();
+            document.getElementById('combined-output').innerHTML = `<p>${L.message}</p>`;
+        }
+
+        function applyLomutoPartition() {
+            const L = combinedState.lomuto;
+            const groupIdx = combinedState.currentGroupIdx;
+            const group = combinedState.groups[groupIdx];
+            const { boxW, gap } = combinedState;
+
+            // Create new groups based on partition
+            const leftGroup = [];
+            const rightGroup = [];
+
+            for (let k = 0; k < L.finalPivotPos; k++) {
+                leftGroup.push(L.originalIndices[k]);
+            }
+            // Pivot element forms its own group (sorted)
+            const pivotGroup = [L.originalIndices[L.finalPivotPos]];
+            for (let k = L.finalPivotPos + 1; k < L.array.length; k++) {
+                rightGroup.push(L.originalIndices[k]);
+            }
+
+            // Update element values based on Lomuto result
+            L.array.forEach((val, k) => {
+                combinedState.elements[L.originalIndices[k]].value = val;
+            });
+
+            // Update positions
+            let groupStartX = Math.min(...group.map(idx => combinedState.elements[idx].x));
+            L.originalIndices.forEach((idx, k) => {
+                combinedState.elements[idx].x = groupStartX + k * (boxW + gap);
+            });
+
+            // Update groups
+            const newGroups = [];
+            for (let i = 0; i < combinedState.groups.length; i++) {
+                if (i === groupIdx) {
+                    if (leftGroup.length > 0) newGroups.push(leftGroup);
+                    newGroups.push(pivotGroup); // Pivot is in final position
+                    if (rightGroup.length > 0) newGroups.push(rightGroup);
+                } else {
+                    newGroups.push(combinedState.groups[i]);
+                }
+            }
+            combinedState.groups = newGroups;
+
+            // Update element states
+            combinedState.elements.forEach((e, idx) => {
+                const inSingleGroup = combinedState.groups.some(g => g.length === 1 && g[0] === idx);
+                e.state = inSingleGroup ? 'sorted' : 'unsorted';
+            });
+
+            combinedState.step++;
+            combinedState.mode = 'idle';
+            combinedState.lomuto = null;
+            combinedState.currentGroupIdx = -1;
+            combinedState.pivotElementIdx = -1;
+
+            combinedHistory.push(JSON.parse(JSON.stringify(combinedState)));
+            renderCombinedMain();
+            renderCombinedRough();
+            document.getElementById('combined-output').innerHTML = `<p>Partition ${combinedState.step} complete! Elements separated. <em>They will never meet again.</em> Click ▶ for next group.</p>`;
+        }
+
+        function renderCombinedMain() {
+            const canvas = document.getElementById('combined-main-canvas');
+            if (!combinedState) {
+                canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 40px;">Click "New" to generate elements</p>';
+                return;
+            }
+
+            const { elements, boxW, gap, groups, mode, lomuto } = combinedState;
+
+            const colors = {
+                unsorted: '#ffffff',
+                active: '#fffbe6',
+                pivot: 'var(--pastel-gold)',
+                sorted: '#b8e6c1'
+            };
+
+            let svg = `<svg width="100%" height="100" viewBox="0 0 450 100" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // Draw group separators
+            groups.forEach((group, gIdx) => {
+                if (gIdx > 0) {
+                    const prevGroup = groups[gIdx - 1];
+                    const prevMaxX = Math.max(...prevGroup.map(i => elements[i].x));
+                    const currMinX = Math.min(...group.map(i => elements[i].x));
+                    const sepX = (prevMaxX + boxW + currMinX) / 2;
+                    svg += `<line x1="${sepX}" y1="15" x2="${sepX}" y2="85" stroke="#888" stroke-width="2" stroke-dasharray="4,4"/>`;
+                }
+            });
+
+            // Draw elements
+            elements.forEach((el, idx) => {
+                let fill = colors[el.state] || '#ffffff';
+                const isActive = mode === 'partitioning' && lomuto && lomuto.originalIndices.includes(idx);
+                let strokeColor = el.state === 'sorted' ? '#8bc99b' : el.state === 'pivot' ? '#c9b870' : isActive ? '#c9b870' : '#888';
+                let strokeWidth = el.state === 'pivot' || isActive ? 3 : 2;
+
+                svg += `<rect x="${el.x}" y="30" width="${boxW}" height="${boxW}" fill="${fill}" stroke="${strokeColor}" stroke-width="${strokeWidth}" rx="4"/>`;
+                svg += `<text x="${el.x + boxW/2}" y="${30 + boxW/2 + 5}" text-anchor="middle" font-size="14" font-weight="600" fill="#222">${el.value}</text>`;
+            });
+
+            // Legend
+            svg += `<text x="5" y="95" font-size="10" fill="#666">`;
+            svg += `<tspan fill="#b8e6c1">■</tspan> Sorted `;
+            svg += `<tspan fill="var(--pastel-gold)">■</tspan> Pivot `;
+            svg += `<tspan fill="#fffbe6">■</tspan> Active`;
+            svg += `</text>`;
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function renderCombinedRough() {
+            const canvas = document.getElementById('combined-rough-canvas');
+            if (!combinedState || !combinedState.lomuto) {
+                if (combinedState && combinedState.mode === 'select-pivot') {
+                    canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 50px; font-size: 0.9em;">Pivot selected. Will swap to last position next.</p>';
+                } else if (combinedState && combinedState.mode === 'swap-pivot') {
+                    canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 50px; font-size: 0.9em;">Pivot now at last position. Lomuto partition will begin.</p>';
+                } else {
+                    canvas.innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 50px; font-size: 0.9em;">Partition details will appear here</p>';
+                }
+                return;
+            }
+
+            const L = combinedState.lomuto;
+            const boxW = 44, gapR = 8, startX = 50;
+
+            let svg = `<svg width="100%" height="140" viewBox="0 0 450 140" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // Draw array elements
+            L.array.forEach((val, idx) => {
+                const x = startX + idx * (boxW + gapR);
+                const y = 45;
+
+                let fill = '#ffffff';
+                let strokeColor = '#888';
+                let strokeWidth = 2;
+
+                if (L.phase === 'complete') {
+                    if (idx < L.finalPivotPos) {
+                        fill = 'var(--pastel-blue)';
+                    } else if (idx === L.finalPivotPos) {
+                        fill = 'var(--pastel-green)';
+                        strokeColor = '#6b9e78';
+                        strokeWidth = 3;
+                    } else {
+                        fill = 'var(--pastel-peach)';
+                    }
+                } else {
+                    if (idx === L.pivotIdx) {
+                        fill = 'var(--pastel-gold)';
+                        strokeColor = '#c9b870';
+                    } else if (idx < L.i) {
+                        fill = 'var(--pastel-blue)';
+                    }
+                    if (L.phase === 'swapping' && (idx === L.i || idx === L.j)) {
+                        fill = 'var(--pastel-coral)';
+                        strokeWidth = 3;
+                    }
+                }
+
+                svg += `<rect x="${x}" y="${y}" width="${boxW}" height="${boxW}" fill="${fill}" stroke="${strokeColor}" stroke-width="${strokeWidth}" rx="4"/>`;
+                svg += `<text x="${x + boxW/2}" y="${y + boxW/2 + 5}" text-anchor="middle" font-size="15" font-weight="600" fill="#222">${val}</text>`;
+                svg += `<text x="${x + boxW/2}" y="${y + boxW + 14}" text-anchor="middle" font-size="10" fill="#888">${idx}</text>`;
+            });
+
+            // Draw i pointer (from above)
+            if (L.phase !== 'complete' && L.phase !== 'start') {
+                const iX = startX + L.i * (boxW + gapR) + boxW/2;
+                svg += `<text x="${iX}" y="32" text-anchor="middle" font-size="13" font-weight="bold" fill="#2563eb">i</text>`;
+                svg += `<line x1="${iX}" y1="35" x2="${iX}" y2="42" stroke="#2563eb" stroke-width="2"/>`;
+                svg += `<polygon points="${iX-4},42 ${iX+4},42 ${iX},46" fill="#2563eb"/>`;
+            }
+
+            // Draw j pointer (from below) - only while scanning
+            if (L.phase !== 'complete' && L.phase !== 'placing' && L.phase !== 'start' && L.j < L.pivotIdx) {
+                const jX = startX + L.j * (boxW + gapR) + boxW/2;
+                svg += `<text x="${jX}" y="130" text-anchor="middle" font-size="13" font-weight="bold" fill="#9333ea">j</text>`;
+                svg += `<line x1="${jX}" y1="126" x2="${jX}" y2="118" stroke="#9333ea" stroke-width="2"/>`;
+                svg += `<polygon points="${jX-4},118 ${jX+4},118 ${jX},114" fill="#9333ea"/>`;
+            }
+
+            // Partition line when complete
+            if (L.phase === 'complete') {
+                // Lines on both sides of pivot
+                if (L.finalPivotPos > 0) {
+                    const leftSplitX = startX + L.finalPivotPos * (boxW + gapR) - gapR/2;
+                    svg += `<line x1="${leftSplitX}" y1="40" x2="${leftSplitX}" y2="105" stroke="#059669" stroke-width="2" stroke-dasharray="4,4"/>`;
+                }
+                if (L.finalPivotPos < L.array.length - 1) {
+                    const rightSplitX = startX + (L.finalPivotPos + 1) * (boxW + gapR) - gapR/2;
+                    svg += `<line x1="${rightSplitX}" y1="40" x2="${rightSplitX}" y2="105" stroke="#059669" stroke-width="2" stroke-dasharray="4,4"/>`;
+                }
+            }
+
+            // Legend
+            svg += `<text x="5" y="135" font-size="10" fill="#666">`;
+            svg += `<tspan fill="var(--pastel-gold)">■</tspan> Pivot `;
+            svg += `<tspan fill="var(--pastel-blue)">■</tspan> ≤pivot `;
+            svg += `<tspan fill="var(--pastel-peach)">■</tspan> >pivot `;
+            svg += `<tspan fill="var(--pastel-green)">■</tspan> Final `;
+            svg += `| Swaps: ${L.swapCount}`;
+            svg += `</text>`;
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function combinedToStart() {
+            if (!combinedState || combinedHistory.length === 0) return;
+            combinedState = JSON.parse(JSON.stringify(combinedHistory[0]));
+            combinedHistory = [combinedHistory[0]];
+            renderCombinedMain();
+            renderCombinedRough();
+            document.getElementById('combined-output').innerHTML = 'Reset. Click ▶ to start partitioning.';
+        }
+
+        function combinedStepBack() {
+            if (!combinedState || combinedHistory.length <= 1) return;
+            combinedHistory.pop();
+            combinedState = JSON.parse(JSON.stringify(combinedHistory[combinedHistory.length - 1]));
+            renderCombinedMain();
+            renderCombinedRough();
+            const msg = combinedState.lomuto ? combinedState.lomuto.message || 'Stepped back.' : 'Stepped back.';
+            document.getElementById('combined-output').innerHTML = `<p>${msg}</p>`;
+        }
+
+        function combinedToEnd() {
+            if (!combinedState) {
+                startCombinedDemo();
+            }
+            while (combinedState.mode !== 'done') {
+                stepCombined();
+            }
+        }
+
+
+        // =============================================
+        // QUICKSORT DEMO WITH COMPARISON COUNTING
+        // =============================================
+        let qsState = null;
+
+        function runQuickSortDemo() {
+            const n = parseInt(document.getElementById('qs-n').value) || 8;
+            const arr = Array.from({length: n}, (_, i) => i + 1);
+            // Shuffle
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+
+            qsState = {
+                original: [...arr],
+                comparisons: 0,
+                comparisonPairs: [],
+                steps: [],
+                currentStep: 0
+            };
+
+            // Pre-compute all steps
+            quickSortWithTracking([...arr], 0, arr.length - 1);
+
+            renderQuickSort();
+        }
+
+        function quickSortWithTracking(arr, lo, hi, sortedPositions = new Set()) {
+            if (lo >= hi) {
+                // Single element is in its final position
+                if (lo === hi) sortedPositions.add(lo);
+                return;
+            }
+
+            const pivotIdx = lo + Math.floor(Math.random() * (hi - lo + 1));
+            const pivot = arr[pivotIdx];
+
+            // Partition
+            [arr[pivotIdx], arr[hi]] = [arr[hi], arr[pivotIdx]];
+            let i = lo;
+
+            for (let j = lo; j < hi; j++) {
+                qsState.comparisons++;
+                qsState.comparisonPairs.push([arr[j], pivot]);
+
+                if (arr[j] < pivot) {
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                    i++;
+                }
+            }
+            [arr[i], arr[hi]] = [arr[hi], arr[i]];
+
+            // Pivot is now in its final sorted position
+            sortedPositions.add(i);
+
+            qsState.steps.push({
+                array: [...arr],
+                pivot: pivot,
+                pivotPos: i,
+                leftRange: [lo, i - 1],
+                rightRange: [i + 1, hi],
+                comparisons: qsState.comparisons,
+                sortedPositions: new Set(sortedPositions)
+            });
+
+            quickSortWithTracking(arr, lo, i - 1, sortedPositions);
+            quickSortWithTracking(arr, i + 1, hi, sortedPositions);
+        }
+
+        function stepQuickSort() {
+            if (!qsState) {
+                runQuickSortDemo();
+                return;
+            }
+            if (qsState.currentStep < qsState.steps.length) {
+                qsState.currentStep++;
+                renderQuickSort();
+            }
+        }
+
+        function renderQuickSort() {
+            const canvas = document.getElementById('qs-canvas');
+            const output = document.getElementById('qs-output');
+
+            canvas.innerHTML = '';
+
+            // Show original array
+            const origDiv = document.createElement('div');
+            origDiv.innerHTML = '<p style="font-weight: 600; margin-bottom: 8px;">Original array:</p>';
+            const origArr = document.createElement('div');
+            origArr.style.cssText = 'display: flex; gap: 4px; margin-bottom: 15px;';
+            qsState.original.forEach(v => {
+                const elem = document.createElement('div');
+                elem.className = 'array-element';
+                elem.textContent = v;
+                origArr.appendChild(elem);
+            });
+            origDiv.appendChild(origArr);
+            canvas.appendChild(origDiv);
+
+            // Show current state with colors
+            if (qsState.currentStep > 0) {
+                const step = qsState.steps[qsState.currentStep - 1];
+                const stateDiv = document.createElement('div');
+                stateDiv.innerHTML = `<p style="font-weight: 600; margin-bottom: 8px;">After step ${qsState.currentStep} (pivot was <span style="background: var(--pastel-gold); padding: 2px 6px; border-radius: 3px;">${step.pivot}</span>):</p>`;
+                const stateArr = document.createElement('div');
+                stateArr.style.cssText = 'display: flex; gap: 4px;';
+                step.array.forEach((v, idx) => {
+                    const elem = document.createElement('div');
+                    elem.className = 'array-element';
+
+                    // Color based on position
+                    if (step.sortedPositions.has(idx)) {
+                        elem.classList.add('sorted');
+                    } else if (idx >= step.leftRange[0] && idx <= step.leftRange[1]) {
+                        elem.classList.add('left');
+                    } else if (idx >= step.rightRange[0] && idx <= step.rightRange[1]) {
+                        elem.classList.add('right');
+                    }
+
+                    // Highlight current pivot
+                    if (idx === step.pivotPos) {
+                        elem.classList.remove('left', 'right');
+                        elem.classList.add('sorted');
+                    }
+
+                    elem.textContent = v;
+                    stateArr.appendChild(elem);
+                });
+                stateDiv.appendChild(stateArr);
+                canvas.appendChild(stateDiv);
+
+                // Add legend
+                const legend = document.createElement('div');
+                legend.style.cssText = 'margin-top: 12px; font-size: 0.85em; color: var(--text-light);';
+                legend.innerHTML = `
+                    <span style="display: inline-flex; align-items: center; gap: 4px; margin-right: 12px;">
+                        <span style="display: inline-block; width: 14px; height: 14px; background: var(--pastel-green); border: 1px solid #8bc99b;"></span> Sorted
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 4px; margin-right: 12px;">
+                        <span style="display: inline-block; width: 14px; height: 14px; background: var(--pastel-blue); border: 1px solid var(--border-dark);"></span> Left of pivot
+                    </span>
+                    <span style="display: inline-flex; align-items: center; gap: 4px;">
+                        <span style="display: inline-block; width: 14px; height: 14px; background: var(--pastel-peach); border: 1px solid var(--border-dark);"></span> Right of pivot
+                    </span>
+                `;
+                canvas.appendChild(legend);
+            }
+
+            const n = qsState.original.length;
+            const expected = 2 * n * Math.log(n);
+            const currentComps = qsState.currentStep > 0 ? qsState.steps[qsState.currentStep - 1].comparisons : 0;
+
+            output.innerHTML = `
+                <p><strong>Comparisons so far:</strong> ${currentComps}</p>
+                <p><strong>Expected total:</strong> ~${expected.toFixed(1)} (2n ln n)</p>
+                <p><strong>Progress:</strong> Step ${qsState.currentStep} of ${qsState.steps.length}</p>
+            `;
+        }
+
+        function resetQuickSortDemo() {
+            qsState = null;
+            document.getElementById('qs-canvas').innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 100px;">Click "New" to start</p>';
+            document.getElementById('qs-output').innerHTML = '<p><strong>Prediction:</strong> For n elements, expected comparisons ≈ 1.38 n log₂ n</p>';
+        }
+
+        function qsToStart() {
+            if (!qsState) return;
+            qsState.currentStep = 0;
+            renderQuickSort();
+        }
+
+        function qsStepBack() {
+            if (!qsState || qsState.currentStep <= 0) return;
+            qsState.currentStep--;
+            renderQuickSort();
+        }
+
+        function qsToEnd() {
+            if (!qsState) {
+                runQuickSortDemo();
+            }
+            if (qsState) {
+                qsState.currentStep = qsState.steps.length;
+                renderQuickSort();
+            }
+        }
+
+        // =============================================
+        // COMPARISON MATRIX
+        // =============================================
+        function runComparisonMatrix() {
+            const n = parseInt(document.getElementById('matrix-n').value) || 6;
+            const compared = Array.from({length: n}, () => Array(n).fill(false));
+
+            // Run quicksort and track comparisons
+            const arr = Array.from({length: n}, (_, i) => i + 1);
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+
+            function qs(indices) {
+                if (indices.length <= 1) return;
+                const pivotIdx = Math.floor(Math.random() * indices.length);
+                const pivot = indices[pivotIdx];
+                const left = [], right = [];
+
+                for (let i = 0; i < indices.length; i++) {
+                    if (i === pivotIdx) continue;
+                    compared[Math.min(pivot, indices[i])][Math.max(pivot, indices[i])] = true;
+                    if (indices[i] < pivot) left.push(indices[i]);
+                    else right.push(indices[i]);
+                }
+                qs(left);
+                qs(right);
+            }
+
+            qs(Array.from({length: n}, (_, i) => i));
+
+            renderMatrix(compared, n);
+        }
+
+        function runManyTrials() {
+            const n = parseInt(document.getElementById('matrix-n').value) || 6;
+            const counts = Array.from({length: n}, () => Array(n).fill(0));
+            const trials = 100;
+
+            for (let t = 0; t < trials; t++) {
+                const indices = Array.from({length: n}, (_, i) => i);
+
+                function qs(idx) {
+                    if (idx.length <= 1) return;
+                    const pivotIdx = Math.floor(Math.random() * idx.length);
+                    const pivot = idx[pivotIdx];
+                    const left = [], right = [];
+
+                    for (let i = 0; i < idx.length; i++) {
+                        if (i === pivotIdx) continue;
+                        counts[Math.min(pivot, idx[i])][Math.max(pivot, idx[i])]++;
+                        if (idx[i] < pivot) left.push(idx[i]);
+                        else right.push(idx[i]);
+                    }
+                    qs(left);
+                    qs(right);
+                }
+
+                qs(indices);
+            }
+
+            renderMatrixFreq(counts, n, trials);
+        }
+
+        function renderMatrix(compared, n) {
+            const canvas = document.getElementById('matrix-canvas');
+            canvas.innerHTML = '';
+
+            const table = document.createElement('table');
+            table.style.cssText = 'border-collapse: collapse; margin: auto;';
+
+            // Header row
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th style="background: transparent;"></th>';
+            for (let j = 0; j < n; j++) {
+                headerRow.innerHTML += `<th style="width: 35px; text-align: center;">${j+1}</th>`;
+            }
+            table.appendChild(headerRow);
+
+            for (let i = 0; i < n; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<th style="width: 35px; text-align: center;">${i+1}</th>`;
+                for (let j = 0; j < n; j++) {
+                    const cell = document.createElement('td');
+                    cell.style.cssText = 'width: 35px; height: 35px; text-align: center; border: 1px solid var(--border);';
+                    if (i === j) {
+                        cell.style.background = '#eee';
+                        cell.textContent = '—';
+                    } else if (i < j) {
+                        cell.style.background = compared[i][j] ? 'var(--pastel-coral)' : 'var(--pastel-mint)';
+                        cell.textContent = compared[i][j] ? '✓' : '✗';
+                    } else {
+                        cell.style.background = '#f8f8f8';
+                    }
+                    row.appendChild(cell);
+                }
+                table.appendChild(row);
+            }
+
+            canvas.appendChild(table);
+
+            let total = 0;
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    if (compared[i][j]) total++;
+                }
+            }
+
+            document.getElementById('matrix-output').innerHTML = `<p><strong>Comparisons made:</strong> ${total}. Expected: ~${(2 * n * Math.log(n)).toFixed(1)}</p>`;
+        }
+
+        function renderMatrixFreq(counts, n, trials) {
+            const canvas = document.getElementById('matrix-canvas');
+            canvas.innerHTML = '';
+
+            const table = document.createElement('table');
+            table.style.cssText = 'border-collapse: collapse; margin: auto;';
+
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th style="background: transparent;"></th>';
+            for (let j = 0; j < n; j++) {
+                headerRow.innerHTML += `<th style="width: 50px; text-align: center; font-size: 12px;">${j+1}</th>`;
+            }
+            table.appendChild(headerRow);
+
+            for (let i = 0; i < n; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<th style="width: 35px; text-align: center; font-size: 12px;">${i+1}</th>`;
+                for (let j = 0; j < n; j++) {
+                    const cell = document.createElement('td');
+                    cell.style.cssText = 'width: 50px; height: 35px; text-align: center; border: 1px solid var(--border); font-size: 11px;';
+                    if (i === j) {
+                        cell.style.background = '#eee';
+                        cell.textContent = '—';
+                    } else if (i < j) {
+                        const freq = counts[i][j] / trials;
+                        const expected = 2 / (j - i + 1);
+                        const intensity = Math.min(freq, 1);
+                        cell.style.background = `rgba(168, 212, 240, ${intensity})`;
+                        cell.innerHTML = `${(freq * 100).toFixed(0)}%<br><span style="color: #888; font-size: 10px;">(${(expected * 100).toFixed(0)}%)</span>`;
+                    } else {
+                        cell.style.background = '#f8f8f8';
+                    }
+                    row.appendChild(cell);
+                }
+                table.appendChild(row);
+            }
+
+            canvas.appendChild(table);
+            document.getElementById('matrix-output').innerHTML = `<p><strong>Empirical frequencies over ${trials} trials.</strong> Numbers in parentheses are theoretical: 2/(j-i+1)</p>`;
+        }
+
+        // =============================================
+        // KARGER'S MIN CUT INTERACTIVE
+        // =============================================
+        let kargerGraph = { nodes: [], edges: [] };
+        let kargerState = null;
+        let kargerHistory = [];
+        let kargerDragging = null;
+
+        function initKargerCanvas() {
+            const canvas = document.getElementById('karger-canvas');
+            const svg = document.getElementById('karger-svg');
+
+            canvas.addEventListener('click', function(e) {
+                if (kargerDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Check if clicking on existing node
+                const clickedNode = kargerGraph.nodes.find(n =>
+                    Math.sqrt((n.x - x) ** 2 + (n.y - y) ** 2) < 25
+                );
+
+                if (!clickedNode && !kargerState) {
+                    // Add new node
+                    kargerGraph.nodes.push({
+                        id: kargerGraph.nodes.length,
+                        x: x,
+                        y: y,
+                        label: String(kargerGraph.nodes.length + 1)
+                    });
+                    document.getElementById('karger-hint').style.display = 'none';
+                    renderKargerGraph();
+                }
+            });
+
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const clickedNode = kargerGraph.nodes.find(n =>
+                    Math.sqrt((n.x - x) ** 2 + (n.y - y) ** 2) < 25
+                );
+
+                if (clickedNode && !kargerState) {
+                    kargerDragging = { node: clickedNode, startX: x, startY: y };
+                }
+            });
+
+            canvas.addEventListener('mousemove', function(e) {
+                if (!kargerDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Update temp line for edge creation
+                renderKargerGraph(x, y);
+            });
+
+            canvas.addEventListener('mouseup', function(e) {
+                if (!kargerDragging) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const targetNode = kargerGraph.nodes.find(n =>
+                    n !== kargerDragging.node && Math.sqrt((n.x - x) ** 2 + (n.y - y) ** 2) < 25
+                );
+
+                if (targetNode) {
+                    // Add edge
+                    kargerGraph.edges.push({
+                        source: kargerDragging.node.id,
+                        target: targetNode.id
+                    });
+                }
+
+                kargerDragging = null;
+                renderKargerGraph();
+            });
+        }
+
+        function renderKargerGraph(tempX, tempY) {
+            const svg = document.getElementById('karger-svg');
+            const nodes = kargerState ? kargerState.nodes : kargerGraph.nodes;
+            const edges = kargerState ? kargerState.edges : kargerGraph.edges;
+
+            let html = '';
+
+            // Draw edges
+            edges.forEach((e, idx) => {
+                const source = nodes.find(n => n.id === e.source || (n.members && n.members.includes(e.source)));
+                const target = nodes.find(n => n.id === e.target || (n.members && n.members.includes(e.target)));
+
+                if (source && target && source !== target) {
+                    const isCut = kargerState && kargerState.done;
+                    html += `<line x1="${source.x}" y1="${source.y}" x2="${target.x}" y2="${target.y}"
+                             class="graph-edge ${isCut ? 'cut' : ''}"
+                             stroke="${isCut ? 'var(--pastel-green)' : '#222'}" stroke-width="2"/>`;
+                }
+            });
+
+            // Draw temp edge while dragging
+            if (kargerDragging && tempX !== undefined) {
+                html += `<line x1="${kargerDragging.node.x}" y1="${kargerDragging.node.y}"
+                         x2="${tempX}" y2="${tempY}" stroke="#888" stroke-width="2" stroke-dasharray="5,5"/>`;
+            }
+
+            // Draw nodes
+            nodes.forEach(n => {
+                const radius = n.members ? 20 + n.members.length * 3 : 20;
+                const fill = kargerState ? 'var(--pastel-gold)' : 'white';
+                html += `<circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fill}" stroke="#222" stroke-width="2"/>`;
+                html += `<text x="${n.x}" y="${n.y + 5}" text-anchor="middle" font-size="14" fill="#222" font-weight="600">${n.label}</text>`;
+            });
+
+            svg.innerHTML = html;
+        }
+
+        function clearGraph() {
+            kargerGraph = { nodes: [], edges: [] };
+            kargerState = null;
+            kargerHistory = [];
+            document.getElementById('karger-hint').style.display = 'block';
+            document.getElementById('karger-svg').innerHTML = '';
+            document.getElementById('karger-output').innerHTML = '<p><strong>Instructions:</strong> Build a graph, then run Karger\'s algorithm to find a cut.</p>';
+        }
+
+        let currentSampleGraph = 0;
+        const sampleGraphs = [
+            // Graph 0: 2x3 grid (original)
+            {
+                name: "Grid Graph",
+                nodes: [
+                    { id: 0, x: 100, y: 100, label: '1' },
+                    { id: 1, x: 250, y: 80, label: '2' },
+                    { id: 2, x: 400, y: 100, label: '3' },
+                    { id: 3, x: 100, y: 220, label: '4' },
+                    { id: 4, x: 250, y: 250, label: '5' },
+                    { id: 5, x: 400, y: 220, label: '6' }
+                ],
+                edges: [
+                    { source: 0, target: 1 },
+                    { source: 1, target: 2 },
+                    { source: 0, target: 3 },
+                    { source: 1, target: 4 },
+                    { source: 2, target: 5 },
+                    { source: 3, target: 4 },
+                    { source: 4, target: 5 },
+                    { source: 0, target: 4 },
+                    { source: 2, target: 4 }
+                ]
+            },
+            // Graph 1: Barbell (two triangles connected by one edge - clear min cut!)
+            {
+                name: "Barbell Graph",
+                nodes: [
+                    { id: 0, x: 80, y: 100, label: 'A' },
+                    { id: 1, x: 140, y: 180, label: 'B' },
+                    { id: 2, x: 140, y: 60, label: 'C' },
+                    { id: 3, x: 360, y: 100, label: 'D' },
+                    { id: 4, x: 420, y: 180, label: 'E' },
+                    { id: 5, x: 420, y: 60, label: 'F' }
+                ],
+                edges: [
+                    // Left triangle (dense)
+                    { source: 0, target: 1 },
+                    { source: 1, target: 2 },
+                    { source: 0, target: 2 },
+                    // Right triangle (dense)
+                    { source: 3, target: 4 },
+                    { source: 4, target: 5 },
+                    { source: 3, target: 5 },
+                    // Bridge (single edge - this is the min cut!)
+                    { source: 2, target: 3 }
+                ]
+            },
+            // Graph 2: Wheel graph
+            {
+                name: "Wheel Graph",
+                nodes: [
+                    { id: 0, x: 250, y: 140, label: '1' },  // center
+                    { id: 1, x: 250, y: 50, label: '2' },
+                    { id: 2, x: 340, y: 95, label: '3' },
+                    { id: 3, x: 310, y: 200, label: '4' },
+                    { id: 4, x: 190, y: 200, label: '5' },
+                    { id: 5, x: 160, y: 95, label: '6' }
+                ],
+                edges: [
+                    // Spokes
+                    { source: 0, target: 1 },
+                    { source: 0, target: 2 },
+                    { source: 0, target: 3 },
+                    { source: 0, target: 4 },
+                    { source: 0, target: 5 },
+                    // Rim
+                    { source: 1, target: 2 },
+                    { source: 2, target: 3 },
+                    { source: 3, target: 4 },
+                    { source: 4, target: 5 },
+                    { source: 5, target: 1 }
+                ]
+            },
+            // Graph 3: K4 (complete graph on 4 vertices)
+            {
+                name: "Complete K₄",
+                nodes: [
+                    { id: 0, x: 150, y: 80, label: '1' },
+                    { id: 1, x: 350, y: 80, label: '2' },
+                    { id: 2, x: 350, y: 220, label: '3' },
+                    { id: 3, x: 150, y: 220, label: '4' }
+                ],
+                edges: [
+                    { source: 0, target: 1 },
+                    { source: 0, target: 2 },
+                    { source: 0, target: 3 },
+                    { source: 1, target: 2 },
+                    { source: 1, target: 3 },
+                    { source: 2, target: 3 }
+                ]
+            },
+            // Graph 4: Two clusters connected by 2 edges
+            {
+                name: "Two Clusters",
+                nodes: [
+                    { id: 0, x: 80, y: 80, label: 'A' },
+                    { id: 1, x: 160, y: 80, label: 'B' },
+                    { id: 2, x: 120, y: 160, label: 'C' },
+                    { id: 3, x: 120, y: 240, label: 'D' },
+                    { id: 4, x: 340, y: 80, label: 'E' },
+                    { id: 5, x: 420, y: 80, label: 'F' },
+                    { id: 6, x: 380, y: 160, label: 'G' },
+                    { id: 7, x: 380, y: 240, label: 'H' }
+                ],
+                edges: [
+                    // Left cluster
+                    { source: 0, target: 1 },
+                    { source: 0, target: 2 },
+                    { source: 1, target: 2 },
+                    { source: 2, target: 3 },
+                    // Right cluster
+                    { source: 4, target: 5 },
+                    { source: 4, target: 6 },
+                    { source: 5, target: 6 },
+                    { source: 6, target: 7 },
+                    // Bridge edges (the min cut)
+                    { source: 3, target: 7 },
+                    { source: 2, target: 6 }
+                ]
+            }
+        ];
+
+        function loadSampleGraph() {
+            const sample = sampleGraphs[currentSampleGraph];
+            kargerGraph = {
+                nodes: sample.nodes.map(n => ({ ...n })),
+                edges: sample.edges.map(e => ({ ...e }))
+            };
+            kargerState = null;
+            kargerHistory = [];
+            document.getElementById('karger-hint').style.display = 'none';
+            renderKargerGraph();
+            document.getElementById('karger-output').innerHTML = `<p><strong>${sample.name}</strong> loaded. Click ▶ to step or ⏭ to run.</p>`;
+
+            // Cycle to next sample for next click
+            currentSampleGraph = (currentSampleGraph + 1) % sampleGraphs.length;
+        }
+
+        function runKarger() {
+            if (kargerGraph.nodes.length < 2) {
+                document.getElementById('karger-output').innerHTML = '<p style="color: var(--error);">Need at least 2 nodes!</p>';
+                return;
+            }
+
+            // Reset and run to completion
+            kargerState = {
+                nodes: kargerGraph.nodes.map(n => ({ ...n, members: [n.id] })),
+                edges: [...kargerGraph.edges],
+                done: false
+            };
+
+            while (kargerState.nodes.length > 2) {
+                contractRandomEdge();
+            }
+
+            kargerState.done = true;
+            renderKargerGraph();
+
+            const cutSize = kargerState.edges.filter(e => {
+                const s = kargerState.nodes.find(n => n.members.includes(e.source));
+                const t = kargerState.nodes.find(n => n.members.includes(e.target));
+                return s !== t;
+            }).length;
+
+            document.getElementById('karger-output').innerHTML = `
+                <p><strong>Cut found!</strong> Size: ${cutSize} edges</p>
+                <p>Partition: {${kargerState.nodes[0].label}} and {${kargerState.nodes[1].label}}</p>
+            `;
+        }
+
+        function stepKarger() {
+            if (kargerGraph.nodes.length < 2) {
+                document.getElementById('karger-output').innerHTML = '<p style="color: var(--error);">Need at least 2 nodes!</p>';
+                return;
+            }
+
+            if (!kargerState) {
+                kargerState = {
+                    nodes: kargerGraph.nodes.map(n => ({ ...n, members: [n.id] })),
+                    edges: [...kargerGraph.edges],
+                    done: false
+                };
+                // Save initial state to history
+                kargerHistory = [JSON.parse(JSON.stringify(kargerState))];
+            }
+
+            if (kargerState.nodes.length > 2) {
+                const contracted = contractRandomEdge();
+                // Save state after contraction
+                kargerHistory.push(JSON.parse(JSON.stringify(kargerState)));
+                renderKargerGraph();
+                document.getElementById('karger-output').innerHTML = `<p><strong>Contracted edge.</strong> ${kargerState.nodes.length} vertices remaining.</p>`;
+            } else {
+                kargerState.done = true;
+                renderKargerGraph();
+
+                const cutSize = kargerState.edges.filter(e => {
+                    const s = kargerState.nodes.find(n => n.members.includes(e.source));
+                    const t = kargerState.nodes.find(n => n.members.includes(e.target));
+                    return s !== t;
+                }).length;
+
+                document.getElementById('karger-output').innerHTML = `
+                    <p><strong>Cut found!</strong> Size: ${cutSize} edges</p>
+                    <p>Partition: {${kargerState.nodes[0].label}} and {${kargerState.nodes[1].label}}</p>
+                `;
+            }
+        }
+
+        function kargerStepBack() {
+            if (!kargerState || kargerHistory.length <= 1) {
+                document.getElementById('karger-output').innerHTML = '<p>Nothing to undo.</p>';
+                return;
+            }
+            kargerHistory.pop(); // Remove current state
+            kargerState = JSON.parse(JSON.stringify(kargerHistory[kargerHistory.length - 1]));
+            renderKargerGraph();
+            document.getElementById('karger-output').innerHTML = `<p><strong>Stepped back.</strong> ${kargerState.nodes.length} vertices.</p>`;
+        }
+
+        function contractRandomEdge() {
+            // Find valid edges (between different supernodes)
+            const validEdges = kargerState.edges.filter(e => {
+                const s = kargerState.nodes.find(n => n.members.includes(e.source));
+                const t = kargerState.nodes.find(n => n.members.includes(e.target));
+                return s && t && s !== t;
+            });
+
+            if (validEdges.length === 0) return null;
+
+            const edge = validEdges[Math.floor(Math.random() * validEdges.length)];
+            const sourceNode = kargerState.nodes.find(n => n.members.includes(edge.source));
+            const targetNode = kargerState.nodes.find(n => n.members.includes(edge.target));
+
+            // Merge target into source
+            sourceNode.members = [...sourceNode.members, ...targetNode.members];
+            sourceNode.label = sourceNode.members.map(m => kargerGraph.nodes.find(n => n.id === m).label).join(',');
+            sourceNode.x = (sourceNode.x + targetNode.x) / 2;
+            sourceNode.y = (sourceNode.y + targetNode.y) / 2;
+
+            // Remove target node
+            kargerState.nodes = kargerState.nodes.filter(n => n !== targetNode);
+
+            return edge;
+        }
+
+        function kargerToStart() {
+            kargerState = null;
+            kargerHistory = [];
+            renderKargerGraph();
+            document.getElementById('karger-output').innerHTML = '<p><strong>Reset.</strong> Click ▶ to step through contractions, or ⏭ to run to completion.</p>';
+        }
+
+        function runKargerMany() {
+            if (kargerGraph.nodes.length < 2) {
+                document.getElementById('karger-output').innerHTML = '<p style="color: var(--error);">Need at least 2 nodes!</p>';
+                return;
+            }
+
+            let bestCut = Infinity;
+            let bestPartition = null;
+
+            for (let trial = 0; trial < 20; trial++) {
+                kargerState = {
+                    nodes: kargerGraph.nodes.map(n => ({ ...n, members: [n.id] })),
+                    edges: [...kargerGraph.edges],
+                    done: false
+                };
+
+                while (kargerState.nodes.length > 2) {
+                    contractRandomEdge();
+                }
+
+                const cutSize = kargerState.edges.filter(e => {
+                    const s = kargerState.nodes.find(n => n.members.includes(e.source));
+                    const t = kargerState.nodes.find(n => n.members.includes(e.target));
+                    return s !== t;
+                }).length;
+
+                if (cutSize < bestCut) {
+                    bestCut = cutSize;
+                    bestPartition = kargerState.nodes.map(n => n.label);
+                }
+            }
+
+            kargerState.done = true;
+            renderKargerGraph();
+
+            document.getElementById('karger-output').innerHTML = `
+                <p><strong>Best cut found in 20 trials:</strong> ${bestCut} edges</p>
+                <p>Partition: {${bestPartition[0]}} and {${bestPartition[1]}}</p>
+            `;
+        }
+
+        // Initialize Karger canvas
+        document.addEventListener('DOMContentLoaded', initKargerCanvas);
+    </script>
+</body>
+</html>

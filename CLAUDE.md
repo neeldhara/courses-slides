@@ -58,6 +58,8 @@ Semantic content is wrapped in colored-left-border boxes. Every new slide deck m
 | `.success-box`    | `--pastel-mint`                  | Correct outcomes, results      |
 | `.goal-box`       | Purple variant                   | Goals, objectives              |
 
+**Important:** All content boxes must include `overflow: hidden` or `overflow: auto` to prevent content from spilling outside the box boundaries. Use `max-width: 88%` to keep boxes within slide margins.
+
 ## Interactive Elements
 
 Interactivity is central to the pedagogical approach. Slides are not passive; they include hands-on demos where learners manipulate algorithm inputs directly. Key patterns:
@@ -152,3 +154,4 @@ Reveal.initialize({
 5. Use SVG for visualizations (not canvas or images). SVGs are generated and manipulated via inline JavaScript.
 6. Keep the Reveal.js config identical across decks.
 7. Slide dimensions are fixed at 1100x700. Design content to fit without scrolling.
+8. **Prevent overflow:** All boxes (`.definition-box`, `.theorem-box`, `.algorithm-box`, `.demo-container`, etc.) must have `overflow: hidden` or `overflow: auto` to prevent content from spilling outside. Test with long content.
