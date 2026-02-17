@@ -484,6 +484,8 @@
         /* Tables */
         .reveal table {
             color: var(--text);
+            border-collapse: collapse;
+            border-bottom: 1px solid var(--border);
         }
 
         .reveal table th {
@@ -654,8 +656,10 @@
                 <h1>Randomized Algorithms</h1>
                 <p class="subtitle">The Power of Random Choices</p>
 
-                <div style="margin-top: 320px; text-align:left; font-size: 0.75em;">
+                <div style="margin-top: 280px; text-align:left; font-size: 0.75em;">
                     <p>Inspired by <a href="https://www.youtube.com/watch?v=RH_wrKwE85Q" style="color: seagreen;">Prabhakar Raghavan's KARPfest80 talk</a>.</p>
+                    <p>Matchings section based on <a href="https://kam.mff.cuni.cz/~matousek/aga-mini24.pdf" style="color: seagreen;">Matoušek &amp; Gärtner, Miniature 24</a>.</p>
+                    <p>Historical context: <a href="https://rjlipton.com/2009/11/30/the-curious-history-of-the-schwartz-zippel-lemma/" style="color: seagreen;">Lipton on Schwartz-Zippel</a>.</p>
                     <p>Slides made in collaboration with Claude.</p>
                 </div>
             </section>
@@ -719,7 +723,7 @@
                         </div>
                     </div>
                     <p class="fragment" style="margin-top: 1.5em;">
-                        Today we'll see one of each: QuickSort (Las Vegas) and Min-Cut (Monte Carlo).
+                        Today: QuickSort (Las Vegas), Min-Cut (Monte Carlo), Schwartz-Zippel, and Perfect Matchings.
                     </p>
                 </section>
 
@@ -1335,6 +1339,350 @@
                 </section>
             </section>
 
+            <!-- ===== SECTION 4: SCHWARTZ-ZIPPEL ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>The Schwartz–Zippel Lemma</h1>
+                </section>
+
+                <section>
+                    <h2>Polynomial Identity Testing</h2>
+                    <div class="definition-box">
+                        <p><strong>Problem:</strong> Given a polynomial \(p(x_1, \ldots, x_m)\), is it identically zero?</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;"><strong>Why is this hard?</strong></p>
+                    <ul>
+                        <li class="fragment">The polynomial may be given implicitly (e.g., as a determinant)</li>
+                        <li class="fragment">Expanding it explicitly could be exponentially expensive</li>
+                        <li class="fragment">We want to test identity <em>without</em> computing the full expansion</li>
+                    </ul>
+                    <p class="fragment" style="margin-top: 1em; font-style: italic; color: var(--text-light);">
+                        Key insight: Polynomials have a "wonderful property" — they equal zero everywhere, or almost nowhere.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Theorem</h2>
+                    <div class="theorem-box">
+                        <p><strong>Schwartz–Zippel Lemma:</strong> Let \(\mathbb{F}\) be a field and \(S \subseteq \mathbb{F}\) a finite set. Let \(p(x_1, \ldots, x_m)\) be a non-zero polynomial of total degree \(d\). If \(r_1, \ldots, r_m\) are chosen independently and uniformly from \(S\), then:</p>
+                        <p style="text-align: center; margin: 0.8em 0; font-size: 1.1em;">
+                            \(\Pr[p(r_1, \ldots, r_m) = 0] \leq \frac{d}{|S|}\)
+                        </p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>In words:</strong> A non-zero polynomial rarely evaluates to zero at random points.
+                    </p>
+                    <p class="fragment" style="margin-top: 0.5em;">
+                        <strong>Contrapositive:</strong> If \(p\) evaluates to zero at a random point, it's <em>probably</em> the zero polynomial.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>A Curious History</h2>
+                    <p>One of CS theory's great coincidences: <strong>three groups independently discovered</strong> this result:</p>
+                    <table style="margin-top: 1em; font-size: 0.85em;">
+                        <tr>
+                            <th>Who</th>
+                            <th>When</th>
+                            <th>Venue</th>
+                        </tr>
+                        <tr>
+                            <td>DeMillo &amp; Lipton</td>
+                            <td>1978</td>
+                            <td><em>Information Processing Letters</em></td>
+                        </tr>
+                        <tr>
+                            <td>Zippel</td>
+                            <td>1979</td>
+                            <td>Symbolic Computation conference</td>
+                        </tr>
+                        <tr>
+                            <td>Schwartz</td>
+                            <td>1980</td>
+                            <td><em>JACM</em></td>
+                        </tr>
+                    </table>
+                    <p class="fragment" style="margin-top: 1em; font-size: 0.9em;">
+                        <strong>The naming irony:</strong> Credit often goes to the <em>last</em> discoverer — Schwartz (last to publish) gets top billing, while DeMillo &amp; Lipton (first published) are often omitted entirely!
+                    </p>
+                    <p class="fragment" style="margin-top: 0.5em; font-size: 0.85em; color: var(--text-light);">
+                        Schwartz and Zippel presented at the <em>same</em> 1979 conference — Zippel spoke right after Schwartz — which likely explains why their names became linked.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>More Historical Trivia</h2>
+                    <div class="definition-box">
+                        <p><strong>Two different bounds:</strong></p>
+                        <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                            <li><strong>Strong bound</strong> (Schwartz): \(\leq d/|S|\) using total degree</li>
+                            <li><strong>Weak bound</strong> (DeMillo-Lipton, Zippel): \(\leq dn/|S|\) using per-variable degree</li>
+                        </ul>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Jack Schwartz</strong> was a true polymath:
+                    </p>
+                    <ul class="fragment" style="font-size: 0.9em;">
+                        <li>Co-authored the classic <em>Dunford &amp; Schwartz</em> on linear operators</li>
+                        <li>Pioneered the SETL language (which indirectly inspired Python)</li>
+                        <li>Worked on parallel computing decades before it was mainstream</li>
+                    </ul>
+                    <p class="fragment" style="margin-top: 1em; font-size: 0.85em; color: var(--text-light);">
+                        The result may go back even further — Ore (1922) proved a special case over finite fields.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Proof Idea</h2>
+                    <p><strong>By induction on \(m\)</strong> (number of variables).</p>
+                    <div class="fragment" style="margin-top: 1em;">
+                        <p><strong>Base case (\(m = 1\)):</strong></p>
+                        <p style="margin-left: 1em;">A univariate polynomial of degree \(d\) has at most \(d\) roots.</p>
+                        <p style="margin-left: 1em;">So \(\Pr[p(r_1) = 0] \leq d/|S|\). ✓</p>
+                    </div>
+                    <div class="fragment" style="margin-top: 1em;">
+                        <p><strong>Inductive step:</strong> Write \(p\) as a polynomial in \(x_1\):</p>
+                        <p style="text-align: center;">\(p(x_1, \ldots, x_m) = \sum_{i=0}^{k} x_1^i \cdot p_i(x_2, \ldots, x_m)\)</p>
+                        <p style="margin-top: 0.5em;">where \(k \leq d\) and \(p_k \not\equiv 0\).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Proof (continued)</h2>
+                    <p>Split into two cases based on whether \(p_k(r_2, \ldots, r_m) = 0\):</p>
+                    <div class="fragment" style="margin-top: 1em;">
+                        <p><strong>Case 1:</strong> \(p_k(r_2, \ldots, r_m) = 0\)</p>
+                        <p style="margin-left: 1em; font-size: 0.9em;">
+                            By induction: \(\Pr \leq (d-k)/|S|\)
+                        </p>
+                    </div>
+                    <div class="fragment" style="margin-top: 1em;">
+                        <p><strong>Case 2:</strong> \(p_k(r_2, \ldots, r_m) \neq 0\)</p>
+                        <p style="margin-left: 1em; font-size: 0.9em;">
+                            Then \(p(x_1, r_2, \ldots, r_m)\) is a non-zero univariate polynomial of degree \(k\).
+                        </p>
+                        <p style="margin-left: 1em; font-size: 0.9em;">
+                            So \(\Pr[p(r_1, r_2, \ldots, r_m) = 0 \mid \text{Case 2}] \leq k/|S|\)
+                        </p>
+                    </div>
+                    <div class="theorem-box fragment" style="margin-top: 1em;">
+                        <p><strong>Total:</strong> \(\Pr[\text{zero}] \leq \frac{d-k}{|S|} + \frac{k}{|S|} = \frac{d}{|S|}\) ✓</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Try It: Polynomial Identity Testing</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Schwartz-Zippel Demo</span>
+                            <div class="demo-controls">
+                                <button class="btn btn-primary" onclick="szNewPolynomial()">New Polynomial</button>
+                                <button class="btn btn-secondary" onclick="szTestRandom()">Test Random Point</button>
+                                <button class="btn" onclick="szReset()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="sz-canvas" style="min-height: 200px; padding: 15px;">
+                            <p style="color: var(--text-light); text-align: center; margin-top: 70px;">Click "New Polynomial" to start</p>
+                        </div>
+                        <div class="demo-output" id="sz-output">
+                            <p>This demo shows polynomial identity testing over a small finite field \(\mathbb{Z}_p\).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Applications of Schwartz-Zippel</h2>
+                    <ul>
+                        <li class="fragment"><strong>Matrix multiplication verification:</strong> Is \(AB = C\)? Check if \(\det(AB - C) = 0\)</li>
+                        <li class="fragment"><strong>Perfect matching detection:</strong> Does a bipartite graph have a perfect matching?</li>
+                        <li class="fragment"><strong>Polynomial identity testing:</strong> Are two arithmetic circuits computing the same polynomial?</li>
+                        <li class="fragment"><strong>Primality testing:</strong> Component of the AKS primality test</li>
+                    </ul>
+                    <div class="success-box fragment" style="margin-top: 1.5em;">
+                        <p><strong>Key pattern:</strong> Reduce your problem to asking "is this polynomial zero?" — then Schwartz-Zippel gives a simple randomized test.</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- ===== SECTION 5: PERFECT MATCHINGS ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Perfect Matchings &amp; Determinants</h1>
+                </section>
+
+                <section>
+                    <h2>Matchings in Graphs</h2>
+                    <div class="definition-box">
+                        <p>A <strong>matching</strong> in a graph \(G = (V, E)\) is a set of edges \(M \subseteq E\) such that no vertex appears in more than one edge of \(M\).</p>
+                    </div>
+                    <div class="definition-box fragment" style="margin-top: 1em;">
+                        <p>A <strong>perfect matching</strong> is a matching that covers all vertices.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Question:</strong> Given a graph, does it have a perfect matching?
+                    </p>
+                    <p class="fragment" style="font-size: 0.9em; color: var(--text-light);">
+                        Deterministic algorithms exist (e.g., Hopcroft-Karp for bipartite graphs), but we'll see a beautifully simple randomized approach.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Bipartite Graphs</h2>
+                    <div class="definition-box">
+                        <p>A <strong>bipartite graph</strong> has vertices split into two classes \(\{u_1, \ldots, u_n\}\) and \(\{v_1, \ldots, v_n\}\), with edges only between classes.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Perfect matchings as permutations:</strong>
+                    </p>
+                    <p class="fragment" style="margin-left: 1em;">
+                        Each perfect matching corresponds to a permutation \(\pi \in S_n\):
+                    </p>
+                    <p class="fragment" style="text-align: center; margin: 0.5em 0;">
+                        \(\{\{u_1, v_{\pi(1)}\}, \{u_2, v_{\pi(2)}\}, \ldots, \{u_n, v_{\pi(n)}\}\}\)
+                    </p>
+                    <p class="fragment" style="margin-top: 1em; font-size: 0.9em; color: var(--text-light);">
+                        The matching uses edge \(\{u_i, v_j\}\) iff \(\pi(i) = j\).
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Tutte Matrix</h2>
+                    <p>Define an \(n \times n\) matrix \(A\) with <em>variable</em> entries:</p>
+                    <div class="definition-box" style="margin-top: 1em;">
+                        <p style="text-align: center;">
+                            \(a_{ij} = \begin{cases} x_{ij} & \text{if } \{u_i, v_j\} \in E(G) \\ 0 & \text{otherwise} \end{cases}\)
+                        </p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">The determinant of \(A\) is a polynomial in the \(|E|\) variables \(x_{ij}\):</p>
+                    <p class="fragment" style="text-align: center; margin: 0.5em 0;">
+                        \(\det(A) = \sum_{\pi \in S_n} \text{sgn}(\pi) \cdot a_{1,\pi(1)} \cdot a_{2,\pi(2)} \cdots a_{n,\pi(n)}\)
+                    </p>
+                    <p class="fragment" style="margin-top: 0.5em; font-size: 0.9em;">
+                        Only permutations \(\pi\) that correspond to perfect matchings contribute non-zero terms!
+                    </p>
+                </section>
+
+                <section>
+                    <h2>The Key Lemma</h2>
+                    <div class="theorem-box">
+                        <p><strong>Lemma:</strong> \(\det(A)\) is identically zero if and only if \(G\) has no perfect matching.</p>
+                    </div>
+                    <div class="fragment" style="margin-top: 1.5em;">
+                        <p><strong>Proof (⇐):</strong> If no perfect matching exists, every permutation \(\pi\) has some \(i\) where \(\{u_i, v_{\pi(i)}\} \notin E\), so \(a_{i,\pi(i)} = 0\). Thus every term in the determinant is zero.</p>
+                    </div>
+                    <div class="fragment" style="margin-top: 1em;">
+                        <p><strong>Proof (⇒):</strong> If a perfect matching \(\pi\) exists, set \(x_{i,\pi(i)} = 1\) for all \(i\), and all other \(x_{ij} = 0\). Then \(\det(A) = \pm 1 \neq 0\).</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>The Algorithm</h2>
+                    <div class="algorithm-box">
+                        <p><strong>Perfect Matching Test</strong></p>
+                        <pre style="font-size: 0.85em; margin: 0.5em 0;">
+1. Construct the Tutte matrix A with variables x_ij
+2. Choose a prime p with 2n ≤ p < 4n
+3. Substitute random values r_ij ∈ {1, ..., p-1} for each x_ij
+4. Compute det(A) mod p using Gaussian elimination
+5. If det(A) ≠ 0: return "Perfect matching exists"
+   Else: return "Probably no perfect matching"</pre>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Running time:</strong> \(O(n^3)\) — just Gaussian elimination!
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Analysis</h2>
+                    <div class="success-box">
+                        <p><strong>If \(G\) has a perfect matching:</strong></p>
+                        <p style="margin-left: 1em;">\(\det(A)\) is a non-zero polynomial of degree at most \(n\).</p>
+                        <p style="margin-left: 1em;">By Schwartz-Zippel over \(\mathbb{Z}_p\) with \(|S| = p - 1 \geq 2n - 1\):</p>
+                        <p style="margin-left: 1em;">\(\Pr[\det(A) = 0] \leq \frac{n}{2n-1} < \frac{1}{2}\)</p>
+                    </div>
+                    <div class="definition-box fragment" style="margin-top: 1em;">
+                        <p><strong>If \(G\) has no perfect matching:</strong></p>
+                        <p style="margin-left: 1em;">\(\det(A) \equiv 0\), so we always get the correct answer.</p>
+                    </div>
+                    <p class="fragment" style="margin-top: 1em;">
+                        <strong>Amplification:</strong> Repeat \(k\) times with fresh random values. Error probability drops to \(< 2^{-k}\).
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Try It: Perfect Matching Tester</h2>
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <span class="demo-title">Bipartite Matching via Determinants</span>
+                            <div class="demo-controls">
+                                <label>n:</label>
+                                <input type="number" id="matching-n" value="4" min="2" max="6" style="width: 50px;">
+                                <button class="btn btn-primary" onclick="matchingNewGraph()">New Graph</button>
+                                <button class="btn btn-secondary" onclick="matchingTest()">Test det(A)</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 15px;">
+                            <div class="demo-canvas" id="matching-graph-canvas" style="flex: 1; min-height: 220px; padding: 10px;">
+                                <p style="color: var(--text-light); text-align: center; margin-top: 80px;">Click "New Graph" to start</p>
+                            </div>
+                            <div class="demo-canvas" id="matching-matrix-canvas" style="flex: 1; min-height: 220px; padding: 10px;">
+                                <p style="color: var(--text-light); text-align: center; margin-top: 80px;">Tutte matrix will appear here</p>
+                            </div>
+                        </div>
+                        <div class="demo-output" id="matching-output">
+                            <p>Click edges to toggle them. Then test whether a perfect matching exists.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Why This Matters</h2>
+                    <ul>
+                        <li class="fragment"><strong>Simplicity:</strong> The algorithm is trivial to implement — just matrix operations</li>
+                        <li class="fragment"><strong>Parallelism:</strong> Can be implemented efficiently on parallel computers</li>
+                        <li class="fragment"><strong>Generalization:</strong> Extends to general (non-bipartite) graphs using the Tutte matrix with skew-symmetric structure</li>
+                        <li class="fragment"><strong>Finding matchings:</strong> With more work, can actually <em>find</em> a perfect matching, not just detect one</li>
+                    </ul>
+                    <div class="success-box fragment" style="margin-top: 1em;">
+                        <p><strong>Historical note:</strong> This approach, due to Lovász (1979), was one of the first examples of using algebraic techniques for graph problems.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Complexity Comparison</h2>
+                    <table style="font-size: 0.85em;">
+                        <tr>
+                            <th>Algorithm</th>
+                            <th>Type</th>
+                            <th>Running Time</th>
+                        </tr>
+                        <tr>
+                            <td>Hopcroft-Karp</td>
+                            <td>Deterministic</td>
+                            <td>\(O(m\sqrt{n})\)</td>
+                        </tr>
+                        <tr>
+                            <td>Hungarian Algorithm</td>
+                            <td>Deterministic</td>
+                            <td>\(O(n^3)\)</td>
+                        </tr>
+                        <tr>
+                            <td>Tutte Matrix + Schwartz-Zippel</td>
+                            <td>Monte Carlo</td>
+                            <td>\(O(n^3)\)</td>
+                        </tr>
+                        <tr>
+                            <td>Fast Matrix Multiplication</td>
+                            <td>Monte Carlo</td>
+                            <td>\(O(n^{2.376})\)</td>
+                        </tr>
+                    </table>
+                    <p class="fragment" style="margin-top: 1em; font-size: 0.9em; color: var(--text-light);">
+                        The randomized approach achieves asymptotically fastest known time for <em>detecting</em> perfect matchings, using matrix multiplication.
+                    </p>
+                </section>
+            </section>
+
             <!-- ===== CONCLUSION ===== -->
             <section>
                 <section class="section-title">
@@ -1343,43 +1691,53 @@
 
                 <section>
                     <h2>What We Learned</h2>
-                    <div style="display: flex; gap: 15px;">
-                        <div class="definition-box" style="flex: 1;">
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <div class="definition-box" style="flex: 1; min-width: 200px;">
                             <p><strong>QuickSort</strong></p>
-                            <ul style="font-size: 0.85em;">
-                                <li>Las Vegas algorithm</li>
+                            <ul style="font-size: 0.8em;">
+                                <li>Las Vegas</li>
                                 <li>Expected O(n log n)</li>
-                                <li>Indicator variables + linearity</li>
-                                <li>Elegant, exact analysis</li>
+                                <li>Indicator variables</li>
                             </ul>
                         </div>
-                        <div class="definition-box" style="flex: 1;">
+                        <div class="definition-box" style="flex: 1; min-width: 200px;">
                             <p><strong>Min Cut</strong></p>
-                            <ul style="font-size: 0.85em;">
-                                <li>Monte Carlo algorithm</li>
-                                <li>Success prob ≥ 2/n²</li>
-                                <li>Amplification by repetition</li>
-                                <li>Simple algorithm, subtle analysis</li>
+                            <ul style="font-size: 0.8em;">
+                                <li>Monte Carlo</li>
+                                <li>Pr ≥ 2/n²</li>
+                                <li>Amplification</li>
+                            </ul>
+                        </div>
+                        <div class="definition-box" style="flex: 1; min-width: 200px;">
+                            <p><strong>Schwartz-Zippel</strong></p>
+                            <ul style="font-size: 0.8em;">
+                                <li>Pr[p(r) = 0] ≤ d/|S|</li>
+                                <li>Identity testing</li>
+                                <li>Algebraic technique</li>
+                            </ul>
+                        </div>
+                        <div class="definition-box" style="flex: 1; min-width: 200px;">
+                            <p><strong>Perfect Matchings</strong></p>
+                            <ul style="font-size: 0.8em;">
+                                <li>Tutte matrix</li>
+                                <li>det ≠ 0 ⟺ matching</li>
+                                <li>O(n³) test</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="success-box fragment" style="margin-top: 1.5em;">
-                        <p><strong>Common themes:</strong></p>
-                        <ul>
-                            <li>Random choices simplify algorithms dramatically</li>
-                            <li>Analysis uses elementary probability (no advanced tools needed)</li>
-                            <li>The key is identifying the right events to analyze</li>
-                        </ul>
+                    <div class="success-box fragment" style="margin-top: 1em;">
+                        <p><strong>Common themes:</strong> Random choices simplify algorithms. Elementary probability suffices. Identify the right events/structure to analyze.</p>
                     </div>
                 </section>
 
                 <section>
                     <h2>Further Reading</h2>
-                    <ul>
-                        <li>Motwani & Raghavan, <em>Randomized Algorithms</em> (1995)</li>
-                        <li>Mitzenmacher & Upfal, <em>Probability and Computing</em></li>
+                    <ul style="font-size: 0.9em;">
+                        <li>Motwani &amp; Raghavan, <em>Randomized Algorithms</em> (1995)</li>
+                        <li>Mitzenmacher &amp; Upfal, <em>Probability and Computing</em></li>
                         <li><a href="https://www.youtube.com/watch?v=RH_wrKwE85Q" style="color: seagreen;">Raghavan's KARPfest80 talk</a></li>
-                        <li>Karp, "An Introduction to Randomized Algorithms" (1991)</li>
+                        <li><a href="https://rjlipton.com/2009/11/30/the-curious-history-of-the-schwartz-zippel-lemma/" style="color: seagreen;">Lipton, "The Curious History of the Schwartz-Zippel Lemma"</a></li>
+                        <li><a href="https://kam.mff.cuni.cz/~matousek/aga-mini24.pdf" style="color: seagreen;">Matoušek &amp; Gärtner, Miniature 24: Perfect Matchings</a></li>
                     </ul>
                 </section>
             </section>
@@ -3516,6 +3874,397 @@
 
         // Initialize Karger canvas
         document.addEventListener('DOMContentLoaded', initKargerCanvas);
+
+        // ============================================
+        // SCHWARTZ-ZIPPEL DEMO
+        // ============================================
+        let szState = null;
+        const SZ_PRIME = 17; // Small prime for demo
+
+        function szNewPolynomial() {
+            // Randomly decide if polynomial is zero or not
+            const isZero = Math.random() < 0.3;
+
+            if (isZero) {
+                // Create a polynomial that's identically zero: (x - y)(y - x) = -(x-y)^2 + (x-y)^2 = 0
+                // Actually simpler: p(x,y) = x - x = 0, but let's make it look like a real polynomial
+                szState = {
+                    isZero: true,
+                    display: "p(x, y) = (x + y)² - x² - 2xy - y²",
+                    evaluate: (x, y) => 0, // This is always 0
+                    degree: 2,
+                    tests: [],
+                    revealed: false
+                };
+            } else {
+                // Create a non-zero polynomial
+                const a = Math.floor(Math.random() * 5) + 1;
+                const b = Math.floor(Math.random() * 5) + 1;
+                const c = Math.floor(Math.random() * 5) + 1;
+                szState = {
+                    isZero: false,
+                    display: `p(x, y) = ${a}x² + ${b}xy + ${c}`,
+                    evaluate: (x, y) => (a * x * x + b * x * y + c) % SZ_PRIME,
+                    degree: 2,
+                    tests: [],
+                    revealed: false
+                };
+            }
+
+            renderSZCanvas();
+            document.getElementById('sz-output').innerHTML = `
+                <p>New polynomial generated over ℤ<sub>${SZ_PRIME}</sub>. Degree ≤ ${szState.degree}.</p>
+                <p>Is it identically zero? Test random points to find out!</p>
+                <p style="font-size: 0.85em; color: var(--text-light);">By Schwartz-Zippel: if p ≢ 0, then Pr[p(r₁,r₂)=0] ≤ ${szState.degree}/${SZ_PRIME} ≈ ${(szState.degree/SZ_PRIME*100).toFixed(0)}%</p>
+            `;
+        }
+
+        function szTestRandom() {
+            if (!szState) {
+                document.getElementById('sz-output').innerHTML = '<p style="color: var(--error);">Generate a polynomial first!</p>';
+                return;
+            }
+
+            const x = Math.floor(Math.random() * SZ_PRIME);
+            const y = Math.floor(Math.random() * SZ_PRIME);
+            const result = szState.evaluate(x, y);
+
+            szState.tests.push({ x, y, result });
+            renderSZCanvas();
+
+            const nonZeroTests = szState.tests.filter(t => t.result !== 0).length;
+            let message = `<p><strong>Test ${szState.tests.length}:</strong> p(${x}, ${y}) = ${result} mod ${SZ_PRIME}</p>`;
+
+            if (result !== 0) {
+                message += `<p style="color: #2a7d3f;"><strong>Found non-zero!</strong> The polynomial is definitely not identically zero.</p>`;
+                szState.revealed = true;
+            } else {
+                const prob = Math.pow(szState.degree / SZ_PRIME, szState.tests.length);
+                message += `<p>All ${szState.tests.length} tests returned 0. `;
+                if (szState.isZero) {
+                    message += `Consistent with zero polynomial.</p>`;
+                } else {
+                    message += `If p ≢ 0, probability of this is ≤ ${(prob * 100).toFixed(1)}%</p>`;
+                }
+            }
+
+            document.getElementById('sz-output').innerHTML = message;
+        }
+
+        function szReset() {
+            szState = null;
+            document.getElementById('sz-canvas').innerHTML = '<p style="color: var(--text-light); text-align: center; margin-top: 70px;">Click "New Polynomial" to start</p>';
+            document.getElementById('sz-output').innerHTML = '<p>This demo shows polynomial identity testing over a small finite field ℤ<sub>17</sub>.</p>';
+        }
+
+        function renderSZCanvas() {
+            if (!szState) return;
+
+            const canvas = document.getElementById('sz-canvas');
+            let html = `<div style="margin-bottom: 15px;">`;
+            html += `<p style="font-size: 1.1em; font-weight: 600;">${szState.display}</p>`;
+            html += `</div>`;
+
+            if (szState.tests.length > 0) {
+                html += `<div style="display: flex; flex-wrap: wrap; gap: 8px;">`;
+                szState.tests.forEach((t, i) => {
+                    const bgColor = t.result === 0 ? 'var(--pastel-gold)' : 'var(--pastel-green)';
+                    html += `<div style="background: ${bgColor}; padding: 6px 10px; border-radius: 4px; font-size: 0.85em;">
+                        p(${t.x}, ${t.y}) = ${t.result}
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+
+            if (szState.revealed || (szState.tests.length >= 5 && szState.isZero)) {
+                html += `<div style="margin-top: 15px; padding: 10px; background: ${szState.isZero ? 'var(--pastel-blue)' : 'var(--pastel-green)'}; border-radius: 4px;">`;
+                html += `<strong>Answer:</strong> This polynomial is ${szState.isZero ? 'identically zero!' : 'NOT identically zero!'}`;
+                html += `</div>`;
+            }
+
+            canvas.innerHTML = html;
+        }
+
+        // ============================================
+        // PERFECT MATCHING DEMO
+        // ============================================
+        let matchingGraph = null;
+        let matchingPrime = 11;
+
+        function matchingNewGraph() {
+            const n = parseInt(document.getElementById('matching-n').value) || 4;
+            matchingPrime = [11, 13, 17, 19, 23, 29][Math.min(n - 2, 5)];
+
+            // Create a random bipartite graph
+            const edges = [];
+            const edgeSet = new Set();
+
+            // Ensure at least some edges exist
+            for (let i = 0; i < n; i++) {
+                // Add at least one edge per left vertex with high probability
+                if (Math.random() < 0.8) {
+                    const j = Math.floor(Math.random() * n);
+                    const key = `${i}-${j}`;
+                    if (!edgeSet.has(key)) {
+                        edgeSet.add(key);
+                        edges.push({ i, j });
+                    }
+                }
+            }
+
+            // Add some more random edges
+            const extraEdges = Math.floor(Math.random() * n * n * 0.3);
+            for (let k = 0; k < extraEdges; k++) {
+                const i = Math.floor(Math.random() * n);
+                const j = Math.floor(Math.random() * n);
+                const key = `${i}-${j}`;
+                if (!edgeSet.has(key)) {
+                    edgeSet.add(key);
+                    edges.push({ i, j });
+                }
+            }
+
+            matchingGraph = { n, edges, edgeSet };
+            renderMatchingGraph();
+            renderMatchingMatrix();
+            document.getElementById('matching-output').innerHTML = `<p>Graph with n=${n}. Click edges in the graph to toggle them, then test for perfect matching.</p>`;
+        }
+
+        function matchingToggleEdge(i, j) {
+            if (!matchingGraph) return;
+
+            const key = `${i}-${j}`;
+            if (matchingGraph.edgeSet.has(key)) {
+                matchingGraph.edgeSet.delete(key);
+                matchingGraph.edges = matchingGraph.edges.filter(e => !(e.i === i && e.j === j));
+            } else {
+                matchingGraph.edgeSet.add(key);
+                matchingGraph.edges.push({ i, j });
+            }
+
+            renderMatchingGraph();
+            renderMatchingMatrix();
+        }
+
+        function renderMatchingGraph() {
+            if (!matchingGraph) return;
+
+            const canvas = document.getElementById('matching-graph-canvas');
+            const { n, edges, edgeSet } = matchingGraph;
+            const width = 280, height = 200;
+            const leftX = 50, rightX = 230;
+            const yGap = height / (n + 1);
+
+            let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="font-family: 'Heliotrope', Georgia, serif;">`;
+
+            // Draw all possible edges (faint) for clicking
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    const y1 = yGap * (i + 1);
+                    const y2 = yGap * (j + 1);
+                    const hasEdge = edgeSet.has(`${i}-${j}`);
+                    svg += `<line x1="${leftX}" y1="${y1}" x2="${rightX}" y2="${y2}"
+                        stroke="${hasEdge ? '#333' : '#eee'}"
+                        stroke-width="${hasEdge ? 2 : 1}"
+                        style="cursor: pointer;"
+                        onclick="matchingToggleEdge(${i}, ${j})"/>`;
+                }
+            }
+
+            // Draw left vertices (u_i)
+            for (let i = 0; i < n; i++) {
+                const y = yGap * (i + 1);
+                svg += `<circle cx="${leftX}" cy="${y}" r="12" fill="var(--pastel-blue)" stroke="#666" stroke-width="1.5"/>`;
+                svg += `<text x="${leftX}" y="${y + 4}" text-anchor="middle" font-size="11" fill="#222">u${i+1}</text>`;
+            }
+
+            // Draw right vertices (v_j)
+            for (let j = 0; j < n; j++) {
+                const y = yGap * (j + 1);
+                svg += `<circle cx="${rightX}" cy="${y}" r="12" fill="var(--pastel-peach)" stroke="#666" stroke-width="1.5"/>`;
+                svg += `<text x="${rightX}" y="${y + 4}" text-anchor="middle" font-size="11" fill="#222">v${j+1}</text>`;
+            }
+
+            svg += `</svg>`;
+            canvas.innerHTML = svg;
+        }
+
+        function renderMatchingMatrix() {
+            if (!matchingGraph) return;
+
+            const canvas = document.getElementById('matching-matrix-canvas');
+            const { n, edgeSet } = matchingGraph;
+
+            let html = `<div style="font-size: 0.85em;">`;
+            html += `<p style="margin-bottom: 8px;"><strong>Tutte Matrix A:</strong></p>`;
+            html += `<table style="border-collapse: collapse; font-size: 0.9em;">`;
+
+            // Header
+            html += `<tr><td></td>`;
+            for (let j = 0; j < n; j++) {
+                html += `<td style="padding: 4px 8px; text-align: center; color: #666;">v${j+1}</td>`;
+            }
+            html += `</tr>`;
+
+            // Matrix entries
+            for (let i = 0; i < n; i++) {
+                html += `<tr><td style="padding: 4px 8px; color: #666;">u${i+1}</td>`;
+                for (let j = 0; j < n; j++) {
+                    const hasEdge = edgeSet.has(`${i}-${j}`);
+                    const bg = hasEdge ? 'var(--pastel-mint)' : '#f8f8f8';
+                    const val = hasEdge ? `x<sub>${i+1}${j+1}</sub>` : '0';
+                    html += `<td style="padding: 4px 8px; text-align: center; background: ${bg}; border: 1px solid #ddd;">${val}</td>`;
+                }
+                html += `</tr>`;
+            }
+
+            html += `</table>`;
+            html += `</div>`;
+            canvas.innerHTML = html;
+        }
+
+        function matchingTest() {
+            if (!matchingGraph) {
+                document.getElementById('matching-output').innerHTML = '<p style="color: var(--error);">Generate a graph first!</p>';
+                return;
+            }
+
+            const { n, edgeSet } = matchingGraph;
+
+            // Generate random substitution
+            const substitution = {};
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    if (edgeSet.has(`${i}-${j}`)) {
+                        substitution[`${i}-${j}`] = Math.floor(Math.random() * (matchingPrime - 1)) + 1;
+                    }
+                }
+            }
+
+            // Build matrix with substituted values
+            const matrix = [];
+            for (let i = 0; i < n; i++) {
+                matrix[i] = [];
+                for (let j = 0; j < n; j++) {
+                    matrix[i][j] = edgeSet.has(`${i}-${j}`) ? substitution[`${i}-${j}`] : 0;
+                }
+            }
+
+            // Compute determinant mod p using Gaussian elimination
+            const det = computeDetModP(matrix, matchingPrime);
+
+            // Check if perfect matching actually exists (brute force for small n)
+            const hasMatching = checkPerfectMatching(n, edgeSet);
+
+            let html = `<p><strong>Random substitution over ℤ<sub>${matchingPrime}</sub>:</strong></p>`;
+            html += `<p style="font-size: 0.85em;">`;
+            Object.entries(substitution).forEach(([key, val]) => {
+                const [i, j] = key.split('-');
+                html += `x<sub>${parseInt(i)+1}${parseInt(j)+1}</sub>=${val} `;
+            });
+            html += `</p>`;
+            html += `<p><strong>det(A) mod ${matchingPrime} = ${det}</strong></p>`;
+
+            if (det !== 0) {
+                html += `<p style="color: #2a7d3f;"><strong>✓ Perfect matching exists!</strong> (det ≠ 0 proves it)</p>`;
+            } else {
+                html += `<p style="color: #b45309;"><strong>det = 0.</strong> `;
+                if (hasMatching) {
+                    html += `But a perfect matching exists — we got unlucky! (Probability ≤ ${(n/matchingPrime*100).toFixed(0)}%)</p>`;
+                    html += `<p style="font-size: 0.85em;">Try testing again with fresh random values.</p>`;
+                } else {
+                    html += `No perfect matching exists. (This is always correct when there's truly no matching.)</p>`;
+                }
+            }
+
+            document.getElementById('matching-output').innerHTML = html;
+        }
+
+        function computeDetModP(matrix, p) {
+            const n = matrix.length;
+            const m = matrix.map(row => [...row]); // Copy
+            let det = 1;
+
+            for (let col = 0; col < n; col++) {
+                // Find pivot
+                let pivotRow = -1;
+                for (let row = col; row < n; row++) {
+                    if (m[row][col] !== 0) {
+                        pivotRow = row;
+                        break;
+                    }
+                }
+
+                if (pivotRow === -1) return 0; // Singular
+
+                // Swap rows
+                if (pivotRow !== col) {
+                    [m[col], m[pivotRow]] = [m[pivotRow], m[col]];
+                    det = (p - det) % p; // Flip sign
+                }
+
+                const pivot = m[col][col];
+                det = (det * pivot) % p;
+
+                // Compute inverse of pivot mod p
+                const pivotInv = modInverse(pivot, p);
+
+                // Eliminate below
+                for (let row = col + 1; row < n; row++) {
+                    if (m[row][col] !== 0) {
+                        const factor = (m[row][col] * pivotInv) % p;
+                        for (let k = col; k < n; k++) {
+                            m[row][k] = ((m[row][k] - factor * m[col][k]) % p + p) % p;
+                        }
+                    }
+                }
+            }
+
+            return (det % p + p) % p;
+        }
+
+        function modInverse(a, p) {
+            // Extended Euclidean algorithm
+            let [old_r, r] = [a, p];
+            let [old_s, s] = [1, 0];
+
+            while (r !== 0) {
+                const q = Math.floor(old_r / r);
+                [old_r, r] = [r, old_r - q * r];
+                [old_s, s] = [s, old_s - q * s];
+            }
+
+            return ((old_s % p) + p) % p;
+        }
+
+        function checkPerfectMatching(n, edgeSet) {
+            // Brute force check for small n
+            const permutations = generatePermutations(n);
+            for (const perm of permutations) {
+                let isMatching = true;
+                for (let i = 0; i < n; i++) {
+                    if (!edgeSet.has(`${i}-${perm[i]}`)) {
+                        isMatching = false;
+                        break;
+                    }
+                }
+                if (isMatching) return true;
+            }
+            return false;
+        }
+
+        function generatePermutations(n) {
+            if (n === 1) return [[0]];
+            const result = [];
+            const perms = generatePermutations(n - 1);
+            for (const perm of perms) {
+                for (let i = 0; i <= perm.length; i++) {
+                    const newPerm = [...perm.slice(0, i), n - 1, ...perm.slice(i)];
+                    result.push(newPerm);
+                }
+            }
+            return result;
+        }
     </script>
 </body>
 </html>
