@@ -1683,6 +1683,171 @@
                 </section>
             </section>
 
+            <!-- ===== MATRIX MULTIPLICATION VERIFICATION ===== -->
+            <section>
+                <section class="section-title">
+                    <h1>Checking Matrix Multiplication</h1>
+                </section>
+
+                <section>
+                    <h2>The Problem</h2>
+                    <p>Suppose a software company sells MATRIX WIZARD, claiming it multiplies matrices "real fast."</p>
+
+                    <div class="definition-box" style="margin-top: 1em;">
+                        <p><strong>Matrix Multiplication Verification</strong></p>
+                        <p>Given three \(n \times n\) matrices \(A\), \(B\), and \(C\), verify whether \(C = AB\).</p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 1em;"><strong>Why do we need this?</strong> If MATRIX WIZARD returns wrong results, we want a fast <em>checking program</em> to catch errors.</p>
+
+                    <p class="fragment" style="margin-top: 0.5em; color: var(--text-light);">The naïve approach—actually computing \(AB\) and comparing with \(C\)—defeats the purpose, since we don't know how to multiply faster than \(O(n^{2.376})\).</p>
+                </section>
+
+                <section>
+                    <h2>Freivalds' Algorithm (1977)</h2>
+
+                    <div class="algorithm-box">
+                        <p><span class="keyword">Algorithm</span> MatrixVerify(\(A, B, C\)):</p>
+                        <p style="margin-left: 1.5em;">1. Pick a random vector \(\mathbf{x} \in \{0, 1\}^n\)</p>
+                        <p style="margin-left: 2.5em; color: var(--text-light);">Each entry is 0 or 1 with probability \(\frac{1}{2}\)</p>
+                        <p style="margin-left: 1.5em;">2. Compute \(\mathbf{y} = C\mathbf{x}\) <span style="color: var(--text-light);">// \(O(n^2)\)</span></p>
+                        <p style="margin-left: 1.5em;">3. Compute \(\mathbf{z} = A(B\mathbf{x})\) <span style="color: var(--text-light);">// \(O(n^2)\)</span></p>
+                        <p style="margin-left: 1.5em;">4. <span class="keyword">if</span> \(\mathbf{y} = \mathbf{z}\) <span class="keyword">then return</span> YES</p>
+                        <p style="margin-left: 1.5em;">5. <span class="keyword">else return</span> NO</p>
+                    </div>
+
+                    <div style="display: flex; gap: 1em; margin-top: 1em;">
+                        <div class="success-box fragment" style="flex: 1;">
+                            <p><strong>Time:</strong> \(O(n^2)\)</p>
+                            <p style="font-size: 0.85em;">Two matrix-vector products</p>
+                        </div>
+                        <div class="definition-box fragment" style="flex: 1;">
+                            <p><strong>Key insight:</strong></p>
+                            <p style="font-size: 0.85em;">\(C\mathbf{x} = A(B\mathbf{x})\) iff \((C - AB)\mathbf{x} = \mathbf{0}\)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Correctness Analysis</h2>
+
+                    <div class="theorem-box">
+                        <p><strong>Claim:</strong> If \(C = AB\), the algorithm always returns YES. If \(C \neq AB\), the algorithm returns the wrong answer (YES) with probability at most \(\frac{1}{2}\).</p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 1em;"><strong>Case 1:</strong> \(C = AB\)</p>
+                    <p class="fragment" style="margin-left: 1.5em;">Then \(C\mathbf{x} = AB\mathbf{x}\) for all \(\mathbf{x}\). Algorithm always correct.</p>
+
+                    <p class="fragment" style="margin-top: 1em;"><strong>Case 2:</strong> \(C \neq AB\)</p>
+                    <p class="fragment" style="margin-left: 1.5em;">Let \(D = C - AB\). Since \(D \neq 0\), some entry \(d_{ij} \neq 0\).</p>
+                    <p class="fragment" style="margin-left: 1.5em;">We need: \(\Pr[D\mathbf{x} = \mathbf{0}] \leq \frac{1}{2}\).</p>
+                </section>
+
+                <section>
+                    <h2>The Analysis: Key Insight</h2>
+
+                    <p>Fix indices \(i, j\) such that \(d_{ij} \neq 0\). Consider the \(i\)-th component of \(D\mathbf{x}\):</p>
+
+                    <div class="definition-box" style="margin-top: 1em;">
+                        $$y_i = d_{i1}x_1 + d_{i2}x_2 + \cdots + d_{in}x_n = d_{ij}x_j + S$$
+                        <p style="margin-top: 0.5em;">where \(S = \sum_{k \neq j} d_{ik}x_k\) is independent of \(x_j\).</p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 1em;"><strong>Coin toss perspective:</strong> Think of choosing \(\mathbf{x}\) by successive coin tosses for each entry.</p>
+
+                    <ul class="fragment" style="font-size: 0.9em;">
+                        <li>Before the toss for \(x_j\): the value of \(S\) is already fixed.</li>
+                        <li>After the toss: \(x_j = 0\) or \(x_j = 1\), each with probability \(\frac{1}{2}\).</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Completing the Proof</h2>
+
+                    <p>Given that \(S\) is fixed and \(d_{ij} \neq 0\):</p>
+
+                    <ul style="font-size: 0.95em;">
+                        <li class="fragment">If \(x_j = 0\): then \(y_i = S\)</li>
+                        <li class="fragment">If \(x_j = 1\): then \(y_i = d_{ij} + S \neq S\) (since \(d_{ij} \neq 0\))</li>
+                    </ul>
+
+                    <div class="theorem-box fragment" style="margin-top: 1em;">
+                        <p><strong>Conclusion:</strong> At most one of these two values equals 0.</p>
+                        <p style="margin-top: 0.5em;">Therefore: \(\Pr[y_i = 0] \leq \frac{1}{2}\)</p>
+                        <p style="margin-top: 0.5em;">And thus: \(\Pr[D\mathbf{x} = \mathbf{0}] \leq \Pr[y_i = 0] \leq \frac{1}{2}\)</p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 1em; color: var(--text-light); font-size: 0.9em;">The algorithm detects a wrong matrix multiplication with probability at least \(\frac{1}{2}\).</p>
+                </section>
+
+                <section>
+                    <h2>Amplification by Repetition</h2>
+
+                    <p>A 50% detection rate isn't very reliable. But we can repeat!</p>
+
+                    <div class="definition-box" style="margin-top: 1em;">
+                        <p><strong>Repeated Verification:</strong> Run the algorithm \(k\) times with independent random vectors. Return NO if any test fails; return YES only if all tests pass.</p>
+                    </div>
+
+                    <div class="theorem-box fragment" style="margin-top: 1em;">
+                        <p><strong>Error probability:</strong> If \(C \neq AB\), the probability of returning YES (wrong answer) is at most \(2^{-k}\).</p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 0.8em;"><strong>Example:</strong> With \(k = 50\) repetitions:</p>
+                    <ul class="fragment" style="font-size: 0.9em;">
+                        <li>Error probability \(\leq 2^{-50} < 10^{-15}\)</li>
+                        <li>Total time: \(O(kn^2) = O(n^2)\) — still much faster than \(O(n^{2.376})\)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Interactive Demo</h2>
+
+                    <div class="demo-container">
+                        <div class="demo-header">
+                            <div class="demo-header-row">
+                                <span class="demo-title">Matrix Multiplication Verifier</span>
+                                <div class="demo-controls">
+                                    <label>Size n:</label>
+                                    <input type="number" id="mmv-n" value="3" min="2" max="4" style="width: 45px;">
+                                    <button class="btn btn-primary" onclick="generateMMVMatrices()">New Matrices</button>
+                                    <button class="btn" onclick="introduceMMVError()">Introduce Error</button>
+                                    <button class="btn btn-success" onclick="runMMVTest()">Run Test</button>
+                                    <button class="btn btn-warning" onclick="runMMVMultiple()">Run 10×</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="demo-canvas" id="mmv-canvas" style="min-height: 220px; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: var(--text-light);">Click "New Matrices" to start</p>
+                        </div>
+                        <div class="demo-output" id="mmv-output">
+                            <p><strong>How it works:</strong> Generate correct \(C = AB\), optionally introduce an error, then test with random vectors.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>The Big Picture</h2>
+
+                    <div class="success-box">
+                        <p><strong>Freivalds' algorithm demonstrates:</strong></p>
+                        <ul style="font-size: 0.9em; margin-top: 0.5em;">
+                            <li><em>Probabilistic checking</em> can be much faster than deterministic computation</li>
+                            <li>A simple idea (random projection) yields quadratic speedup</li>
+                            <li>Error probability can be made arbitrarily small via repetition</li>
+                        </ul>
+                    </div>
+
+                    <div class="definition-box fragment" style="margin-top: 1em;">
+                        <p><strong>Historical note:</strong> This idea of probabilistic checking, presented here in simple form, has been extraordinarily fruitful. The PCP theorem shows that for <em>any</em> efficiently solvable problem, solutions can be checked probabilistically in very short time.</p>
+                    </div>
+
+                    <p class="fragment" style="margin-top: 1em; font-size: 0.85em; color: var(--text-light);">
+                        Source: R. Freivalds, "Probabilistic machines can use less running time", IFIP Congress, 1977.
+                    </p>
+                </section>
+            </section>
+
             <!-- ===== CONCLUSION ===== -->
             <section>
                 <section class="section-title">
@@ -1691,37 +1856,45 @@
 
                 <section>
                     <h2>What We Learned</h2>
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                        <div class="definition-box" style="flex: 1; min-width: 200px;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <div class="definition-box" style="flex: 1; min-width: 180px;">
                             <p><strong>QuickSort</strong></p>
-                            <ul style="font-size: 0.8em;">
+                            <ul style="font-size: 0.75em;">
                                 <li>Las Vegas</li>
                                 <li>Expected O(n log n)</li>
                                 <li>Indicator variables</li>
                             </ul>
                         </div>
-                        <div class="definition-box" style="flex: 1; min-width: 200px;">
+                        <div class="definition-box" style="flex: 1; min-width: 180px;">
                             <p><strong>Min Cut</strong></p>
-                            <ul style="font-size: 0.8em;">
+                            <ul style="font-size: 0.75em;">
                                 <li>Monte Carlo</li>
                                 <li>Pr ≥ 2/n²</li>
                                 <li>Amplification</li>
                             </ul>
                         </div>
-                        <div class="definition-box" style="flex: 1; min-width: 200px;">
+                        <div class="definition-box" style="flex: 1; min-width: 180px;">
                             <p><strong>Schwartz-Zippel</strong></p>
-                            <ul style="font-size: 0.8em;">
+                            <ul style="font-size: 0.75em;">
                                 <li>Pr[p(r) = 0] ≤ d/|S|</li>
                                 <li>Identity testing</li>
                                 <li>Algebraic technique</li>
                             </ul>
                         </div>
-                        <div class="definition-box" style="flex: 1; min-width: 200px;">
+                        <div class="definition-box" style="flex: 1; min-width: 180px;">
                             <p><strong>Perfect Matchings</strong></p>
-                            <ul style="font-size: 0.8em;">
+                            <ul style="font-size: 0.75em;">
                                 <li>Tutte matrix</li>
                                 <li>det ≠ 0 ⟺ matching</li>
                                 <li>O(n³) test</li>
+                            </ul>
+                        </div>
+                        <div class="definition-box" style="flex: 1; min-width: 180px;">
+                            <p><strong>Matrix Verification</strong></p>
+                            <ul style="font-size: 0.75em;">
+                                <li>Freivalds' algorithm</li>
+                                <li>O(n²) checking</li>
+                                <li>Probabilistic checking</li>
                             </ul>
                         </div>
                     </div>
@@ -4264,6 +4437,243 @@
                 }
             }
             return result;
+        }
+
+        // =============================================
+        // MATRIX MULTIPLICATION VERIFICATION DEMO
+        // =============================================
+        let mmvState = null;
+
+        function generateMMVMatrices() {
+            const n = parseInt(document.getElementById('mmv-n').value) || 3;
+
+            // Generate random matrices A and B with small integer entries
+            const A = [];
+            const B = [];
+            for (let i = 0; i < n; i++) {
+                A.push([]);
+                B.push([]);
+                for (let j = 0; j < n; j++) {
+                    A[i].push(Math.floor(Math.random() * 5) - 2); // -2 to 2
+                    B[i].push(Math.floor(Math.random() * 5) - 2);
+                }
+            }
+
+            // Compute C = AB
+            const C = multiplyMatrices(A, B);
+
+            mmvState = {
+                n: n,
+                A: A,
+                B: B,
+                C: C,
+                hasError: false,
+                errorPos: null,
+                testResults: []
+            };
+
+            renderMMV();
+            document.getElementById('mmv-output').innerHTML = '<p><strong>Generated:</strong> Matrices A, B, and C = AB. Click "Run Test" to verify, or "Introduce Error" to corrupt C first.</p>';
+        }
+
+        function multiplyMatrices(A, B) {
+            const n = A.length;
+            const C = [];
+            for (let i = 0; i < n; i++) {
+                C.push([]);
+                for (let j = 0; j < n; j++) {
+                    let sum = 0;
+                    for (let k = 0; k < n; k++) {
+                        sum += A[i][k] * B[k][j];
+                    }
+                    C[i].push(sum);
+                }
+            }
+            return C;
+        }
+
+        function introduceMMVError() {
+            if (!mmvState) {
+                generateMMVMatrices();
+            }
+            if (mmvState.hasError) {
+                document.getElementById('mmv-output').innerHTML = '<p style="color: var(--error);"><strong>Error already introduced!</strong> Generate new matrices to reset.</p>';
+                return;
+            }
+
+            // Pick a random position and change it
+            const i = Math.floor(Math.random() * mmvState.n);
+            const j = Math.floor(Math.random() * mmvState.n);
+            const delta = (Math.random() < 0.5 ? 1 : -1) * (Math.floor(Math.random() * 3) + 1);
+            mmvState.C[i][j] += delta;
+            mmvState.hasError = true;
+            mmvState.errorPos = [i, j];
+            mmvState.testResults = [];
+
+            renderMMV();
+            document.getElementById('mmv-output').innerHTML = `<p><strong>Error introduced!</strong> C[${i}][${j}] has been changed. Now C ≠ AB. Run the test to see if it catches the error.</p>`;
+        }
+
+        function runMMVTest() {
+            if (!mmvState) {
+                generateMMVMatrices();
+                return;
+            }
+
+            const { n, A, B, C } = mmvState;
+
+            // Generate random x in {0, 1}^n
+            const x = [];
+            for (let i = 0; i < n; i++) {
+                x.push(Math.random() < 0.5 ? 0 : 1);
+            }
+
+            // Compute Cx
+            const Cx = matrixVectorMult(C, x);
+
+            // Compute Bx, then A(Bx)
+            const Bx = matrixVectorMult(B, x);
+            const ABx = matrixVectorMult(A, Bx);
+
+            // Check if equal
+            let equal = true;
+            for (let i = 0; i < n; i++) {
+                if (Cx[i] !== ABx[i]) {
+                    equal = false;
+                    break;
+                }
+            }
+
+            const result = {
+                x: x,
+                Cx: Cx,
+                ABx: ABx,
+                passed: equal
+            };
+            mmvState.testResults.push(result);
+
+            renderMMV();
+
+            let html = `<p><strong>Test ${mmvState.testResults.length}:</strong> x = [${x.join(', ')}]</p>`;
+            html += `<p>Cx = [${Cx.join(', ')}], A(Bx) = [${ABx.join(', ')}]</p>`;
+            if (equal) {
+                html += `<p style="color: #059669;"><strong>Result: PASS</strong> (vectors are equal)</p>`;
+                if (mmvState.hasError) {
+                    html += `<p style="color: var(--text-light); font-size: 0.9em;">The error was NOT detected this time. Try again!</p>`;
+                }
+            } else {
+                html += `<p style="color: var(--error);"><strong>Result: FAIL</strong> — C ≠ AB detected!</p>`;
+            }
+            document.getElementById('mmv-output').innerHTML = html;
+        }
+
+        function runMMVMultiple() {
+            if (!mmvState) {
+                generateMMVMatrices();
+            }
+
+            let detected = 0;
+            for (let t = 0; t < 10; t++) {
+                const { n, A, B, C } = mmvState;
+                const x = [];
+                for (let i = 0; i < n; i++) {
+                    x.push(Math.random() < 0.5 ? 0 : 1);
+                }
+
+                const Cx = matrixVectorMult(C, x);
+                const Bx = matrixVectorMult(B, x);
+                const ABx = matrixVectorMult(A, Bx);
+
+                let equal = true;
+                for (let i = 0; i < n; i++) {
+                    if (Cx[i] !== ABx[i]) {
+                        equal = false;
+                        break;
+                    }
+                }
+
+                mmvState.testResults.push({ x, Cx, ABx, passed: equal });
+                if (!equal) detected++;
+            }
+
+            renderMMV();
+
+            let html = `<p><strong>Ran 10 independent tests.</strong></p>`;
+            if (mmvState.hasError) {
+                html += `<p>Error detected in <strong>${detected}</strong> out of 10 tests.</p>`;
+                if (detected > 0) {
+                    html += `<p style="color: #059669;">The error was caught!</p>`;
+                } else {
+                    html += `<p style="color: var(--error);">The error evaded all 10 tests (unlucky! probability was ~1/1024).</p>`;
+                }
+            } else {
+                html += `<p>All 10 tests passed (as expected, since C = AB).</p>`;
+            }
+            document.getElementById('mmv-output').innerHTML = html;
+        }
+
+        function matrixVectorMult(M, v) {
+            const n = M.length;
+            const result = [];
+            for (let i = 0; i < n; i++) {
+                let sum = 0;
+                for (let j = 0; j < n; j++) {
+                    sum += M[i][j] * v[j];
+                }
+                result.push(sum);
+            }
+            return result;
+        }
+
+        function renderMMV() {
+            const canvas = document.getElementById('mmv-canvas');
+            if (!mmvState) {
+                canvas.innerHTML = '<p style="color: var(--text-light);">Click "New Matrices" to start</p>';
+                return;
+            }
+
+            const { n, A, B, C, hasError, errorPos, testResults } = mmvState;
+            const cellW = n <= 3 ? 32 : 26;
+            const gap = 8;
+
+            function renderMatrix(matrix, label, highlightPos = null) {
+                let html = `<div style="display: inline-block; text-align: center; margin: 0 ${gap}px;">`;
+                html += `<div style="font-weight: 600; font-size: 0.85em; margin-bottom: 4px;">${label}</div>`;
+                html += `<div style="display: inline-block; border-left: 2px solid #888; border-right: 2px solid #888; padding: 2px 4px;">`;
+                for (let i = 0; i < matrix.length; i++) {
+                    html += `<div style="display: flex;">`;
+                    for (let j = 0; j < matrix[i].length; j++) {
+                        const isHighlight = highlightPos && highlightPos[0] === i && highlightPos[1] === j;
+                        const bg = isHighlight ? 'var(--pastel-coral)' : 'transparent';
+                        html += `<span style="width: ${cellW}px; height: ${cellW}px; display: flex; align-items: center; justify-content: center; font-size: ${n <= 3 ? '14px' : '12px'}; background: ${bg};">${matrix[i][j]}</span>`;
+                    }
+                    html += `</div>`;
+                }
+                html += `</div></div>`;
+                return html;
+            }
+
+            let html = `<div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">`;
+            html += renderMatrix(A, 'A');
+            html += `<span style="font-size: 1.2em; font-weight: 600;">×</span>`;
+            html += renderMatrix(B, 'B');
+            html += `<span style="font-size: 1.2em; font-weight: 600;">=</span>`;
+            html += renderMatrix(C, hasError ? 'C (with error)' : 'C', hasError ? errorPos : null);
+            html += `</div>`;
+
+            // Show test summary
+            if (testResults.length > 0) {
+                const passes = testResults.filter(r => r.passed).length;
+                const fails = testResults.length - passes;
+                html += `<div style="margin-top: 12px; font-size: 0.85em; text-align: center;">`;
+                html += `Tests: <span style="color: #059669;">${passes} passed</span>`;
+                if (fails > 0) {
+                    html += ` / <span style="color: var(--error);">${fails} failed</span>`;
+                }
+                html += `</div>`;
+            }
+
+            canvas.innerHTML = html;
         }
     </script>
 </body>
