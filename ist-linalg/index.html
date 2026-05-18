@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimensionality Reduction — Lecture 1</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Overlock:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Heliotrope font (local) */
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../assets/fonts/heliotrope_3_regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../assets/fonts/heliotrope_3_bold.woff2') format('woff2');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../assets/fonts/heliotrope_3_italic.woff2') format('woff2');
+            font-weight: normal;
+            font-style: italic;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Heliotrope';
+            src: url('../assets/fonts/heliotrope_3_bold_italic.woff2') format('woff2');
+            font-weight: bold;
+            font-style: italic;
+            font-display: swap;
+        }
+    </style>
+
+    <!-- RevealJS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css">
+
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+
+    <style>
+        /* ===== gwern-inspired minimal slides ===== */
+        :root, .reveal {
+            --bg-main: #f5f5f5;
+            --bg-slide: #ffffff;
+            --text: #222222;
+            --text-primary: #222222;
+            --text-secondary: #666666;
+            --text-light: #666666;
+            --border: #cccccc;
+            --border-dark: #888888;
+            --border-light: #dddddd;
+            --border-medium: #aaaaaa;
+            --error: #c44;
+            --r-main-color: #222222;
+            --r-heading-color: #222222;
+            --r-link-color: #222222;
+            --r-selection-color: #222222;
+
+            --pastel-blue: #a8d4f0;
+            --pastel-green: #b8e6c1;
+            --pastel-coral: #f5c4c0;
+            --pastel-lavender: #d4c4e8;
+            --pastel-gold: #f5e6a3;
+            --pastel-mint: #a8e6d5;
+            --pastel-peach: #f5d4b8;
+        }
+
+        .reveal-viewport { background: var(--bg-main); }
+
+        .reveal {
+            font-family: 'Heliotrope', Georgia, serif;
+            font-size: 20px;
+            color: var(--text);
+        }
+
+        .reveal .slides { text-align: left; }
+
+        .reveal .slides > section {
+            background: var(--bg-slide);
+            border: 3px double var(--border);
+            padding: 55px 35px 30px 35px;
+            box-sizing: border-box;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .reveal .slides section > section {
+            border: none;
+            padding: 40px 0 0 0 !important;
+            background: transparent;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .reveal .slides section { color: var(--text) !important; }
+
+        .reveal .slides section p,
+        .reveal .slides section span,
+        .reveal .slides section li,
+        .reveal .slides section strong,
+        .reveal .slides section em,
+        .reveal .slides section div { color: var(--text); }
+
+        .reveal .slides .fragment,
+        .reveal .slides .fragment * { color: var(--text) !important; }
+
+        .reveal .slides .btn-primary,
+        .reveal .slides .nav-btn:not(.back),
+        .reveal .slides table th { color: white !important; }
+
+        /* Typography */
+        .reveal h1, .reveal h2, .reveal h3 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-weight: 700;
+            color: var(--text);
+            text-transform: none;
+            letter-spacing: -0.01em;
+        }
+
+        .reveal h1 { font-size: 1.7em; margin-bottom: 0.3em; }
+
+        .reveal h2 {
+            font-size: 1.25em;
+            margin-bottom: 0.25em;
+            padding-bottom: 0.15em;
+            border-bottom: 1px solid var(--border-dark);
+            display: inline-block;
+        }
+
+        .reveal h3 {
+            font-size: 0.95em;
+            margin-bottom: 0.2em;
+            font-style: italic;
+            color: var(--text-light);
+        }
+
+        .reveal p { color: var(--text); line-height: 1.45; margin-bottom: 0.4em; }
+        .reveal .slides section > p {
+            max-width: 95%;
+            box-sizing: border-box;
+        }
+        .reveal ul, .reveal ol { color: var(--text); margin-left: 1em; }
+        .reveal li { color: var(--text); margin-bottom: 0.25em; line-height: 1.4; }
+        .reveal strong { color: var(--text); font-weight: 700; }
+        .reveal em { color: var(--text-light); }
+
+        /* Boxes */
+        .definition-box, .theorem-box, .algorithm-box, .success-box, .goal-box, .note-box {
+            background: var(--bg-slide);
+            border: 1px solid var(--border-dark);
+            padding: 10px 14px;
+            margin: 8px 0;
+            max-width: 92%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .definition-box { border-left: 3px solid var(--pastel-blue); }
+        .theorem-box { border-left: 3px solid var(--pastel-green); }
+        .algorithm-box {
+            border-left: 3px solid var(--pastel-lavender);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            line-height: 1.55;
+            background: #fafafa;
+        }
+        .success-box { border-left: 3px solid var(--pastel-mint); }
+        .goal-box { border-left: 3px solid #9b8bb8; }
+        .note-box { border-left: 3px solid var(--pastel-gold); background: #fffdf3; }
+
+        /* Demo containers */
+        .demo-container {
+            background: #fafafa;
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            margin: 6px 0;
+            max-width: 95%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .demo-container.add-mode {
+            background: #f4fbff;
+            border: 2px dashed #2f80c3;
+            box-shadow: 0 0 0 3px #d8ecfb inset;
+        }
+        .demo-container.add-mode .demo-header { border-bottom-color: #2f80c3; }
+
+        .demo-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border);
+            gap: 6px;
+        }
+
+        .demo-title {
+            font-family: 'Overlock', sans-serif;
+            font-weight: 700;
+            color: var(--text);
+            font-size: 0.85em;
+        }
+        .mode-badge {
+            display: none;
+            margin-left: 8px;
+            padding: 2px 7px;
+            border: 1px solid #2f80c3;
+            background: #d8ecfb;
+            color: #12384f;
+            font-family: 'Heliotrope', sans-serif;
+            font-size: 0.72em;
+            font-weight: 700;
+        }
+        .demo-container.add-mode .mode-badge { display: inline-block; }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .demo-controls label {
+            font-size: 0.72em;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .demo-controls input[type="number"] {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 3px 5px;
+            font-size: 0.78em;
+            width: 48px;
+            font-family: inherit;
+        }
+
+        .demo-controls input[type="range"] { width: 110px; }
+        .demo-controls input[type="text"] {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 3px 6px;
+            font-size: 0.78em;
+            font-family: inherit;
+        }
+        .demo-controls input:focus { outline: none; border-color: var(--border-dark); }
+
+        .demo-canvas {
+            background: white;
+            border: 1px solid var(--border);
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+        .demo-canvas.add-mode {
+            border: 3px dashed #2f80c3;
+            background: #eaf6ff;
+            box-shadow: 0 0 0 2px #d8ecfb inset;
+        }
+        .demo-canvas svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        /* Interactive slides: explicit fixed heights on the canvases.
+           Reveal sections don't behave as flex parents reliably across versions,
+           so we size each canvas conservatively against a 575px nested budget. */
+
+        .demo-output {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 6px 10px;
+            margin-top: 5px;
+            font-size: 0.8em;
+            color: var(--text);
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Buttons */
+        .btn {
+            background: white;
+            border: 1px solid var(--border-dark);
+            padding: 4px 9px;
+            cursor: pointer;
+            font-size: 0.72em;
+            font-weight: 600;
+            font-family: 'Heliotrope', sans-serif;
+            color: var(--text);
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #f0f0f0; }
+
+        .btn-primary { background: var(--text); color: white; border-color: var(--text); }
+        .btn-primary:hover { background: #444444; }
+        .btn.active { background: var(--pastel-gold); border-color: var(--border-dark); }
+
+        .btn-success { background: var(--pastel-green); border-color: #8bc99b; color: var(--text); }
+        .btn-warning { background: var(--pastel-gold); border-color: #d4c47a; color: var(--text); }
+        .btn-secondary { background: #eeeeee; border-color: var(--border); color: var(--text); }
+        .btn.btn-secondary.active {
+            background: #d8ecfb;
+            border-color: #2f80c3;
+            color: #12384f;
+            box-shadow: 0 0 0 2px #eaf6ff inset;
+        }
+
+        /* Preset chips */
+        .preset-chip {
+            display: inline-block;
+            background: white;
+            border: 1px solid var(--border);
+            padding: 3px 8px;
+            margin: 2px;
+            font-size: 0.72em;
+            cursor: pointer;
+            font-family: 'Heliotrope', sans-serif;
+            color: var(--text);
+            transition: background 0.15s;
+        }
+        .preset-chip:hover { background: var(--pastel-gold); }
+        .preset-chip.active { background: var(--pastel-gold); border-color: var(--border-dark); }
+
+        /* Approach cards */
+        .approach-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin: 8px 0;
+            max-width: 92%;
+        }
+
+        .approach-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 8px 10px;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        .approach-card:hover { background: #f8f8f8; border-color: var(--border-dark); }
+        .approach-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 3px;
+            color: var(--text);
+            font-style: normal;
+        }
+        .approach-card p { font-size: 0.8em; color: var(--text-light); margin: 0; }
+
+        /* Title slide */
+        .title-slide { text-align: center; }
+        .title-slide h1 { font-size: 2em; }
+        .subtitle { color: var(--text-light); font-size: 1.05em; margin-bottom: 1.5em; }
+
+        /* Small text */
+        .small { font-size: 0.85em; }
+        .tiny { font-size: 0.75em; }
+        .mono { font-family: 'Consolas', 'Monaco', monospace; }
+
+        /* Inline highlight */
+        .highlight { background: var(--pastel-gold); padding: 1px 4px; }
+        .h-blue { background: #e3f0fa; padding: 1px 4px; }
+        .h-green { background: #ecf7ee; padding: 1px 4px; }
+        .h-coral { background: #fbece9; padding: 1px 4px; }
+
+        /* Two-column layout helper */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            max-width: 100%;
+        }
+
+        .similarity-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 95%;
+        }
+        .similarity-stack .definition-box {
+            max-width: 100%;
+            margin: 0;
+            padding: 8px 10px;
+        }
+        .similarity-stack .definition-box p { margin-bottom: 0.25em; }
+
+        /* Slide number / progress */
+        .reveal .slide-number {
+            background: transparent;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+        .reveal .progress { height: 3px; background: var(--border); }
+        .reveal .progress span { background: var(--text); }
+
+        .reveal .katex { color: var(--text); }
+
+        /* SVG defaults */
+        svg.demo-svg { display: block; margin: 0 auto; }
+
+        /* Tooltip-y caption used under canvases */
+        .caption {
+            font-size: 0.78em;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        /* Section divider slide */
+        .section-divider {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100%;
+        }
+        .section-divider .num {
+            font-family: 'EB Garamond', Georgia, serif;
+            color: var(--text-light);
+            font-size: 1.4em;
+            letter-spacing: 0.05em;
+        }
+        .section-divider h1 {
+            font-size: 2.4em;
+            margin-top: 0.1em;
+            margin-bottom: 0.3em;
+        }
+        .section-divider .lede {
+            font-size: 1.15em;
+            color: var(--text-light);
+            max-width: 80%;
+            line-height: 1.4;
+        }
+
+        /* Discussion prompt */
+        .prompt {
+            border: 1px dashed var(--border-dark);
+            background: #fffdf3;
+            padding: 8px 12px;
+            margin: 8px 0;
+            font-style: italic;
+            color: var(--text);
+            max-width: 92%;
+        }
+        .prompt::before {
+            content: '⟶ ';
+            font-style: normal;
+            color: var(--text-light);
+        }
+
+        /* Matrix display */
+        .mat {
+            display: inline-block;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-left: 1.5px solid var(--text);
+            border-right: 1.5px solid var(--text);
+            margin: 4px 0;
+        }
+        .mat .row { display: flex; gap: 14px; justify-content: space-between; }
+    </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================
+     TITLE
+============================================================ -->
+<section class="title-slide">
+    <h1>Demystifying Dimensionality Reduction</h1>
+    <p class="subtitle">or, <em>why does Amazon think you'd like this?</em></p>
+
+    <div style="margin-top: 300px; text-align:left; font-size: 0.78em;">
+        <p>Slides made in collaboration with Claude. Blame <a href="https://www.neeldhara.com" style="color: seagreen;">me</a> for oversights :) </p>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECTION 1 — MOTIVATION
+============================================================ -->
+<section>
+
+    <!-- 1.0 Section divider -->
+    <section>
+        <div class="section-divider">
+            <div class="num">§ 1</div>
+            <h1>Motivation</h1>
+            <p class="lede">Recommender systems, high-dimensional data,<br>and why naïve approaches don't scale.</p>
+        </div>
+    </section>
+
+    <!-- 1.1 The Amazon puzzle -->
+    <section>
+        <h2>An Amazon-shaped puzzle</h2>
+        <p>You run a giant online store. A user opens the app. What should you show them?</p>
+        <div class="prompt">Before we look at any math &mdash; how would you, as a human, decide what to recommend?</div>
+        <div class="approach-grid">
+            <div class="approach-card fragment">
+                <h3>Most popular overall</h3>
+                <p>Show everyone the bestsellers. Simple, but everyone sees the same thing.</p>
+            </div>
+            <div class="approach-card fragment">
+                <h3>What they bought before</h3>
+                <p>If they bought a tent, recommend tent pegs. Works… until they want something new.</p>
+            </div>
+            <div class="approach-card fragment">
+                <h3>What <em>similar people</em> bought</h3>
+                <p>Find users who behave like this one, and recommend things <em>they</em> liked.</p>
+            </div>
+        </div>
+        <p class="fragment small" style="margin-top: 10px;">The third idea (<strong>collaborative filtering</strong>) is the one we'll chase &mdash; and it's going to push us into all the questions this lecture is about.</p>
+    </section>
+
+    <!-- 1.2 The user-product matrix -->
+    <section>
+        <h2>The data, as a matrix</h2>
+        <p>One row per <strong>user</strong>, one column per <strong>product</strong>.
+           Each cell is an <em>engagement score</em> in [0, 1] &mdash; clicks, time spent, ratings, purchases, however you choose to mash signals together.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">A tiny Amazon</span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="amazon_loadPreset('default')">Default</button>
+                    <button class="btn btn-secondary" onclick="amazon_loadPreset('clusters')">Two camps</button>
+                    <button class="btn btn-secondary" onclick="amazon_loadPreset('sparse')">Sparse</button>
+                    <button class="btn btn-secondary" onclick="amazon_loadPreset('random')">Random</button>
+                </div>
+            </div>
+            <div id="amazon-grid" class="demo-canvas" style="padding: 8px; height: 290px;"></div>
+            <div class="demo-output" id="amazon-output">
+                Click a cell to cycle its engagement: <span class="mono">0 &rarr; 0.25 &rarr; 0.5 &rarr; 0.75 &rarr; 1</span>.
+                Click a user row label to make them the <em>target</em>; the table will rank the other users by similarity.
+            </div>
+        </div>
+    </section>
+
+    <!-- 1.3 Now scale it up -->
+    <section>
+        <h2>Now imagine it's not so tiny</h2>
+        <div style="max-width: 48%;">
+            <div class="definition-box" style="max-width: 100%;">
+                <p><strong>Amazon, at scale:</strong></p>
+                <p>~300 million active customers</p>
+                <p>~600 million products</p>
+                <p>That's <span class="highlight"><strong>~1.8 × 10<sup>17</sup></strong></span> cells.</p>
+            </div>
+            <div class="note-box fragment" style="max-width: 100%;">
+                <p><strong>Three pains:</strong></p>
+                <ol style="margin-left: 1.1em; margin-top: 4px;">
+                    <li>Doesn't <strong>fit</strong> anywhere.</li>
+                    <li>Is mostly <strong>empty</strong> — almost no one has touched almost anything.</li>
+                    <li>Distances stop <strong>meaning</strong> anything (we'll see why on the next slide).</li>
+                </ol>
+            </div>
+        </div>
+        <p class="small" style="margin-top: 8px;">Even if you could store the whole matrix (you can't), every pair of users you compare requires summing ~600 million squared differences.</p>
+        <p class="fragment small" style="margin-top: 8px;">We need a way to make this <em>smaller</em> without destroying the structure we care about.</p>
+    </section>
+
+    <!-- 1.4 The curse of dimensionality (interactive) -->
+    <section>
+        <h2>The curse of dimensionality</h2>
+        <p class="small">Sample 30 random points in <span class="mono">[0, 1]<sup>d</sup></span>. As <span class="mono">d</span> grows,
+           what happens to their pairwise distances?</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">Distances in d dimensions</span>
+                <div class="demo-controls">
+                    <label>d:</label>
+                    <input type="range" id="curse-d" min="1" max="1000" value="2" oninput="curse_update()">
+                    <span id="curse-d-label" class="mono small">2</span>
+                    <button class="btn btn-secondary" onclick="curse_resample()">Resample</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="curse-canvas" style="height: 195px;"></div>
+            <div class="demo-output" id="curse-output"></div>
+        </div>
+        <p class="tiny" style="margin-top: 4px;">In high dimensions, every point is <em>roughly the same distance</em> from every other point.
+           "Nearest neighbour" becomes meaningless. This is the central pain dimensionality reduction is built to fix.</p>
+    </section>
+
+    <!-- 1.5 What we'll do today -->
+    <section>
+        <h2>Where we're going</h2>
+        <div class="approach-grid" style="margin-top: 10px;">
+            <div class="approach-card"><h3>§ 2 &nbsp; Similarity, made geometric</h3>
+                <p>Auctions, elections, and the case where Euclidean distance lies.</p></div>
+            <div class="approach-card"><h3>§ 3 &nbsp; A linear-algebra detour</h3>
+                <p>What does a matrix <em>do</em> to space?</p></div>
+            <div class="approach-card"><h3>§ 4 &nbsp; A projection detour</h3>
+                <p>Some shadows tell you a lot, others tell you nothing.</p></div>
+            <div class="approach-card"><h3>§ 5 &nbsp; Johnson–Lindenstrauss</h3>
+                <p>The strange theorem that makes the whole project possible &mdash; and a peek at SVD.</p></div>
+        </div>
+    </section>
+
+</section>
+
+<!-- ============================================================
+     SECTION 2 — SIMILARITY & EUCLIDEAN DISTANCE
+============================================================ -->
+<section>
+
+    <!-- 2.0 Divider -->
+    <section>
+        <div class="section-divider">
+            <div class="num">§ 2</div>
+            <h1>Similarity, made geometric</h1>
+            <p class="lede">Treat each row as a point. Treat <em>similarity</em> as how close two points are.<br>Simple idea, surprisingly powerful.</p>
+        </div>
+    </section>
+
+    <!-- 2.1 The pivotal move -->
+    <section>
+        <h2>The pivotal move</h2>
+        <p>So far our data lives in a <strong>spreadsheet</strong>. Rows are users, columns are features.</p>
+        <p>Let's change one thing: imagine each row not as a row, but as a <strong>point</strong> in space, with one coordinate per feature.</p>
+        <div class="definition-box fragment">
+            <p><strong>Similar people</strong> &rarr; <strong>nearby points</strong>.</p>
+            <p>Now "find similar users" becomes a geometry question. We have tools for those.</p>
+        </div>
+        <p class="prompt fragment">does this move <em>always</em> capture what we mean by "similar"? When might it lie?</p>
+    </section>
+
+    <!-- 2.2 Mystery box auction (interactive) -->
+    <section>
+        <h2>Demo: the mystery box auction</h2>
+        <p class="small">Seven bidders are guessing the price of a mystery box. Click each bidder to reveal their guess.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">Round the box, then onto the line</span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="auction_reset()">Reset</button>
+                    <button class="btn btn-secondary" onclick="auction_revealAll()">Reveal all</button>
+                    <button class="btn btn-primary" id="auction-project-btn" onclick="auction_project()">Project &rarr; line</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="auction-canvas" style="height: 285px;"></div>
+            <div class="demo-output" id="auction-output">
+                Reveal a bidder's guess by clicking. Once you've seen all of them, project them onto the number line.
+            </div>
+        </div>
+    </section>
+
+    <!-- 2.3 Two voters, two candidates -->
+    <section>
+        <h2>An election on a plane</h2>
+        <p class="small">Two axes are two issues. Each <span class="h-blue">voter</span> casts a ballot for the <em>nearest</em> <span class="h-coral">candidate</span>. Drag candidates to redraw the map.</p>
+        <div class="demo-container" id="ballot-demo">
+            <div class="demo-header">
+                <span class="demo-title">Voronoi voting <span style="color:var(--text-light); font-weight:400;">(after Nicky Case's <a href="https://ncase.me/ballot/" target="_blank" rel="noopener noreferrer"><em>Ballot</em></a>)</span><span class="mode-badge">ADDING VOTERS</span></span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="ballot_loadPreset('two')">2 candidates</button>
+                    <button class="btn btn-secondary" onclick="ballot_loadPreset('three')">3 candidates</button>
+                    <button class="btn btn-secondary" onclick="ballot_loadPreset('clustered')">Voter clusters</button>
+                    <button class="btn btn-secondary" onclick="ballot_resampleVoters()">Resample voters</button>
+                    <button class="btn btn-secondary" id="ballot-add-toggle" onclick="ballot_toggleAddMode()">Add voters</button>
+                    <button class="btn btn-secondary" onclick="ballot_clearVoters()">Clear voters</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="ballot-canvas" style="height: 430px;"></div>
+            <div class="demo-output" id="ballot-output"></div>
+        </div>
+        <p class="tiny" style="margin-top: 4px;">see also: <a href="https://yourpoliticaltribe.com/" target="_blank" rel="noopener noreferrer" style="color: seagreen;">political axes</a></p>
+    </section>
+
+    <!-- 2.4 Euclidean isn't always right -->
+    <section>
+        <h2>...but Euclidean isn't always right</h2>
+        <p class="small">Two Wikipedia articles on the same topic &mdash; a stub vs. a long encyclopedic entry. Their word-count vectors point the same way; the long one is just longer.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">Same topic, different length</span>
+                <div class="demo-controls">
+                    <label>long article length ×</label>
+                    <input type="range" id="wiki-scale" min="1" max="20" value="1" step="0.5" oninput="wiki_update()">
+                    <span class="mono small" id="wiki-scale-label">1.0×</span>
+                </div>
+            </div>
+            <div class="demo-canvas" id="wiki-canvas" style="height: 330px;"></div>
+            <div class="demo-output" id="wiki-output"></div>
+        </div>
+    </section>
+
+    <!-- 2.5 Three flavours of similarity -->
+    <section>
+        <h2>Three flavours of similarity</h2>
+        <div class="similarity-stack">
+            <div class="definition-box fragment" style="border-left-color: var(--pastel-blue);">
+                <p><strong>Euclidean distance</strong> &mdash; "How far apart are these two points?"</p>
+                <p class="mono small">\(d(a,b) = \sqrt{\sum_i (a_i - b_i)^2}\)</p>
+                <p class="tiny"><strong>Best for:</strong> absolute values matter on their own scale &mdash; fraud detection, GPS, sensor anomalies.</p>
+            </div>
+            <div class="definition-box fragment" style="border-left-color: var(--pastel-coral);">
+                <p><strong>Cosine similarity</strong> &mdash; "Do they point the same way?"</p>
+                <p class="mono small">\(\cos\theta = \dfrac{a \cdot b}{\|a\|\,\|b\|}\)</p>
+                <p class="tiny"><strong>Best for:</strong> proportions matter, magnitudes are noise &mdash; documents of different lengths, taste profiles.</p>
+            </div>
+            <div class="definition-box fragment" style="border-left-color: var(--pastel-lavender);">
+                <p><strong>Dot product</strong> &mdash; "Aligned and strong?"</p>
+                <p class="mono small">\(a \cdot b = \|a\|\,\|b\|\cos\theta\)</p>
+                <p class="tiny"><strong>Best for:</strong> recommendation scores where both alignment <em>and</em> magnitude carry information.</p>
+            </div>
+        </div>
+        <p class="prompt small fragment" style="margin-top: 8px;">For today, we'll stay with Euclidean &mdash; it's the most concrete &mdash; but keep in mind the choice always matters.</p>
+    </section>
+
+</section>
+
+
+<!-- ============================================================
+     SECTION 3 — LINEAR TRANSFORMS
+============================================================ -->
+<section>
+
+    <!-- 3.0 Divider -->
+    <section>
+        <div class="section-divider">
+            <div class="num">§ 3</div>
+            <h1>Linear transforms, geometrically</h1>
+            <p class="lede">A short detour. To make sense of "good projection" later,<br>we need to see what a matrix <em>does</em> to a plane.</p>
+        </div>
+    </section>
+
+    <!-- 3.1 Vectors as coordinates -->
+    <section>
+        <h2>A matrix as a transformation of space</h2>
+        <p>You can read the 2×2 matrix &nbsp;
+            <span class="mono">[[a, b], [c, d]]</span>
+            &nbsp;as instructions:</p>
+        <div class="definition-box">
+            <ul style="margin-top:2px;">
+                <li>Send the standard right-arrow <span class="mono">(1, 0)</span> to <span class="mono">(a, c)</span>.</li>
+                <li>Send the standard up-arrow <span class="mono">(0, 1)</span> to <span class="mono">(b, d)</span>.</li>
+            </ul>
+        </div>
+        <div class="definition-box fragment">
+            <p>Why is that enough?</p>
+            <p class="mono small">Every vector \((x,y) = x\,e_1 + y\,e_2\).</p>
+            <p class="mono small">If \(f\) is linear, then \(f(x,y) = x\,f(e_1) + y\,f(e_2)\).</p>
+        </div>
+        <p class="fragment small">So once you know where the two basis arrows go, you know where every vector goes.</p>
+        <p class="prompt fragment">what should the matrix look like to <em>rotate</em> the plane 90°? To stretch it without losing the plane?</p>
+    </section>
+
+    <!-- 3.2 Matrix multiplication as column-combination -->
+    <section>
+        <h2>Matrix multiplication, as columns</h2>
+        <p class="small">The two columns are exactly where the basis vectors land.</p>
+        <div class="definition-box">
+            <p>In coordinates, the same story is:</p>
+            <p class="mono small">\( \begin{bmatrix}a & b\\ c & d\end{bmatrix}\begin{bmatrix}x\\ y\end{bmatrix} \)</p>
+            <p class="mono small fragment">\(=\; x\,\)<span style="color:#c44; font-weight:700;">\(\begin{bmatrix}a\\ c\end{bmatrix}\)</span>
+                <span style="color:#666;">(image of \(e_1\))</span></p>
+            <p class="mono small fragment">\(\phantom{=}\;+\; y\,\)<span style="color:#3a8a3a; font-weight:700;">\(\begin{bmatrix}b\\ d\end{bmatrix}\)</span>
+                <span style="color:#666;">(image of \(e_2\))</span></p>
+            <p class="mono small fragment">\(=\; \begin{bmatrix}ax + by\\ cx + dy\end{bmatrix}\).</p>
+        </div>
+    </section>
+
+    <!-- 3.2 Grid transformer -->
+    <section>
+        <h2>Demo: drag the basis vectors</h2>
+        <p class="small">Drag <span style="color:#c44; font-weight:700;">î</span> (red) and
+           <span style="color:#3a8a3a; font-weight:700;">ĵ</span> (green). Watch the original
+           light-gray grid deform into the pastel-blue transformed grid.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">Where the basis goes, the world follows</span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="grid_loadPreset('identity')">Identity</button>
+                    <button class="btn btn-secondary" onclick="grid_loadPreset('rotate')">Rotate 45°</button>
+                    <button class="btn btn-secondary" onclick="grid_loadPreset('scale')">Scale 2×</button>
+                    <button class="btn btn-secondary" onclick="grid_loadPreset('shear')">Shear</button>
+                    <button class="btn btn-secondary" onclick="grid_loadPreset('reflect')">Reflect</button>
+                    <button class="btn btn-secondary" onclick="grid_loadPreset('compress')">Compress</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="grid-canvas" style="height: 400px;"></div>
+            <div class="demo-output" id="grid-output"></div>
+        </div>
+    </section>
+
+    <!-- 3.3 Unit circle morpher -->
+    <section>
+        <h2>Demo: every linear map takes the circle to an ellipse</h2>
+        <p class="small">Same controls. Now the unit circle (gray) is being morphed by the matrix.
+           The <span style="color:#a86b00; font-weight:700;">orange axes</span> are the principal axes
+           of the resulting ellipse — they're the <em>longest</em> and <em>shortest</em> diameters.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">Singular values, seen with your eyes</span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="ellipse_loadPreset('identity')">Identity</button>
+                    <button class="btn btn-secondary" onclick="ellipse_loadPreset('rotate')">Rotate</button>
+                    <button class="btn btn-secondary" onclick="ellipse_loadPreset('stretch')">Stretch</button>
+                    <button class="btn btn-secondary" onclick="ellipse_loadPreset('shear')">Shear</button>
+                    <button class="btn btn-secondary" onclick="ellipse_loadPreset('squish')">Near-singular</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="ellipse-canvas" style="height: 360px;"></div>
+            <div class="demo-output" id="ellipse-output"></div>
+        </div>
+    </section>
+
+    <!-- 3.4 What the ellipse tells us -->
+    <section>
+        <h2>What the ellipse is telling us</h2>
+        <div class="theorem-box">
+            <p>Every linear map sends the unit circle to <strong>an ellipse</strong>
+               (possibly degenerate — a line, or even a point).</p>
+            <p>The <strong>longest axis</strong> of that ellipse is the direction in which the map stretches the most.
+               The <strong>shortest axis</strong> is the direction it stretches the least.</p>
+        </div>
+        <p class="fragment">The lengths of those two axes have a name: <strong>singular values</strong>.</p>
+        <p class="fragment">The directions on the input side that produce them have a name: <strong>right singular vectors</strong>.</p>
+        <p class="fragment small" style="margin-top: 10px;">
+            <em>You've just met SVD, geometrically.</em>
+            The whole machinery is bookkeeping for: which direction does this matrix stretch the most, second-most, third-most, …
+            in higher dimensions.
+        </p>
+    </section>
+
+</section>
+
+
+<!-- ============================================================
+     SECTION 4 — PROJECTIONS
+============================================================ -->
+<section>
+
+    <!-- 4.0 Divider -->
+    <section>
+        <div class="section-divider">
+            <div class="num">§ 4</div>
+            <h1>Projections, good and bad</h1>
+            <p class="lede">Now we need to <em>collapse</em> dimensions.<br>Not all collapses are equally lossy.</p>
+        </div>
+    </section>
+
+    <!-- 4.1 The coin -->
+    <section>
+        <h2>The coin, revisited</h2>
+        <div class="two-col">
+            <div>
+                <p>Three pictures of the same object:</p>
+                <ul>
+                    <li>A circle (face-on)</li>
+                    <li>A flat oval (45°)</li>
+                    <li>A thin rectangle (edge-on)</li>
+                </ul>
+                <p class="fragment">All three are <strong>projections</strong> of a coin from 3D onto a 2D screen. Same object — vastly different amounts of information.</p>
+                <div class="note-box fragment">
+                    <p><strong>The whole problem of dimensionality reduction:</strong></p>
+                    <p>find the projection that loses the <em>least</em> information about the structure you care about.</p>
+                </div>
+            </div>
+            <div>
+                <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" style="background:#fafafa; border:1px solid #ddd;">
+                    <!-- face-on -->
+                    <circle cx="180" cy="80" r="50" fill="#f5e6a3" stroke="#a8896a" stroke-width="3"/>
+                    <text x="180" y="86" text-anchor="middle" font-size="20" font-weight="700" fill="#7d5e30" font-family="EB Garamond, serif">¢</text>
+                    <text x="180" y="150" text-anchor="middle" font-size="11" fill="#555" font-family="Heliotrope, serif">face-on: full info</text>
+                    <!-- 45 degrees -->
+                    <ellipse cx="180" cy="200" rx="50" ry="22" fill="#f5e6a3" stroke="#a8896a" stroke-width="3"/>
+                    <text x="180" y="206" text-anchor="middle" font-size="14" fill="#7d5e30" font-family="EB Garamond, serif">¢</text>
+                    <text x="180" y="250" text-anchor="middle" font-size="11" fill="#555" font-family="Heliotrope, serif">tilted: less info</text>
+                    <!-- edge-on -->
+                    <rect x="120" y="316" width="120" height="6" fill="#f5e6a3" stroke="#a8896a" stroke-width="2"/>
+                    <text x="180" y="340" text-anchor="middle" font-size="11" fill="#555" font-family="Heliotrope, serif">edge-on: almost nothing</text>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4.2 Projecting a vector onto a line -->
+    <section>
+        <h2>Demo: projecting a vector onto a line</h2>
+        <p class="small">Drag the <span style="color:#1f6c9c; font-weight:700;">vector</span> (its tip) and the
+           <span style="color:#a86b00; font-weight:700;">projection line</span> (its handle on the unit circle).
+           The line is fixed through the origin; the projection is the shadow the vector casts on it.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">A shadow on a line</span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="proj1_loadPreset('aligned')">Aligned</button>
+                    <button class="btn btn-secondary" onclick="proj1_loadPreset('perpendicular')">Perpendicular</button>
+                    <button class="btn btn-secondary" onclick="proj1_loadPreset('oblique')">Oblique</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="proj1-canvas" style="height: 290px;"></div>
+            <div class="demo-output" id="proj1-output"></div>
+        </div>
+    </section>
+
+    <!-- 4.3 Projecting a dataset onto a line -->
+    <section>
+        <h2>Demo: project a whole dataset onto a line</h2>
+        <p class="small">Now: lots of points, one line. Drag the line angle. The
+           <span style="color:#1f6c9c;">blue dashes</span> show each point's projection.</p>
+        <p class="small" style="margin-top: -2px;"><strong>Try every preset.</strong> Notice: for "two clusters",
+           <em>some</em> angles preserve the two-cluster structure on the 1D line, and other angles smush them into one indistinguishable lump.</p>
+        <div class="demo-container">
+            <div class="demo-header">
+                <span class="demo-title">Some angles are honest; some lie</span>
+                <div class="demo-controls">
+                    <button class="btn btn-secondary" onclick="proj2_loadPreset('two')">Two clusters</button>
+                    <button class="btn btn-secondary" onclick="proj2_loadPreset('three')">Three clusters</button>
+                    <button class="btn btn-secondary" onclick="proj2_loadPreset('line')">Already on a line</button>
+                    <button class="btn btn-secondary" onclick="proj2_loadPreset('blob')">Random blob</button>
+                    <button class="btn btn-warning" onclick="proj2_findBest()">Find best angle</button>
+                </div>
+            </div>
+            <div class="demo-canvas" id="proj2-canvas" style="height: 270px;"></div>
+            <div class="demo-output" id="proj2-output"></div>
+        </div>
+    </section>
+
+    <!-- 4.4 What does "best" even mean? -->
+    <section>
+        <h2>What makes a projection "good"?</h2>
+        <p>Looking at the two-cluster preset: the <em>good</em> line is the one that <strong>spreads the projected points out the most</strong>.</p>
+        <div class="definition-box">
+            <p><strong>The big idea</strong> (the heart of PCA / SVD):</p>
+            <p>The "best" 1D projection of a 2D dataset is the line along which the projected points have the <strong>largest variance</strong>.</p>
+        </div>
+        <p class="fragment small">That direction has a name: the <strong>first principal axis</strong>.
+           It's exactly the longest axis of the ellipse we saw in §3.</p>
+        <div class="note-box fragment" style="margin-top: 8px;">
+            <p>In higher dimensions, the same idea iterates:</p>
+            <p class="small">find the direction of maximum variance, project, look at what's left, find the next direction of maximum variance, and so on.</p>
+            <p class="small">That's the entire recipe behind <strong>principal component analysis</strong>, which the next lecture will derive from SVD.</p>
+        </div>
+    </section>
+
+</section>
+
+
+<!-- ============================================================
+     SECTION 5 — JL THEOREM + SVD TEASE
+============================================================ -->
+<section>
+
+    <!-- 5.0 Divider -->
+    <section>
+        <div class="section-divider">
+            <div class="num">§ 5</div>
+            <h1>The miracle, and what's next</h1>
+            <p class="lede">Johnson–Lindenstrauss tells us low-dimensional views <em>exist</em>.<br>SVD tells us how to find a good one.</p>
+        </div>
+    </section>
+
+    <!-- 5.1 JL statement -->
+    <section>
+        <h2>The Johnson–Lindenstrauss theorem</h2>
+        <div class="theorem-box">
+            <p><strong>Claim.</strong> Given any \(n\) points in any high-dimensional space, you can project them down to
+               \(k \approx \dfrac{8 \ln n}{\varepsilon^2}\) dimensions such that <strong>every pairwise distance is preserved within a factor of \(1 \pm \varepsilon\)</strong>.</p>
+            <p><em>The number of target dimensions doesn't depend on how many dimensions you started with.</em></p>
+        </div>
+        <div class="note-box fragment">
+            <p><strong>In plain English:</strong></p>
+            <p>If all you care about is <em>which points are close to which other points</em>,
+               you can almost always squash to ~50–100 dimensions, regardless of where you started.</p>
+            <p>Every time you double the number of points, you only need to add a constant number of new dimensions.</p>
+        </div>
+        <p class="prompt fragment">stop and feel how strange this is. The dimensionality of the <em>source</em> data is irrelevant. The only thing that matters is the <em>count</em> of points.</p>
+    </section>
+
+    <!-- 5.3 What random projections give us -->
+    <section>
+        <h2>What random projections give us</h2>
+        <div class="success-box">
+            <p>If we project our data onto a random low-dimensional subspace,
+               pairwise distances are preserved (approximately, with high probability).</p>
+            <p>That means downstream tasks — clustering, nearest-neighbour, recommendation — can run in the small space and get nearly the same answers as in the full one.</p>
+        </div>
+        <p class="fragment">But random projections are <strong>random</strong>. We pay for that wastefulness with a few extra dimensions.</p>
+        <div class="prompt fragment">What if, instead of picking \(k\) directions at random, we picked the \(k\) <strong>best</strong> directions for the data we actually have?</div>
+    </section>
+
+    <!-- 5.4 The teaser for SVD -->
+    <section>
+        <h2>Tomorrow: the best projection</h2>
+        <p>We saw it twice already today:</p>
+        <ul>
+            <li>In §3, every linear map sent the unit circle to an ellipse with two characteristic axes.</li>
+            <li>In §4, the "good" projection of a 2D dataset was the line along which the projected points had the largest variance.</li>
+        </ul>
+        <div class="definition-box fragment">
+            <p><strong>Singular Value Decomposition</strong> is the operation that finds those axes <em>for any data matrix, in any dimension</em>.</p>
+            <p class="mono small">\(A = U\,\Sigma\,V^\top\)</p>
+            <p class="small">\(U\) holds the output directions, \(V\) holds the input directions, \(\Sigma\) holds the stretch factors —
+               sorted from largest to smallest, so the most important direction comes first.</p>
+        </div>
+        <p class="fragment small">Truncating after the top \(k\) singular values gives you the <strong>best possible</strong> rank-\(k\) approximation of your data.
+           That's the whole game.</p>
+    </section>
+
+    <!-- 5.5 What you take with you -->
+    <section>
+        <h2>What to take with you today</h2>
+        <div class="approach-grid">
+            <div class="approach-card">
+                <h3>1 &nbsp; Rows of data ≡ points in space</h3>
+                <p>Once you've made that move, similarity becomes a geometry question. Every algorithm we'll meet builds on this.</p>
+            </div>
+            <div class="approach-card">
+                <h3>2 &nbsp; The curse is real</h3>
+                <p>In high dimensions, distances stop discriminating. Doing nothing is not an option.</p>
+            </div>
+            <div class="approach-card">
+                <h3>3 &nbsp; Matrices act on space</h3>
+                <p>They take circles to ellipses. The ellipse's axes are the singular values. Hold this picture.</p>
+            </div>
+            <div class="approach-card">
+                <h3>4 &nbsp; Some projections lose almost nothing</h3>
+                <p>JL: even <em>random</em> low-dim projections preserve distances. SVD: there's a uniquely best one.</p>
+            </div>
+            <div class="approach-card">
+                <h3>5 &nbsp; SVD is the punchline</h3>
+                <p>"Find the best directions, ranked by importance, throw away the rest." That's the next lecture.</p>
+            </div>
+        </div>
+    </section>
+
+</section>
+
+
+</div>
+</div>
+
+<!-- RevealJS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+<!-- KaTeX -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<script>
+/* =====================================================================
+   GLOBAL: Reveal + KaTeX init + shared helpers
+   ===================================================================== */
+Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    progress: true,
+    center: false,
+    transition: 'none',
+    width: 1100,
+    height: 700,
+    margin: 0.04
+});
+
+function renderMath() {
+    if (typeof renderMathInElement !== 'undefined') {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: '\\[', right: '\\]', display: true},
+                {left: '\\(', right: '\\)', display: false}
+            ],
+            throwOnError: false
+        });
+    }
+}
+document.addEventListener('DOMContentLoaded', renderMath);
+Reveal.on('slidechanged', () => { renderMath(); _rerenderAll(); });
+Reveal.on('fragmentshown', renderMath);
+
+/* When a slide is shown, re-render any widget on it.
+   Each widget registers itself in this object: widgetName -> render fn. */
+const _renderers = {};
+function _registerRenderer(name, fn) { _renderers[name] = fn; }
+function _rerenderAll() {
+    for (const k in _renderers) {
+        try { _renderers[k](); } catch (e) { /* swallow */ }
+    }
+}
+
+/* Convenience pastel palette (matches CSS variables) */
+const PALETTE = {
+    blue: '#a8d4f0',
+    green: '#b8e6c1',
+    coral: '#f5c4c0',
+    lavender: '#d4c4e8',
+    gold: '#f5e6a3',
+    mint: '#a8e6d5',
+    peach: '#f5d4b8',
+    text: '#222',
+    light: '#666',
+    border: '#cccccc',
+    borderDark: '#888',
+    bg: '#fff'
+};
+
+/* Tiny deterministic PRNG so resamples are reproducible per call */
+function _rng(seed) {
+    let s = seed >>> 0;
+    return function() {
+        s = (s * 1664525 + 1013904223) >>> 0;
+        return s / 4294967296;
+    };
+}
+
+/* =====================================================================
+   SECTION 1.2 — Amazon user×product matrix
+   ===================================================================== */
+const AMAZON_USERS = ['Alice', 'Bob', 'Carol', 'Dev', 'Eli', 'Faye'];
+const AMAZON_PRODUCTS = ['Tent', 'Stove', 'Map', 'Boots', 'Novel', 'Mug', 'Lamp', 'Charger'];
+const AMAZON_LEVELS = [0, 0.25, 0.5, 0.75, 1];
+let amazon_M = [];        // 6x8 matrix
+let amazon_target = 0;    // which user is the "you"
+
+const AMAZON_PRESETS = {
+    default: [
+        [1.0, 0.75, 0.5, 1.0, 0.0, 0.25, 0.0, 0.0],
+        [0.75, 1.0, 0.5, 0.75, 0.0, 0.0, 0.25, 0.0],
+        [0.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.75, 1.0],
+        [0.25, 0.0, 0.25, 0.0, 0.75, 1.0, 0.5, 0.75],
+        [0.5, 0.5, 0.75, 0.5, 0.25, 0.0, 0.25, 0.5],
+        [0.0, 0.25, 0.0, 0.25, 0.5, 0.75, 1.0, 0.5]
+    ],
+    clusters: [
+        [1, 1, 0.75, 1, 0, 0, 0, 0],
+        [1, 0.75, 1, 0.75, 0, 0, 0, 0],
+        [0.75, 1, 1, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 1, 1, 0.75, 1],
+        [0, 0, 0, 0, 0.75, 1, 1, 0.75],
+        [0, 0, 0, 0, 1, 0.75, 1, 1]
+    ],
+    sparse: [
+        [1, 0, 0, 0.75, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0.5, 0, 0],
+        [0, 0, 0, 0, 0.75, 0, 1, 0],
+        [0.5, 0, 0.75, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0.75, 0, 1],
+        [0, 0.5, 0, 0, 0.5, 0, 0, 0]
+    ]
+};
+function amazon_loadPreset(name) {
+    if (name === 'random') {
+        const r = _rng(Math.floor(Math.random() * 1e9));
+        amazon_M = AMAZON_USERS.map(() => AMAZON_PRODUCTS.map(() =>
+            AMAZON_LEVELS[Math.floor(r() * AMAZON_LEVELS.length)]
+        ));
+    } else {
+        amazon_M = AMAZON_PRESETS[name].map(r => r.slice());
+    }
+    amazon_render();
+}
+function amazon_cycle(i, j) {
+    const cur = amazon_M[i][j];
+    let idx = AMAZON_LEVELS.indexOf(cur);
+    if (idx < 0) idx = 0;
+    amazon_M[i][j] = AMAZON_LEVELS[(idx + 1) % AMAZON_LEVELS.length];
+    amazon_render();
+}
+function amazon_setTarget(i) { amazon_target = i; amazon_render(); }
+function amazon_dist(a, b) {
+    let s = 0;
+    for (let k = 0; k < a.length; k++) s += (a[k] - b[k]) * (a[k] - b[k]);
+    return Math.sqrt(s);
+}
+function amazon_render() {
+    const grid = document.getElementById('amazon-grid');
+    if (!grid) return;
+    const cellSize = 38;
+    const rowLabelW = 60;
+    const colLabelH = 30;
+    const W = rowLabelW + AMAZON_PRODUCTS.length * cellSize + 130;
+    const H = colLabelH + AMAZON_USERS.length * cellSize + 12;
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;">`;
+
+    // Column labels
+    for (let j = 0; j < AMAZON_PRODUCTS.length; j++) {
+        const cx = rowLabelW + j * cellSize + cellSize / 2;
+        svg += `<text x="${cx}" y="${colLabelH - 8}" text-anchor="middle" font-size="11" fill="#333">${AMAZON_PRODUCTS[j]}</text>`;
+    }
+
+    // Rows: row label + cells
+    for (let i = 0; i < AMAZON_USERS.length; i++) {
+        const cy = colLabelH + i * cellSize + cellSize / 2;
+        const isTarget = (i === amazon_target);
+        const labelBg = isTarget ? PALETTE.gold : '#fff';
+        svg += `<rect x="0" y="${colLabelH + i * cellSize}" width="${rowLabelW - 4}" height="${cellSize}" fill="${labelBg}" stroke="#ddd" style="cursor:pointer;" onclick="amazon_setTarget(${i})"/>`;
+        const labelWeight = isTarget ? '700' : '500';
+        svg += `<text x="6" y="${cy + 4}" font-size="12" fill="#222" font-weight="${labelWeight}" style="pointer-events:none;">${AMAZON_USERS[i]}</text>`;
+
+        for (let j = 0; j < AMAZON_PRODUCTS.length; j++) {
+            const v = amazon_M[i][j];
+            // shade from white to dark
+            const shade = 1 - 0.85 * v;
+            const colorRGB = `rgb(${Math.round(255 * shade)},${Math.round(255 * shade)},${Math.round(255 * shade)})`;
+            const x = rowLabelW + j * cellSize;
+            const y = colLabelH + i * cellSize;
+            svg += `<rect x="${x}" y="${y}" width="${cellSize - 1}" height="${cellSize - 1}" fill="${colorRGB}" stroke="#ddd" style="cursor:pointer;" onclick="amazon_cycle(${i}, ${j})"/>`;
+            // Label
+            const textColor = v > 0.5 ? '#fff' : '#444';
+            svg += `<text x="${x + cellSize/2}" y="${y + cellSize/2 + 3}" text-anchor="middle" font-size="10" fill="${textColor}" style="pointer-events:none;">${v.toFixed(2)}</text>`;
+        }
+    }
+
+    // Similarity sidebar
+    const sx = rowLabelW + AMAZON_PRODUCTS.length * cellSize + 14;
+    svg += `<text x="${sx}" y="${colLabelH - 8}" font-size="11" fill="#333" font-style="italic">distance to ${AMAZON_USERS[amazon_target]}</text>`;
+    const dists = AMAZON_USERS.map((u, i) => ({i, u, d: amazon_dist(amazon_M[amazon_target], amazon_M[i])}))
+        .filter(x => x.i !== amazon_target)
+        .sort((a, b) => a.d - b.d);
+    const maxD = Math.max(...dists.map(d => d.d), 1e-6);
+    dists.forEach((rec, k) => {
+        const y = colLabelH + k * cellSize + cellSize / 2;
+        svg += `<text x="${sx}" y="${y - 4}" font-size="11" fill="#222">${rec.u}</text>`;
+        svg += `<text x="${sx + 60}" y="${y - 4}" font-size="11" fill="#666" font-family="Consolas,monospace">${rec.d.toFixed(2)}</text>`;
+        // bar
+        const barW = Math.max(2, (rec.d / maxD) * 90);
+        const barColor = k === 0 ? PALETTE.mint : (k === 1 ? PALETTE.green : PALETTE.blue);
+        svg += `<rect x="${sx}" y="${y}" width="${barW}" height="6" fill="${barColor}" />`;
+    });
+
+    svg += `</svg>`;
+    grid.innerHTML = svg;
+
+    // Output text — pick top-similar user's preferences not yet engaged by target
+    const targetRow = amazon_M[amazon_target];
+    const topSim = dists[0];
+    if (topSim) {
+        const recs = [];
+        for (let j = 0; j < AMAZON_PRODUCTS.length; j++) {
+            if (targetRow[j] < 0.5 && amazon_M[topSim.i][j] >= 0.5) {
+                recs.push(AMAZON_PRODUCTS[j]);
+            }
+        }
+        document.getElementById('amazon-output').innerHTML =
+            `<strong>${AMAZON_USERS[amazon_target]}</strong>'s closest neighbour is <strong>${topSim.u}</strong> (distance ${topSim.d.toFixed(2)}). ` +
+            (recs.length
+                ? `Recommend: <strong>${recs.join(', ')}</strong> — products ${topSim.u} engaged with but ${AMAZON_USERS[amazon_target]} hasn't.`
+                : `No fresh recommendations: ${topSim.u}'s preferences look already covered.`);
+    }
+}
+_registerRenderer('amazon', () => { if (amazon_M.length === 0) amazon_loadPreset('default'); amazon_render(); });
+
+/* =====================================================================
+   SECTION 1.4 — Curse of dimensionality
+   ===================================================================== */
+let curse_points = [];
+const CURSE_N = 30;
+const CURSE_MAX_D = 1000;
+function curse_resample() {
+    const r = _rng(Math.floor(Math.random() * 1e9));
+    curse_points = [];
+    for (let i = 0; i < CURSE_N; i++) {
+        const pt = [];
+        for (let k = 0; k < CURSE_MAX_D; k++) pt.push(r());
+        curse_points.push(pt);
+    }
+    curse_update();
+}
+function curse_update() {
+    const d = parseInt(document.getElementById('curse-d').value);
+    document.getElementById('curse-d-label').textContent = d;
+    if (curse_points.length === 0) curse_resample();
+    // Compute all pairwise distances using first d dims
+    const ds = [];
+    for (let i = 0; i < CURSE_N; i++) {
+        for (let j = i + 1; j < CURSE_N; j++) {
+            let s = 0;
+            for (let k = 0; k < d; k++) {
+                const diff = curse_points[i][k] - curse_points[j][k];
+                s += diff * diff;
+            }
+            ds.push(Math.sqrt(s));
+        }
+    }
+    ds.sort((a, b) => a - b);
+    const dmin = ds[0];
+    const dmax = ds[ds.length - 1];
+    const dmean = ds.reduce((a, b) => a + b, 0) / ds.length;
+    const ratio = dmax / dmin;
+
+    // Render histogram + min/max marks
+    const W = 980, H = 220;
+    const padL = 60, padR = 20, padT = 12, padB = 30;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    // x range: 0 to expected max possible distance sqrt(d), pad a touch
+    const xMax = Math.sqrt(d) * 1.02 + 1e-6;
+    const nBins = 30;
+    const bins = new Array(nBins).fill(0);
+    for (const v of ds) {
+        const idx = Math.min(nBins - 1, Math.floor((v / xMax) * nBins));
+        bins[idx]++;
+    }
+    const binMax = Math.max(...bins, 1);
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;">`;
+    // axes
+    svg += `<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#888" stroke-width="1"/>`;
+    svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#888" stroke-width="1"/>`;
+    // bins
+    const bw = innerW / nBins;
+    for (let i = 0; i < nBins; i++) {
+        const h = (bins[i] / binMax) * innerH;
+        svg += `<rect x="${padL + i*bw + 1}" y="${H - padB - h}" width="${bw - 2}" height="${h}" fill="${PALETTE.blue}" stroke="#7fb5d8" stroke-width="0.5"/>`;
+    }
+    // x-axis tick: 0 and xMax
+    svg += `<text x="${padL}" y="${H-padB+16}" font-size="10" fill="#666">0</text>`;
+    svg += `<text x="${W-padR-30}" y="${H-padB+16}" font-size="10" fill="#666">${xMax.toFixed(2)}</text>`;
+    svg += `<text x="${(padL+W-padR)/2 - 50}" y="${H-padB+24}" font-size="11" fill="#444">pairwise Euclidean distance</text>`;
+    // min/max markers
+    const xMin = padL + (dmin / xMax) * innerW;
+    const xMx = padL + (dmax / xMax) * innerW;
+    svg += `<line x1="${xMin}" y1="${padT}" x2="${xMin}" y2="${H-padB}" stroke="${PALETTE.coral}" stroke-width="2" stroke-dasharray="4,3"/>`;
+    svg += `<line x1="${xMx}" y1="${padT}" x2="${xMx}" y2="${H-padB}" stroke="${PALETTE.coral}" stroke-width="2" stroke-dasharray="4,3"/>`;
+    svg += `<text x="${xMin + 3}" y="${padT + 12}" font-size="10" fill="#a86b5a">min</text>`;
+    svg += `<text x="${xMx + 3}" y="${padT + 12}" font-size="10" fill="#a86b5a">max</text>`;
+    // y label
+    svg += `<text x="14" y="${(padT+H-padB)/2}" font-size="11" fill="#444" transform="rotate(-90 14 ${(padT+H-padB)/2})">count of pairs</text>`;
+    svg += `</svg>`;
+    document.getElementById('curse-canvas').innerHTML = svg;
+
+    // text
+    document.getElementById('curse-output').innerHTML =
+        `<span class="mono">d = ${d}</span> &nbsp;·&nbsp; ` +
+        `min = <strong>${dmin.toFixed(3)}</strong>, ` +
+        `max = <strong>${dmax.toFixed(3)}</strong>, ` +
+        `mean = ${dmean.toFixed(3)} &nbsp;·&nbsp; ` +
+        `<strong>ratio max/min = ${ratio.toFixed(2)}</strong> ` +
+        (d <= 3 ? `<em>(low-d: distances are spread out)</em>`
+                : d <= 50 ? `<em>(getting tighter…)</em>`
+                : `<em>(everything's roughly the same distance — the curse)</em>`);
+}
+_registerRenderer('curse', () => {
+    if (curse_points.length === 0) curse_resample();
+    else curse_update();
+});
+
+/* =====================================================================
+   SECTION 2.2 — Mystery box auction
+   ===================================================================== */
+const AUCTION_N = 7;
+let auction_bidders = [];   // {revealed, bid, x, y}
+let auction_projected = false;
+
+function auction_reset() {
+    const r = _rng(Math.floor(Math.random() * 1e9));
+    auction_bidders = [];
+    const cx = 480, cy = 170, R = 120;
+    for (let i = 0; i < AUCTION_N; i++) {
+        const ang = (i / AUCTION_N) * 2 * Math.PI - Math.PI / 2;
+        auction_bidders.push({
+            revealed: false,
+            bid: 10 + Math.floor(r() * 90),
+            x: cx + R * Math.cos(ang),
+            y: cy + R * Math.sin(ang)
+        });
+    }
+    auction_projected = false;
+    auction_render();
+}
+function auction_revealOne(i) {
+    auction_bidders[i].revealed = true;
+    auction_render();
+}
+function auction_revealAll() {
+    auction_bidders.forEach(b => b.revealed = true);
+    auction_render();
+}
+function auction_project() {
+    if (auction_bidders.some(b => !b.revealed)) auction_revealAll();
+    auction_projected = true;
+    auction_render();
+}
+function auction_render() {
+    const c = document.getElementById('auction-canvas');
+    if (!c) return;
+    const W = 1000, H = 320;
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;">`;
+
+    if (!auction_projected) {
+        // Mystery box in middle
+        const cx = 480, cy = 170;
+        svg += `<rect x="${cx-50}" y="${cy-40}" width="100" height="80" fill="#222" rx="6"/>`;
+        svg += `<text x="${cx}" y="${cy+8}" text-anchor="middle" font-size="36" fill="${PALETTE.gold}">?</text>`;
+        svg += `<text x="${cx}" y="${cy+58}" text-anchor="middle" font-size="12" fill="#555">how much?</text>`;
+        // Bidders
+        auction_bidders.forEach((b, i) => {
+            const fill = b.revealed ? PALETTE.blue : '#fff';
+            svg += `<circle cx="${b.x}" cy="${b.y}" r="28" fill="${fill}" stroke="#444" stroke-width="2" style="cursor:pointer;" onclick="auction_revealOne(${i})"/>`;
+            if (b.revealed) {
+                svg += `<text x="${b.x}" y="${b.y + 5}" text-anchor="middle" font-size="16" font-weight="700" fill="#222" style="pointer-events:none;">₹${b.bid}</text>`;
+            } else {
+                svg += `<text x="${b.x}" y="${b.y + 6}" text-anchor="middle" font-size="20" fill="#888" style="pointer-events:none;">?</text>`;
+            }
+            // tiny name
+            svg += `<text x="${b.x}" y="${b.y + 48}" text-anchor="middle" font-size="10" fill="#666">Bidder ${i+1}</text>`;
+        });
+    } else {
+        // Project all onto a horizontal number line
+        const lineY = 200;
+        const lineX0 = 80, lineX1 = W - 80;
+        const bids = auction_bidders.map(b => b.bid);
+        const minB = Math.min(...bids, 10);
+        const maxB = Math.max(...bids, 99);
+        const span = Math.max(1, maxB - minB);
+        // padding the visual range a bit
+        function bidToX(b) {
+            return lineX0 + ((b - minB) / span) * (lineX1 - lineX0);
+        }
+        // axis
+        svg += `<line x1="${lineX0}" y1="${lineY}" x2="${lineX1}" y2="${lineY}" stroke="#444" stroke-width="2"/>`;
+        // tick marks
+        for (let k = 0; k <= 9; k++) {
+            const v = minB + (k / 9) * span;
+            const x = bidToX(v);
+            svg += `<line x1="${x}" y1="${lineY-4}" x2="${x}" y2="${lineY+4}" stroke="#888"/>`;
+            svg += `<text x="${x}" y="${lineY+20}" text-anchor="middle" font-size="10" fill="#666">₹${v.toFixed(0)}</text>`;
+        }
+        // bidders as dots above the line
+        auction_bidders.forEach((b, i) => {
+            const x = bidToX(b.bid);
+            svg += `<circle cx="${x}" cy="${lineY - 28}" r="14" fill="${PALETTE.blue}" stroke="#444" stroke-width="1.5"/>`;
+            svg += `<text x="${x}" y="${lineY - 23}" text-anchor="middle" font-size="11" font-weight="700">${i+1}</text>`;
+            svg += `<text x="${x}" y="${lineY - 48}" text-anchor="middle" font-size="11" fill="#444">₹${b.bid}</text>`;
+        });
+        // Caption
+        svg += `<text x="${W/2}" y="60" text-anchor="middle" font-size="14" fill="#222" font-style="italic">Each bidder is now a point on the number line. Two bidders close on this line had similar guesses.</text>`;
+    }
+
+    svg += `</svg>`;
+    c.innerHTML = svg;
+
+    // Output
+    const out = document.getElementById('auction-output');
+    if (!auction_projected) {
+        const revealed = auction_bidders.filter(b => b.revealed).length;
+        out.innerHTML = revealed === AUCTION_N
+            ? `All ${AUCTION_N} guesses are in. Now project them onto a line.`
+            : `${revealed} of ${AUCTION_N} revealed. Click a bidder to see their guess.`;
+    } else {
+        // Find closest pair
+        const arr = auction_bidders.map((b, i) => ({i, v: b.bid})).sort((a, b) => a.v - b.v);
+        let best = {pair: [arr[0].i, arr[1].i], d: Math.abs(arr[0].v - arr[1].v)};
+        for (let k = 1; k < arr.length - 1; k++) {
+            const d = Math.abs(arr[k].v - arr[k+1].v);
+            if (d < best.d) best = {pair: [arr[k].i, arr[k+1].i], d};
+        }
+        out.innerHTML = `Bidders <strong>${best.pair[0]+1}</strong> and <strong>${best.pair[1]+1}</strong> have the closest guesses — ₹${arr.find(a => a.i === best.pair[0]).v} vs ₹${arr.find(a => a.i === best.pair[1]).v} (difference ₹${best.d}). ` +
+            `<em>One number per bidder → one point on a line → "similar" is a geometric question.</em>`;
+    }
+}
+_registerRenderer('auction', () => {
+    if (auction_bidders.length === 0) auction_reset();
+    else auction_render();
+});
+
+/* =====================================================================
+   SECTION 2.3 — Ballot Voronoi
+   ===================================================================== */
+let ballot_candidates = [];
+let ballot_voters = [];
+let ballot_dragging = null;
+let ballot_addMode = false;
+let ballot_dragMoved = false;
+const BALLOT_W = 1000, BALLOT_H = 430;
+
+function ballot_loadPreset(name) {
+    if (name === 'two') {
+        ballot_candidates = [
+            {x: 280, y: 215, color: PALETTE.coral, name: 'A'},
+            {x: 720, y: 215, color: PALETTE.blue, name: 'B'}
+        ];
+    } else if (name === 'three') {
+        ballot_candidates = [
+            {x: 250, y: 300, color: PALETTE.coral, name: 'A'},
+            {x: 500, y: 110, color: PALETTE.blue, name: 'B'},
+            {x: 750, y: 300, color: PALETTE.mint, name: 'C'}
+        ];
+    } else if (name === 'clustered') {
+        ballot_candidates = [
+            {x: 350, y: 190, color: PALETTE.coral, name: 'A'},
+            {x: 650, y: 240, color: PALETTE.blue, name: 'B'}
+        ];
+    }
+    if (name === 'clustered') {
+        ballot_voters = [];
+        const r = _rng(42);
+        const centres = [[300, 130], [720, 330], [450, 310]];
+        for (const c of centres) {
+            for (let i = 0; i < 30; i++) {
+                ballot_voters.push({x: c[0] + (r()-0.5)*120, y: c[1] + (r()-0.5)*105});
+            }
+        }
+    } else {
+        ballot_resampleVoters();
+    }
+    ballot_render();
+}
+function ballot_resampleVoters() {
+    const r = _rng(Math.floor(Math.random() * 1e9));
+    ballot_voters = [];
+    for (let i = 0; i < 90; i++) {
+        ballot_voters.push({x: 60 + r()*(BALLOT_W-120), y: 35 + r()*(BALLOT_H-70)});
+    }
+    ballot_render();
+}
+function ballot_toggleAddMode() {
+    ballot_addMode = !ballot_addMode;
+    ballot_render();
+}
+function ballot_clearVoters() {
+    ballot_voters = [];
+    ballot_render();
+}
+function ballot_svgPoint(e) {
+    const svgElt = document.getElementById('ballot-svg');
+    if (!svgElt) return null;
+    const pt = svgElt.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    const m = svgElt.getScreenCTM();
+    if (!m) return null;
+    return pt.matrixTransform(m.inverse());
+}
+function ballot_addVoter(e) {
+    if (!ballot_addMode) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const p = ballot_svgPoint(e);
+    if (!p || p.x < 0 || p.x > BALLOT_W || p.y < 0 || p.y > BALLOT_H) return;
+    ballot_voters.push({x: p.x, y: p.y});
+    ballot_render();
+}
+function ballot_updateControls() {
+    const addBtn = document.getElementById('ballot-add-toggle');
+    if (addBtn) {
+        addBtn.classList.toggle('active', ballot_addMode);
+        addBtn.textContent = ballot_addMode ? 'Adding voters' : 'Add voters';
+        addBtn.style.background = ballot_addMode ? '#d8ecfb' : '';
+        addBtn.style.borderColor = ballot_addMode ? '#2f80c3' : '';
+        addBtn.style.color = ballot_addMode ? '#12384f' : '';
+        addBtn.style.boxShadow = ballot_addMode ? '0 0 0 2px #eaf6ff inset' : '';
+    }
+    const canvas = document.getElementById('ballot-canvas');
+    if (canvas) {
+        canvas.classList.toggle('add-mode', ballot_addMode);
+        canvas.style.border = ballot_addMode ? '3px dashed #2f80c3' : '';
+        canvas.style.background = ballot_addMode ? '#eaf6ff' : '';
+        canvas.style.boxShadow = ballot_addMode ? '0 0 0 2px #d8ecfb inset' : '';
+    }
+    const demo = document.getElementById('ballot-demo');
+    if (demo) {
+        demo.classList.toggle('add-mode', ballot_addMode);
+        demo.style.border = ballot_addMode ? '2px dashed #2f80c3' : '';
+        demo.style.background = ballot_addMode ? '#f4fbff' : '';
+        demo.style.boxShadow = ballot_addMode ? '0 0 0 3px #d8ecfb inset' : '';
+    }
+    const badge = document.querySelector('#ballot-demo .mode-badge');
+    if (badge) badge.style.display = ballot_addMode ? 'inline-block' : '';
+}
+function ballot_render() {
+    const c = document.getElementById('ballot-canvas');
+    if (!c) return;
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${BALLOT_W} ${BALLOT_H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif; cursor:${ballot_addMode ? 'crosshair' : 'default'};" id="ballot-svg" onmousedown="ballot_addVoter(event)">`;
+
+    // Background grid
+    svg += `<rect x="0" y="0" width="${BALLOT_W}" height="${BALLOT_H}" fill="#fafafa"/>`;
+    for (let g = 100; g < BALLOT_W; g += 100) {
+        svg += `<line x1="${g}" y1="0" x2="${g}" y2="${BALLOT_H}" stroke="#eee"/>`;
+    }
+    for (let g = 60; g < BALLOT_H; g += 60) {
+        svg += `<line x1="0" y1="${g}" x2="${BALLOT_W}" y2="${g}" stroke="#eee"/>`;
+    }
+    // axes labels
+    svg += `<text x="${BALLOT_W/2}" y="${BALLOT_H - 6}" text-anchor="middle" font-size="11" fill="#888" font-style="italic">issue 1 (economic policy →)</text>`;
+    svg += `<text x="12" y="${BALLOT_H/2}" font-size="11" fill="#888" font-style="italic" transform="rotate(-90 12 ${BALLOT_H/2})">issue 2 (social policy →)</text>`;
+
+    // Voters coloured by nearest candidate
+    const tally = ballot_candidates.map(() => 0);
+    for (const v of ballot_voters) {
+        let bestK = 0, bestD = Infinity;
+        for (let k = 0; k < ballot_candidates.length; k++) {
+            const dx = v.x - ballot_candidates[k].x, dy = v.y - ballot_candidates[k].y;
+            const d = dx*dx + dy*dy;
+            if (d < bestD) { bestD = d; bestK = k; }
+        }
+        tally[bestK]++;
+        const col = ballot_candidates[bestK].color;
+        svg += `<circle cx="${v.x}" cy="${v.y}" r="3.4" fill="${col}" stroke="#666" stroke-width="0.5"/>`;
+    }
+
+    // Candidates (larger circles)
+    ballot_candidates.forEach((cand, i) => {
+        svg += `<circle cx="${cand.x}" cy="${cand.y}" r="18" fill="${cand.color}" stroke="#222" stroke-width="2.5" style="cursor:grab;" onmousedown="ballot_dragStart(event, ${i})"/>`;
+        svg += `<text x="${cand.x}" y="${cand.y + 5}" text-anchor="middle" font-size="14" font-weight="700" fill="#222" style="pointer-events:none;">${cand.name}</text>`;
+    });
+
+    svg += `</svg>`;
+    c.innerHTML = svg;
+    _fitSvg(c);
+
+    ballot_updateControls();
+    // Output
+    const total = ballot_voters.length;
+    const out = document.getElementById('ballot-output');
+    out.innerHTML = ballot_candidates.map((cand, i) => {
+        const pct = total > 0 ? (100 * tally[i] / total).toFixed(0) : 0;
+        return `<span style="background:${cand.color}; padding:2px 6px; border:1px solid #444;">${cand.name}</span> ${tally[i]} voters (${pct}%)`;
+    }).join(' &nbsp; ') + (ballot_addMode
+        ? ` &nbsp;·&nbsp; <strong style="color:#12384f; background:#d8ecfb; border:1px solid #2f80c3; padding:2px 7px;">ADDING VOTERS: click the map</strong>`
+        : ` &nbsp;·&nbsp; <em>drag a candidate</em>`);
+}
+function ballot_dragStart(e, i) {
+    ballot_dragging = i;
+    ballot_dragMoved = false;
+    e.preventDefault();
+    e.stopPropagation();
+    document.removeEventListener('mousemove', ballot_dragMove);
+    document.removeEventListener('mouseup', ballot_dragEnd);
+    document.addEventListener('mousemove', ballot_dragMove);
+    document.addEventListener('mouseup', ballot_dragEnd);
+}
+function ballot_dragMove(e) {
+    if (ballot_dragging == null) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const p = ballot_svgPoint(e);
+    if (!p) return;
+    ballot_dragMoved = true;
+    ballot_candidates[ballot_dragging].x = Math.max(30, Math.min(BALLOT_W - 30, p.x));
+    ballot_candidates[ballot_dragging].y = Math.max(30, Math.min(BALLOT_H - 30, p.y));
+    ballot_render();
+}
+function ballot_dragEnd(e) {
+    if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    document.removeEventListener('mousemove', ballot_dragMove);
+    document.removeEventListener('mouseup', ballot_dragEnd);
+    ballot_dragging = null;
+    ballot_dragMoved = false;
+}
+_registerRenderer('ballot', () => {
+    if (ballot_candidates.length === 0) ballot_loadPreset('two');
+    else ballot_render();
+});
+
+/* =====================================================================
+   SECTION 2.4 — Wikipedia non-example
+   ===================================================================== */
+const WIKI_BASE = [12, 8, 15, 3, 7, 11, 9, 14, 5, 6];
+const WIKI_TERMS = ['energy', 'particle', 'spin', 'field', 'mass', 'charge', 'force', 'quantum', 'wave', 'measure'];
+function wiki_update() {
+    const scale = parseFloat(document.getElementById('wiki-scale').value);
+    document.getElementById('wiki-scale-label').textContent = scale.toFixed(1) + '×';
+
+    const stub = WIKI_BASE;
+    const longArt = WIKI_BASE.map(v => v * scale);
+    // euclidean
+    let s = 0;
+    for (let i = 0; i < stub.length; i++) {
+        const diff = stub[i] - longArt[i];
+        s += diff * diff;
+    }
+    const euc = Math.sqrt(s);
+    // cosine
+    let dot = 0, na = 0, nb = 0;
+    for (let i = 0; i < stub.length; i++) {
+        dot += stub[i] * longArt[i];
+        na += stub[i] * stub[i];
+        nb += longArt[i] * longArt[i];
+    }
+    const cos = dot / (Math.sqrt(na) * Math.sqrt(nb));
+
+    const W = 1000, H = 330;
+    const padL = 40, padR = 14, padT = 18, padB = 60;
+    const innerW = W - padL - padR;
+    const innerH = H - padT - padB;
+    const barGroupW = innerW / WIKI_TERMS.length;
+    const maxVal = Math.max(...stub, ...longArt) * 1.1 + 1;
+
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;">`;
+    svg += `<line x1="${padL}" y1="${H - padB}" x2="${W - padR}" y2="${H - padB}" stroke="#666"/>`;
+
+    for (let i = 0; i < WIKI_TERMS.length; i++) {
+        const gx = padL + i * barGroupW;
+        const bw = (barGroupW - 12) / 2;
+        const hs = (stub[i] / maxVal) * innerH;
+        const hl = (longArt[i] / maxVal) * innerH;
+        svg += `<rect x="${gx + 4}" y="${H - padB - hs}" width="${bw}" height="${hs}" fill="${PALETTE.blue}" stroke="#7fb5d8" stroke-width="0.5"/>`;
+        svg += `<rect x="${gx + 4 + bw + 2}" y="${H - padB - hl}" width="${bw}" height="${hl}" fill="${PALETTE.coral}" stroke="#cc8a85" stroke-width="0.5"/>`;
+        svg += `<text x="${gx + barGroupW/2}" y="${H - padB + 16}" text-anchor="middle" font-size="10" fill="#444" transform="rotate(-20 ${gx + barGroupW/2} ${H - padB + 16})">${WIKI_TERMS[i]}</text>`;
+    }
+    // legend
+    svg += `<rect x="${W - 220}" y="${padT}" width="12" height="12" fill="${PALETTE.blue}"/>`;
+    svg += `<text x="${W - 200}" y="${padT + 11}" font-size="11" fill="#222">stub article</text>`;
+    svg += `<rect x="${W - 130}" y="${padT}" width="12" height="12" fill="${PALETTE.coral}"/>`;
+    svg += `<text x="${W - 110}" y="${padT + 11}" font-size="11" fill="#222">long article</text>`;
+    svg += `</svg>`;
+    document.getElementById('wiki-canvas').innerHTML = svg;
+
+    document.getElementById('wiki-output').innerHTML =
+        `<span class="mono">Euclidean distance = ${euc.toFixed(2)}</span> &nbsp;·&nbsp; ` +
+        `<span class="mono">Cosine similarity = ${cos.toFixed(4)}</span><br>` +
+        `<em>Same direction, growing magnitude — cosine stays at 1.0, Euclidean grows linearly.</em>`;
+}
+_registerRenderer('wiki', () => { wiki_update(); });
+
+/* =====================================================================
+   SECTION 3.2 — Grid transformer
+   ===================================================================== */
+let grid_M = {a: 1, b: 0, c: 0, d: 1}; // [[a, b], [c, d]]: i-hat=(a,c), j-hat=(b,d)
+let grid_drag = null; // 'i' | 'j' | null
+const GRID_BASE_W = 980, GRID_BASE_H = 470;
+let grid_viewW = GRID_BASE_W, grid_viewH = GRID_BASE_H;
+const GRID_UNIT = 50; // pixels per unit
+const GRID_MIN_DET = 0.18;
+
+function grid_loadPreset(name) {
+    switch (name) {
+        case 'identity': grid_M = {a: 1, b: 0, c: 0, d: 1}; break;
+        case 'rotate':   const c = Math.cos(Math.PI/4), s = Math.sin(Math.PI/4);
+                         grid_M = {a: c, b: -s, c: s, d: c}; break;
+        case 'scale':    grid_M = {a: 2, b: 0, c: 0, d: 2}; break;
+        case 'shear':    grid_M = {a: 1, b: 1, c: 0, d: 1}; break;
+        case 'reflect':  grid_M = {a: 1, b: 0, c: 0, d: -1}; break;
+        case 'compress': grid_M = {a: 1.35, b: 0.35, c: 0.15, d: 0.55}; break;
+    }
+    grid_render();
+}
+function grid_toScreen(x, y) {
+    return [grid_viewW / 2 + x * GRID_UNIT, grid_viewH / 2 - y * GRID_UNIT];
+}
+function grid_fromScreen(sx, sy) {
+    return [(sx - grid_viewW / 2) / GRID_UNIT, -(sy - grid_viewH / 2) / GRID_UNIT];
+}
+function grid_render() {
+    const cnv = document.getElementById('grid-canvas');
+    if (!cnv) return;
+    const aspect = (cnv.clientWidth > 0 && cnv.clientHeight > 0)
+        ? cnv.clientWidth / cnv.clientHeight
+        : GRID_BASE_W / GRID_BASE_H;
+    grid_viewH = GRID_BASE_H;
+    grid_viewW = Math.max(GRID_BASE_W, grid_viewH * aspect);
+    const {a, b, c, d} = grid_M;
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${grid_viewW} ${grid_viewH}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;" id="grid-svg">`;
+    svg += `<rect width="${grid_viewW}" height="${grid_viewH}" fill="#fafafa"/>`;
+
+    function tr(x, y) {
+        return grid_toScreen(a*x + b*y, c*x + d*y);
+    }
+    function clipLine(px, py, dx, dy) {
+        const pts = [];
+        function add(x, y) {
+            if (x < -0.5 || x > grid_viewW + 0.5 || y < -0.5 || y > grid_viewH + 0.5) return;
+            if (!pts.some(p => Math.hypot(p.x - x, p.y - y) < 0.01)) pts.push({x, y});
+        }
+        if (Math.abs(dx) > 1e-9) {
+            let t = (0 - px) / dx; add(0, py + t * dy);
+            t = (grid_viewW - px) / dx; add(grid_viewW, py + t * dy);
+        }
+        if (Math.abs(dy) > 1e-9) {
+            let t = (0 - py) / dy; add(px + t * dx, 0);
+            t = (grid_viewH - py) / dy; add(px + t * dx, grid_viewH);
+        }
+        if (pts.length < 2) return null;
+        let best = [pts[0], pts[1]], bestD = -1;
+        for (let i = 0; i < pts.length; i++) {
+            for (let j = i + 1; j < pts.length; j++) {
+                const dist = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
+                if (dist > bestD) { best = [pts[i], pts[j]]; bestD = dist; }
+            }
+        }
+        return best;
+    }
+    function lineSvg(line, color, width, opacity = 1) {
+        if (!line) return '';
+        return `<line x1="${line[0].x}" y1="${line[0].y}" x2="${line[1].x}" y2="${line[1].y}" stroke="${color}" stroke-width="${width}" opacity="${opacity}"/>`;
+    }
+
+    // Original grid (light gray), clipped to the visible viewport.
+    const topLeft = grid_fromScreen(0, 0);
+    const bottomRight = grid_fromScreen(grid_viewW, grid_viewH);
+    for (let k = Math.floor(topLeft[0]) - 1; k <= Math.ceil(bottomRight[0]) + 1; k++) {
+        const [px, py] = grid_toScreen(k, 0);
+        const col = (k === 0) ? '#bbb' : '#eee';
+        svg += lineSvg(clipLine(px, py, 0, -GRID_UNIT), col, k === 0 ? 1.5 : 1);
+    }
+    for (let k = Math.floor(bottomRight[1]) - 1; k <= Math.ceil(topLeft[1]) + 1; k++) {
+        const [px, py] = grid_toScreen(0, k);
+        const col = (k === 0) ? '#bbb' : '#eee';
+        svg += lineSvg(clipLine(px, py, GRID_UNIT, 0), col, k === 0 ? 1.5 : 1);
+    }
+
+    // Transformed grid (pastel blue), drawn as clipped infinite grid lines.
+    const detForGrid = a*d - b*c;
+    const corners = [[0, 0], [grid_viewW, 0], [0, grid_viewH], [grid_viewW, grid_viewH]]
+        .map(([sx, sy]) => grid_fromScreen(sx, sy))
+        .map(([x, y]) => ({u: (d*x - b*y) / detForGrid, v: (-c*x + a*y) / detForGrid}));
+    const transformedPad = Math.ceil(14 / Math.max(Math.abs(detForGrid), GRID_MIN_DET));
+    const minU = Math.floor(Math.min(...corners.map(p => p.u)) - transformedPad);
+    const maxU = Math.ceil(Math.max(...corners.map(p => p.u)) + transformedPad);
+    const minV = Math.floor(Math.min(...corners.map(p => p.v)) - transformedPad);
+    const maxV = Math.ceil(Math.max(...corners.map(p => p.v)) + transformedPad);
+    for (let k = minU; k <= maxU; k++) {
+        const [px, py] = tr(k, 0);
+        svg += lineSvg(clipLine(px, py, b * GRID_UNIT, -d * GRID_UNIT), PALETTE.blue, k === 0 ? 2 : 1, k === 0 ? 1 : 0.65);
+    }
+    for (let k = minV; k <= maxV; k++) {
+        const [px, py] = tr(0, k);
+        svg += lineSvg(clipLine(px, py, a * GRID_UNIT, -c * GRID_UNIT), PALETTE.blue, k === 0 ? 2 : 1, k === 0 ? 1 : 0.65);
+    }
+
+    // Origin marker
+    const [ox, oy] = grid_toScreen(0, 0);
+    svg += `<circle cx="${ox}" cy="${oy}" r="3" fill="#333"/>`;
+
+    // i-hat: from origin to (a, c)
+    const [ix, iy] = grid_toScreen(a, c);
+    svg += `<line x1="${ox}" y1="${oy}" x2="${ix}" y2="${iy}" stroke="#c44" stroke-width="3"/>`;
+    svg += `<circle cx="${ix}" cy="${iy}" r="9" fill="#c44" stroke="#fff" stroke-width="2" style="cursor:grab;" onmousedown="grid_dragStart(event,'i')"/>`;
+    svg += `<text x="${ix + 12}" y="${iy + 4}" font-size="13" fill="#c44" font-weight="700">î</text>`;
+
+    // j-hat: from origin to (b, d)
+    const [jx, jy] = grid_toScreen(b, d);
+    svg += `<line x1="${ox}" y1="${oy}" x2="${jx}" y2="${jy}" stroke="#3a8a3a" stroke-width="3"/>`;
+    svg += `<circle cx="${jx}" cy="${jy}" r="9" fill="#3a8a3a" stroke="#fff" stroke-width="2" style="cursor:grab;" onmousedown="grid_dragStart(event,'j')"/>`;
+    svg += `<text x="${jx + 12}" y="${jy + 4}" font-size="13" fill="#3a8a3a" font-weight="700">ĵ</text>`;
+
+    svg += `</svg>`;
+    cnv.innerHTML = svg;
+    const elt = document.getElementById('grid-svg');
+    if (elt) {
+        elt.addEventListener('mousemove', grid_dragMove);
+        elt.addEventListener('mouseup', grid_dragEnd);
+        elt.addEventListener('mouseleave', grid_dragEnd);
+    }
+
+    const det = a*d - b*c;
+    document.getElementById('grid-output').innerHTML =
+        `<span class="mono">M = [[${a.toFixed(2)}, ${b.toFixed(2)}], [${c.toFixed(2)}, ${d.toFixed(2)}]]</span> ` +
+        `&nbsp;·&nbsp; <span class="mono">det = ${det.toFixed(3)}</span> ` +
+        (det < 0 ? `<em>(orientation reversed)</em>` : ``);
+}
+function grid_dragStart(e, which) { grid_drag = which; e.preventDefault(); }
+function grid_dragMove(e) {
+    if (!grid_drag) return;
+    const svg = document.getElementById('grid-svg');
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM().inverse();
+    const p = pt.matrixTransform(m);
+    const [x, y] = grid_fromScreen(p.x, p.y);
+    const next = {...grid_M};
+    if (grid_drag === 'i') { next.a = x; next.c = y; }
+    else { next.b = x; next.d = y; }
+    if (Math.abs(next.a * next.d - next.b * next.c) < GRID_MIN_DET) return;
+    grid_M = next;
+    grid_render();
+}
+function grid_dragEnd() { grid_drag = null; }
+_registerRenderer('grid', () => grid_render());
+
+/* =====================================================================
+   SECTION 3.3 — Unit circle morpher (with SVD axes)
+   ===================================================================== */
+let ellipse_M = {a: 1.5, b: 0.5, c: 0.3, d: 1.2};
+let ellipse_drag = null;
+const ELLIPSE_W = 980, ELLIPSE_H = 380;
+const ELLIPSE_CX = ELLIPSE_W / 2, ELLIPSE_CY = ELLIPSE_H / 2;
+const ELLIPSE_UNIT = 70;
+
+function ellipse_loadPreset(name) {
+    switch (name) {
+        case 'identity': ellipse_M = {a: 1, b: 0, c: 0, d: 1}; break;
+        case 'rotate':   const c = Math.cos(Math.PI/6), s = Math.sin(Math.PI/6);
+                         ellipse_M = {a: c, b: -s, c: s, d: c}; break;
+        case 'stretch':  ellipse_M = {a: 2.2, b: 0, c: 0, d: 0.7}; break;
+        case 'shear':    ellipse_M = {a: 1, b: 1, c: 0, d: 1}; break;
+        case 'squish':   ellipse_M = {a: 1.4, b: 0.9, c: 0.7, d: 0.45}; break;
+    }
+    ellipse_render();
+}
+
+/* 2x2 SVD via eigendecomposition of M^T M */
+function svd2x2(a, b, c, d) {
+    // M^T M = [[a²+c², ab+cd],[ab+cd, b²+d²]]
+    const p = a*a + c*c, q = a*b + c*d, r = b*b + d*d;
+    const tr = p + r, det = p*r - q*q;
+    const disc = Math.max(0, tr*tr - 4*det);
+    const lam1 = (tr + Math.sqrt(disc)) / 2;
+    const lam2 = (tr - Math.sqrt(disc)) / 2;
+    const sig1 = Math.sqrt(Math.max(0, lam1));
+    const sig2 = Math.sqrt(Math.max(0, lam2));
+    // right singular vectors
+    let v1, v2;
+    if (Math.abs(q) > 1e-9) {
+        v1 = [lam1 - r, q];
+        v2 = [lam2 - r, q];
+    } else if (p >= r) {
+        v1 = [1, 0]; v2 = [0, 1];
+    } else {
+        v1 = [0, 1]; v2 = [1, 0];
+    }
+    function norm(v) { const n = Math.hypot(v[0], v[1]); return n>0 ? [v[0]/n, v[1]/n] : [1, 0]; }
+    v1 = norm(v1); v2 = norm(v2);
+    // u_i = M v_i / sigma_i
+    function applyM(v) { return [a*v[0] + b*v[1], c*v[0] + d*v[1]]; }
+    let u1 = sig1 > 1e-9 ? applyM(v1).map(x => x / sig1) : [1, 0];
+    let u2 = sig2 > 1e-9 ? applyM(v2).map(x => x / sig2) : [0, 1];
+    return {sig1, sig2, v1, v2, u1, u2};
+}
+
+function ellipse_toScreen(x, y) {
+    return [ELLIPSE_CX + x * ELLIPSE_UNIT, ELLIPSE_CY - y * ELLIPSE_UNIT];
+}
+function ellipse_fromScreen(sx, sy) {
+    return [(sx - ELLIPSE_CX) / ELLIPSE_UNIT, -(sy - ELLIPSE_CY) / ELLIPSE_UNIT];
+}
+function ellipse_render() {
+    const cnv = document.getElementById('ellipse-canvas');
+    if (!cnv) return;
+    const {a, b, c, d} = ellipse_M;
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${ELLIPSE_W} ${ELLIPSE_H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;" id="ellipse-svg">`;
+    svg += `<rect width="${ELLIPSE_W}" height="${ELLIPSE_H}" fill="#fafafa"/>`;
+    // light grid
+    for (let k = -4; k <= 4; k++) {
+        const [x1, y1] = ellipse_toScreen(k, -4);
+        const [x2, y2] = ellipse_toScreen(k, 4);
+        const [x3, y3] = ellipse_toScreen(-4, k);
+        const [x4, y4] = ellipse_toScreen(4, k);
+        const col = k === 0 ? '#aaa' : '#eaeaea';
+        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}"/>`;
+        svg += `<line x1="${x3}" y1="${y3}" x2="${x4}" y2="${y4}" stroke="${col}"/>`;
+    }
+    // Original unit circle (gray)
+    const [ox, oy] = ellipse_toScreen(0, 0);
+    svg += `<circle cx="${ox}" cy="${oy}" r="${ELLIPSE_UNIT}" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="3,3"/>`;
+
+    // Transformed ellipse (sample points and draw polygon)
+    let pts = '';
+    const N = 80;
+    for (let i = 0; i <= N; i++) {
+        const t = (i / N) * 2 * Math.PI;
+        const x = Math.cos(t), y = Math.sin(t);
+        const [sx, sy] = ellipse_toScreen(a*x + b*y, c*x + d*y);
+        pts += `${sx.toFixed(2)},${sy.toFixed(2)} `;
+    }
+    svg += `<polygon points="${pts}" fill="${PALETTE.blue}" fill-opacity="0.25" stroke="${PALETTE.blue}" stroke-width="2"/>`;
+
+    // SVD axes (output side: sigma_i * u_i)
+    const svd = svd2x2(a, b, c, d);
+    const [px1, py1] = ellipse_toScreen(svd.sig1 * svd.u1[0], svd.sig1 * svd.u1[1]);
+    const [nx1, ny1] = ellipse_toScreen(-svd.sig1 * svd.u1[0], -svd.sig1 * svd.u1[1]);
+    const [px2, py2] = ellipse_toScreen(svd.sig2 * svd.u2[0], svd.sig2 * svd.u2[1]);
+    const [nx2, ny2] = ellipse_toScreen(-svd.sig2 * svd.u2[0], -svd.sig2 * svd.u2[1]);
+    svg += `<line x1="${nx1}" y1="${ny1}" x2="${px1}" y2="${py1}" stroke="#d18e3a" stroke-width="3"/>`;
+    svg += `<line x1="${nx2}" y1="${ny2}" x2="${px2}" y2="${py2}" stroke="#d18e3a" stroke-width="3"/>`;
+    svg += `<circle cx="${px1}" cy="${py1}" r="5" fill="#d18e3a"/>`;
+    svg += `<circle cx="${px2}" cy="${py2}" r="5" fill="#d18e3a"/>`;
+    svg += `<text x="${px1 + 8}" y="${py1 - 4}" font-size="12" fill="#a86b00" font-weight="700">σ₁=${svd.sig1.toFixed(2)}</text>`;
+    svg += `<text x="${px2 + 8}" y="${py2 - 4}" font-size="12" fill="#a86b00" font-weight="700">σ₂=${svd.sig2.toFixed(2)}</text>`;
+
+    // i-hat and j-hat draggable
+    const [ix, iy] = ellipse_toScreen(a, c);
+    svg += `<line x1="${ox}" y1="${oy}" x2="${ix}" y2="${iy}" stroke="#c44" stroke-width="2.5"/>`;
+    svg += `<circle cx="${ix}" cy="${iy}" r="8" fill="#c44" stroke="#fff" stroke-width="2" style="cursor:grab;" onmousedown="ellipse_dragStart(event,'i')"/>`;
+    const [jx, jy] = ellipse_toScreen(b, d);
+    svg += `<line x1="${ox}" y1="${oy}" x2="${jx}" y2="${jy}" stroke="#3a8a3a" stroke-width="2.5"/>`;
+    svg += `<circle cx="${jx}" cy="${jy}" r="8" fill="#3a8a3a" stroke="#fff" stroke-width="2" style="cursor:grab;" onmousedown="ellipse_dragStart(event,'j')"/>`;
+
+    svg += `</svg>`;
+    cnv.innerHTML = svg;
+    const elt = document.getElementById('ellipse-svg');
+    if (elt) {
+        elt.addEventListener('mousemove', ellipse_dragMove);
+        elt.addEventListener('mouseup', ellipse_dragEnd);
+        elt.addEventListener('mouseleave', ellipse_dragEnd);
+    }
+    document.getElementById('ellipse-output').innerHTML =
+        `<span class="mono">M = [[${a.toFixed(2)}, ${b.toFixed(2)}], [${c.toFixed(2)}, ${d.toFixed(2)}]]</span> ` +
+        `&nbsp;·&nbsp; <span class="mono">σ₁ = ${svd.sig1.toFixed(3)}, σ₂ = ${svd.sig2.toFixed(3)}</span> ` +
+        (svd.sig2 < 0.05 ? `<em>— the ellipse has collapsed to a line.</em>` : ``);
+}
+function ellipse_dragStart(e, which) { ellipse_drag = which; e.preventDefault(); }
+function ellipse_dragMove(e) {
+    if (!ellipse_drag) return;
+    const svg = document.getElementById('ellipse-svg');
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM().inverse();
+    const p = pt.matrixTransform(m);
+    const [x, y] = ellipse_fromScreen(p.x, p.y);
+    if (ellipse_drag === 'i') { ellipse_M.a = x; ellipse_M.c = y; }
+    else { ellipse_M.b = x; ellipse_M.d = y; }
+    ellipse_render();
+}
+function ellipse_dragEnd() { ellipse_drag = null; }
+_registerRenderer('ellipse', () => ellipse_render());
+
+/* =====================================================================
+   SECTION 4.2 — Project a vector onto a line
+   ===================================================================== */
+let proj1_v = {x: 2, y: 1.5};
+let proj1_theta = Math.PI / 6;  // line angle
+let proj1_drag = null;
+const P1_W = 980, P1_H = 380;
+const P1_CX = P1_W / 2, P1_CY = P1_H / 2;
+const P1_UNIT = 60;
+
+function proj1_loadPreset(name) {
+    switch (name) {
+        case 'aligned':       proj1_v = {x: 2.5, y: 1.5}; proj1_theta = Math.atan2(1.5, 2.5); break;
+        case 'perpendicular': proj1_v = {x: 2.5, y: 1.5}; proj1_theta = Math.atan2(1.5, 2.5) + Math.PI/2; break;
+        case 'oblique':       proj1_v = {x: 2.5, y: 1.5}; proj1_theta = 0; break;
+    }
+    proj1_render();
+}
+function p1_toScreen(x, y) { return [P1_CX + x * P1_UNIT, P1_CY - y * P1_UNIT]; }
+function p1_fromScreen(sx, sy) { return [(sx - P1_CX) / P1_UNIT, -(sy - P1_CY) / P1_UNIT]; }
+
+function proj1_render() {
+    const cnv = document.getElementById('proj1-canvas');
+    if (!cnv) return;
+    const v = proj1_v;
+    const u = {x: Math.cos(proj1_theta), y: Math.sin(proj1_theta)}; // unit vector along line
+    const dot = v.x * u.x + v.y * u.y;
+    const projP = {x: dot * u.x, y: dot * u.y};
+
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${P1_W} ${P1_H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;" id="proj1-svg">`;
+    svg += `<rect width="${P1_W}" height="${P1_H}" fill="#fafafa"/>`;
+    // light grid
+    for (let k = -6; k <= 6; k++) {
+        const [x1, y1] = p1_toScreen(k, -3);
+        const [x2, y2] = p1_toScreen(k, 3);
+        const [x3, y3] = p1_toScreen(-7, k);
+        const [x4, y4] = p1_toScreen(7, k);
+        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${k===0?'#aaa':'#eaeaea'}"/>`;
+        svg += `<line x1="${x3}" y1="${y3}" x2="${x4}" y2="${y4}" stroke="${k===0?'#aaa':'#eaeaea'}"/>`;
+    }
+    // Projection line (extend in both directions)
+    const T = 6;
+    const [lx1, ly1] = p1_toScreen(-T * u.x, -T * u.y);
+    const [lx2, ly2] = p1_toScreen(T * u.x, T * u.y);
+    svg += `<line x1="${lx1}" y1="${ly1}" x2="${lx2}" y2="${ly2}" stroke="#d18e3a" stroke-width="2"/>`;
+    // Origin
+    const [ox, oy] = p1_toScreen(0, 0);
+    svg += `<circle cx="${ox}" cy="${oy}" r="3" fill="#333"/>`;
+    // The vector
+    const [vx, vy] = p1_toScreen(v.x, v.y);
+    svg += `<line x1="${ox}" y1="${oy}" x2="${vx}" y2="${vy}" stroke="${PALETTE.blue}" stroke-width="3"/>`;
+    svg += `<circle cx="${vx}" cy="${vy}" r="9" fill="${PALETTE.blue}" stroke="#1f6c9c" stroke-width="2" style="cursor:grab;" onmousedown="proj1_dragStart(event,'v')"/>`;
+    svg += `<text x="${vx + 12}" y="${vy + 4}" font-size="13" fill="#1f6c9c" font-weight="700">a</text>`;
+    // Projection point
+    const [pxs, pys] = p1_toScreen(projP.x, projP.y);
+    svg += `<line x1="${vx}" y1="${vy}" x2="${pxs}" y2="${pys}" stroke="#aaa" stroke-width="1.5" stroke-dasharray="4,4"/>`;
+    svg += `<circle cx="${pxs}" cy="${pys}" r="6" fill="#d18e3a"/>`;
+    svg += `<text x="${pxs + 10}" y="${pys - 8}" font-size="11" fill="#a86b00" font-weight="600">projection</text>`;
+    // Line angle handle (on unit circle)
+    const [hx, hy] = p1_toScreen(2.5 * u.x, 2.5 * u.y);
+    svg += `<circle cx="${hx}" cy="${hy}" r="9" fill="#fff" stroke="#d18e3a" stroke-width="2.5" style="cursor:grab;" onmousedown="proj1_dragStart(event,'line')"/>`;
+    svg += `<text x="${hx + 10}" y="${hy - 8}" font-size="10" fill="#a86b00">line</text>`;
+
+    svg += `</svg>`;
+    cnv.innerHTML = svg;
+    const elt = document.getElementById('proj1-svg');
+    if (elt) {
+        elt.addEventListener('mousemove', proj1_dragMove);
+        elt.addEventListener('mouseup', proj1_dragEnd);
+        elt.addEventListener('mouseleave', proj1_dragEnd);
+    }
+
+    const vMag = Math.hypot(v.x, v.y);
+    const ang = Math.acos(Math.min(1, Math.max(-1, dot / Math.max(1e-9, vMag))));
+    const angDeg = (ang * 180 / Math.PI).toFixed(0);
+    document.getElementById('proj1-output').innerHTML =
+        `<span class="mono">|a| = ${vMag.toFixed(2)}</span> &nbsp;·&nbsp; ` +
+        `<span class="mono">a · û = ${dot.toFixed(2)}</span> ` +
+        `(= length of projection) &nbsp;·&nbsp; ` +
+        `<span class="mono">angle = ${angDeg}°</span> ` +
+        (Math.abs(angDeg - 0) < 5 || Math.abs(angDeg - 180) < 5 ? `<em>(near-perfect projection)</em>`
+            : Math.abs(angDeg - 90) < 5 ? `<em>(near-zero projection — projection lost almost everything)</em>`
+            : ``);
+}
+function proj1_dragStart(e, which) { proj1_drag = which; e.preventDefault(); }
+function proj1_dragMove(e) {
+    if (!proj1_drag) return;
+    const svg = document.getElementById('proj1-svg');
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM().inverse();
+    const p = pt.matrixTransform(m);
+    const [x, y] = p1_fromScreen(p.x, p.y);
+    if (proj1_drag === 'v') { proj1_v = {x, y}; }
+    else { proj1_theta = Math.atan2(y, x); }
+    proj1_render();
+}
+function proj1_dragEnd() { proj1_drag = null; }
+_registerRenderer('proj1', () => proj1_render());
+
+/* =====================================================================
+   SECTION 4.3 — Project a 2D dataset onto a line
+   ===================================================================== */
+let proj2_points = [];   // [{x, y, cluster}]
+let proj2_theta = 0;
+let proj2_drag = null;
+const P2_W = 980, P2_H = 390;
+const P2_CX = P2_W / 2, P2_CY = P2_H / 2 - 30;
+const P2_UNIT = 55;
+
+function proj2_loadPreset(name) {
+    const r = _rng(42);
+    proj2_points = [];
+    if (name === 'two') {
+        const centres = [[-2, -1], [2, 1]];
+        for (let k = 0; k < 2; k++) {
+            for (let i = 0; i < 25; i++) {
+                proj2_points.push({x: centres[k][0] + (r()-0.5)*1.6, y: centres[k][1] + (r()-0.5)*1.6, cluster: k});
+            }
+        }
+    } else if (name === 'three') {
+        const centres = [[-2.5, 0], [0, 2], [2.5, 0]];
+        for (let k = 0; k < 3; k++) {
+            for (let i = 0; i < 18; i++) {
+                proj2_points.push({x: centres[k][0] + (r()-0.5)*1.4, y: centres[k][1] + (r()-0.5)*1.4, cluster: k});
+            }
+        }
+    } else if (name === 'line') {
+        // points along a 30° line
+        const a = Math.PI / 6;
+        for (let i = 0; i < 40; i++) {
+            const t = (r() - 0.5) * 6;
+            proj2_points.push({x: t * Math.cos(a) + (r()-0.5)*0.3, y: t * Math.sin(a) + (r()-0.5)*0.3, cluster: 0});
+        }
+    } else if (name === 'blob') {
+        for (let i = 0; i < 50; i++) {
+            proj2_points.push({x: (r()-0.5)*5, y: (r()-0.5)*4, cluster: 0});
+        }
+    }
+    proj2_render();
+}
+function proj2_findBest() {
+    // Find angle maximizing variance of projected coords
+    let bestAng = 0, bestVar = -1;
+    for (let k = 0; k < 180; k++) {
+        const a = (k / 180) * Math.PI;
+        const u = [Math.cos(a), Math.sin(a)];
+        const projs = proj2_points.map(p => p.x * u[0] + p.y * u[1]);
+        const m = projs.reduce((s, x) => s + x, 0) / projs.length;
+        const v = projs.reduce((s, x) => s + (x - m) * (x - m), 0) / projs.length;
+        if (v > bestVar) { bestVar = v; bestAng = a; }
+    }
+    proj2_theta = bestAng;
+    proj2_render();
+    document.getElementById('proj2-output').innerHTML += ` <strong>← best angle = ${(bestAng*180/Math.PI).toFixed(0)}°</strong>`;
+}
+function p2_toScreen(x, y) { return [P2_CX + x * P2_UNIT, P2_CY - y * P2_UNIT]; }
+function p2_fromScreen(sx, sy) { return [(sx - P2_CX) / P2_UNIT, -(sy - P2_CY) / P2_UNIT]; }
+
+function proj2_render() {
+    const cnv = document.getElementById('proj2-canvas');
+    if (!cnv) return;
+    const u = {x: Math.cos(proj2_theta), y: Math.sin(proj2_theta)};
+    const CLUSTER_COLORS = [PALETTE.coral, PALETTE.blue, PALETTE.mint];
+
+    let svg = `<svg width="100%" height="100%" viewBox="0 0 ${P2_W} ${P2_H}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="font-family:Heliotrope,serif;" id="proj2-svg">`;
+    svg += `<rect width="${P2_W}" height="${P2_H}" fill="#fafafa"/>`;
+    // 1D axis at bottom
+    const axisY = P2_H - 36;
+    const [axL, _] = p2_toScreen(-6, 0);
+    const [axR, __] = p2_toScreen(6, 0);
+    svg += `<line x1="${axL}" y1="${axisY}" x2="${axR}" y2="${axisY}" stroke="#444" stroke-width="1.5"/>`;
+    svg += `<text x="${P2_CX}" y="${axisY + 22}" text-anchor="middle" font-size="11" fill="#666" font-style="italic">1D projection onto the line</text>`;
+    // axes (light)
+    for (let k = -5; k <= 5; k++) {
+        const [x1, y1] = p2_toScreen(k, -3);
+        const [x2, y2] = p2_toScreen(k, 3);
+        const [x3, y3] = p2_toScreen(-6, k);
+        const [x4, y4] = p2_toScreen(6, k);
+        svg += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${k===0?'#aaa':'#eee'}"/>`;
+        if (k >= -3 && k <= 3) svg += `<line x1="${x3}" y1="${y3}" x2="${x4}" y2="${y4}" stroke="${k===0?'#aaa':'#eee'}"/>`;
+    }
+    // The projection line (long)
+    const T = 6;
+    const [lx1, ly1] = p2_toScreen(-T * u.x, -T * u.y);
+    const [lx2, ly2] = p2_toScreen(T * u.x, T * u.y);
+    svg += `<line x1="${lx1}" y1="${ly1}" x2="${lx2}" y2="${ly2}" stroke="#d18e3a" stroke-width="2"/>`;
+
+    // Points and their projections
+    for (const p of proj2_points) {
+        const [px, py] = p2_toScreen(p.x, p.y);
+        const dot = p.x * u.x + p.y * u.y;
+        const projXY = {x: dot * u.x, y: dot * u.y};
+        const [qx, qy] = p2_toScreen(projXY.x, projXY.y);
+        const col = CLUSTER_COLORS[p.cluster] || PALETTE.blue;
+        // dashed line from point to projection
+        svg += `<line x1="${px}" y1="${py}" x2="${qx}" y2="${qy}" stroke="#bbb" stroke-width="0.8" stroke-dasharray="2,2"/>`;
+        svg += `<circle cx="${px}" cy="${py}" r="4.5" fill="${col}" stroke="#444" stroke-width="0.5"/>`;
+        svg += `<circle cx="${qx}" cy="${qy}" r="3" fill="${col}" stroke="#444" stroke-width="0.5"/>`;
+        // Project onto bottom 1D axis (so user can see how projected points cluster on a line)
+        // Use scalar t = dot
+        const tNorm = (dot + 6) / 12;
+        const bx = axL + tNorm * (axR - axL);
+        svg += `<circle cx="${bx}" cy="${axisY - 8}" r="3" fill="${col}" stroke="#444" stroke-width="0.5"/>`;
+    }
+    // Angle handle on line
+    const HR = 3.5;
+    const [hx, hy] = p2_toScreen(HR * u.x, HR * u.y);
+    svg += `<circle cx="${hx}" cy="${hy}" r="9" fill="#fff" stroke="#d18e3a" stroke-width="2.5" style="cursor:grab;" onmousedown="proj2_dragStart(event)"/>`;
+    svg += `<text x="${hx + 11}" y="${hy - 8}" font-size="10" fill="#a86b00">drag</text>`;
+
+    svg += `</svg>`;
+    cnv.innerHTML = svg;
+    const elt = document.getElementById('proj2-svg');
+    if (elt) {
+        elt.addEventListener('mousemove', proj2_dragMove);
+        elt.addEventListener('mouseup', proj2_dragEnd);
+        elt.addEventListener('mouseleave', proj2_dragEnd);
+    }
+    // Compute projected variance for output
+    const projs = proj2_points.map(p => p.x * u.x + p.y * u.y);
+    const m = projs.length ? projs.reduce((s, x) => s + x, 0) / projs.length : 0;
+    const variance = projs.length ? projs.reduce((s, x) => s + (x - m) * (x - m), 0) / projs.length : 0;
+    document.getElementById('proj2-output').innerHTML =
+        `<span class="mono">angle = ${(proj2_theta * 180 / Math.PI).toFixed(0)}°</span> &nbsp;·&nbsp; ` +
+        `<span class="mono">projected variance = ${variance.toFixed(3)}</span> ` +
+        `<em>(bigger = more information preserved)</em>`;
+}
+function proj2_dragStart(e) { proj2_drag = true; e.preventDefault(); }
+function proj2_dragMove(e) {
+    if (!proj2_drag) return;
+    const svg = document.getElementById('proj2-svg');
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const m = svg.getScreenCTM().inverse();
+    const p = pt.matrixTransform(m);
+    const [x, y] = p2_fromScreen(p.x, p.y);
+    proj2_theta = Math.atan2(y, x);
+    proj2_render();
+}
+function proj2_dragEnd() { proj2_drag = false; }
+_registerRenderer('proj2', () => { if (proj2_points.length === 0) proj2_loadPreset('two'); else proj2_render(); });
+
+</script>
+</body>
+</html>
